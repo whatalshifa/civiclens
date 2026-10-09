@@ -4,28 +4,33 @@ on: push
 jobs:
   probe:
     runs-on: ubuntu-latest
+    env:
+      UA: "CivicLens data pipeline (https://github.com/whatalshifa/civiclens)"
     steps:
-      - name: Reachability
+      - name: ECI results 2024
+        continue-on-error: true
         run: |
-          for u in https://query.wikidata.org/sparql https://api.data.gov.in https://data.gov.in https://results.eci.gov.in https://www.eci.gov.in https://sansad.in https://www.indiapost.gov.in https://lgdirectory.gov.in https://raw.githubusercontent.com; do
-            printf "%s " $u; curl -s -o /dev/null -m 20 -A "CivicLens data pipeline (https://github.com/whatalshifa/civiclens)" -w "%{http_code}\n" $u || echo fail
-          done
-      - name: Wikidata members of the 18th Lok Sabha
+          curl -s -m 60 -A "$UA" https://results.eci.gov.in/PcResultGenJune2024/index.htm -o eci.html; wc -c eci.html
+          grep -o 'href="[^"]*"' eci.html | sort -u | head -40
+          curl -s -m 60 -A "$UA" https://results.eci.gov.in/PcResultGenJune2024/candidateswise-S1335.htm -o c.html; wc -c c.html
+          sed -e 's/<[^>]*>/ /g' c.html | tr -s ' \n' | head -c 1500; echo
+      - name: Sansad members
+        continue-on-error: true
         run: |
-          cat > q.rq <<'Q'
-          SELECT ?person ?personLabel ?district ?districtLabel ?groupLabel ?start ?end WHERE {
-            ?term rdfs:label "18th Lok Sabha"@en .
-            ?person p:P39 ?st . ?st pq:P2937 ?term .
-            OPTIONAL { ?st pq:P768 ?district }
-            OPTIONAL { ?st pq:P4100 ?group }
-            OPTIONAL { ?st pq:P580 ?start }
-            OPTIONAL { ?st pq:P582 ?end }
-            SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
-          }
-          Q
-          curl -s -m 60 -G https://query.wikidata.org/sparql --data-urlencode query@q.rq -H "Accept: text/csv" -A "CivicLens data pipeline (https://github.com/whatalshifa/civiclens)" -o members.csv
-          wc -l members.csv; head -8 members.csv; grep -i -E "Baramati|Wayanad|Thiruvananthapuram" members.csv
-      - name: data.gov.in pincode directory (public sample key, 10 rows)
+          curl -s -m 60 -A "$UA" -L https://sansad.in/ls/members -o ls.html; wc -c ls.html
+          grep -o -E '(src|href)="[^"]*\.js"' ls.html | head; grep -o -E 'api[_a-zA-Z/]*' ls.html | sort -u | head
+          for u in "https://sansad.in/api_ls/member?loksabha=18&page=1&size=3" "https://sansad.in/api_ls/member/sitting?loksabha=18&page=1&size=3"; do echo "== $u"; curl -s -m 60 -A "$UA" "$u" | head -c 1500; echo; done
+      - name: Wikidata (small query)
+        continue-on-error: true
         run: |
-          curl -s -m 60 "https://api.data.gov.in/resource/5c2f62fe-5afa-4119-a499-fec9d604d5bd?api-key=579b464db66ec23bdd000001cdd3946e44ce4aad7209ff7b23ac571b&format=json&limit=3" | head -c 3000; echo
-          curl -s -m 60 "https://api.data.gov.in/resource/5c2f62fe-5afa-4119-a499-fec9d604d5bd?api-key=579b464db66ec23bdd000001cdd3946e44ce4aad7209ff7b23ac571b&format=json&limit=3&filters%5Bpincode%5D=413102" | head -c 3000; echo
+          curl -s -m 90 -G https://query.wikidata.org/sparql -H "Accept: text/csv" -A "$UA" --data-urlencode 'query=SELECT ?term ?termLabel WHERE { ?term wdt:P31 wd:Q15238777 . ?term rdfs:label ?l . FILTER(LANG(?l)="en" && CONTAINS(?l, "Lok Sabha")) SERVICE wikibase:label { bd:serviceParam wikibase:language "en". } } LIMIT 30' | head -40
+          curl -s -m 60 -A "$UA" "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=18th%20Lok%20Sabha&language=en&format=json" | head -c 1000; echo
+      - name: data.gov.in (longer timeout)
+        continue-on-error: true
+        run: |
+          curl -s -m 120 -A "$UA" -w "\nHTTP %{http_code}\n" "https://api.data.gov.in/resource/5c2f62fe-5afa-4119-a499-fec9d604d5bd?api-key=579b464db66ec23bdd000001cdd3946e44ce4aad7209ff7b23ac571b&format=json&limit=3" | head -c 2500; echo
+      - name: India Post and LGD
+        continue-on-error: true
+        run: |
+          curl -s -m 60 -A "$UA" -L https://www.indiapost.gov.in/vas/pages/findpincode.aspx -o ip.html -w "HTTP %{http_code}\n"; wc -c ip.html; grep -o -i -E 'href="[^"]*(pincode|download|csv|xls)[^"]*"' ip.html | head
+          curl -s -m 60 -A "$UA" -L https://lgdirectory.gov.in/ -o lgd.html -w "HTTP %{http_code}\n"; grep -o -i -E 'href="[^"]*(download|constituency|report)[^"]*"' lgd.html | sort -u | head -20
