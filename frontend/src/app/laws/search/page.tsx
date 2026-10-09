@@ -1,0 +1,108 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+
+import { Highlight } from "@/components/Highlight";
+import { LawSearchForm } from "@/components/LawSearchForm";
+import { api } from "@/lib/api";
+import type { ActBrief, SearchResults } from "@/lib/types";
+
+export async function generateMetadata({ searchParams }: PageProps<"/laws/search">): Promise<Metadata> {
+  const { q } = await searchParams;
+  return { title: typeof q === "string" && q ? `“${q}” in the law library` : "Search the laws", robots: "noindex" };
+}
+
+export default async function SearchPage({ searchParams }: PageProps<"/laws/search">) {
+  const params = await searchParams;
+  const q = typeof params.q === "string" ? params.q.trim().slice(0, 200) : "";
+  const act = typeof params.act === "string" ? params.act : undefined;
+
+  const acts = await api<ActBrief[]>("/api/laws");
+  const query = new URLSearchParams({ q });
+  if (act) query.set("act", act);
+  const results = q ? await api<SearchResults>(`/api/laws/search?${query}`) : null;
+  const actName = acts.find((a) => a.id === act)?.short_name;
+
+  return (
+    <div className="max-w-3xl">
+      <LawSearchForm defaultValue={q} act={act} autoFocus={!q} />
+
+      {act && (
+        <div className="mt-4 flex flex-wrap items-center gap-2 text-sm">
+          <span className="text-muted">Only in</span>
+          <span className="badge bg-accent-soft text-accent">{actName ?? act}</span>
+          <Link href={`/laws/search?q=${encodeURIComponent(q)}`} className="link">
+            Search all laws
+          </Link>
+        </div>
+      )}
+
+      {results && (
+        <section className="mt-8" aria-labelledby="results-heading">
+          <h1 id="results-heading" className="text-lg font-semibold" aria-live="polite">
+            {results.total === 0
+              ? `Nothing found for “${q}”`
+              : `${results.total} ${results.total === 1 ? "section" : "sections"} match “${q}”`}
+          </h1>
+          {results.total > results.results.length && (
+            <p className="text-sm text-muted">Showing the {results.results.length} closest matches.</p>
+          )}
+
+          {results.total === 0 ? (
+            <div className="mt-4 text-muted">
+              <p>Try describing the problem with other words, like “arrest”, “refund”, “school fees” or “information”.</p>
+              <p className="mt-2">
+                Or{" "}
+                <Link href="/laws" className="link">
+                  browse all laws
+                </Link>
+                .
+              </p>
+            </div>
+          ) : (
+            <ol className="mt-5 space-y-4">
+              {results.results.map((hit) => (
+                <li key={`${hit.act_id}-${hit.number}`}>
+                  <Link
+                    href={`/laws/${hit.act_id}#${hit.anchor}`}
+                    className="card block p-5 transition-colors hover:bg-sunken"
+                  >
+                    <p className="text-xs font-semibold text-muted">
+                      {hit.act_short_name} · {hit.unit} {hit.number}
+                    </p>
+                    <h2 className="mt-1 font-semibold">
+                      <Highlight text={hit.title} />
+                    </h2>
+                    <p className="mt-2 text-sm text-muted">
+                      <Highlight text={hit.snippet} />
+                    </p>
+                  </Link>
+                </li>
+              ))}
+            </ol>
+          )}
+
+          {!act && results.total > 0 && (
+            <div className="mt-8">
+              <p className="text-sm font-semibold">Search within one law</p>
+              <ul className="mt-2 flex flex-wrap gap-2">
+                {acts.map((a) => (
+                  <li key={a.id}>
+                    <Link href={`/laws/search?q=${encodeURIComponent(q)}&act=${a.id}`} className="chip text-xs">
+                      {a.short_name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </section>
+      )}
+
+      <p className="mt-10 rounded-xl bg-sunken p-4 text-sm text-muted">
+        Search looks for your words in our plain-language summaries and the sections&apos; titles. It doesn&apos;t
+        give legal advice. For help with a case, your District Legal Services Authority offers free legal aid to
+        those who qualify.
+      </p>
+    </div>
+  );
+}

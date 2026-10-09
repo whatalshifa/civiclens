@@ -1,0 +1,164 @@
+@import "tailwindcss";
+
+/* Dark mode follows a class on <html>, set before the first paint by the script in layout.tsx.
+   "System" (the default) copies the device setting; the switch in the header can pin light or dark. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Calm, institutional colours. The accent is a deep teal, chosen because it isn't the colour of
+   any major Indian party; party names are always plain text, never coloured. */
+:root {
+  --background: #f6f7f9;
+  --foreground: #0f172a;
+  --surface: #ffffff;
+  --sunken: #eef1f4;
+  --muted: #556070;
+  --border: #dde2e8;
+  --accent: #0f6b63;
+  --accent-soft: #e3f2ef;
+  --focus: #0f766e;
+  --mark: #fdf0b8;
+  color-scheme: light;
+}
+
+.dark {
+  --background: #0a0f14;
+  --foreground: #e6edf3;
+  --surface: #111821;
+  --sunken: #18212c;
+  --muted: #9aa7b5;
+  --border: #253140;
+  --accent: #5ad1c0;
+  --accent-soft: #0f2a29;
+  --focus: #5ad1c0;
+  --mark: #4a3f10;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-sunken: var(--sunken);
+  --color-muted: var(--muted);
+  --color-line: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --font-sans: var(--font-geist-sans);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+@layer base {
+  :where(a, button, summary, select, input, [tabindex]):focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+  mark {
+    background: var(--mark);
+    color: var(--foreground);
+    border-radius: 0.2rem;
+    padding: 0 0.1rem;
+  }
+  /* Leave room for the sticky header when jumping to a section. */
+  [id] {
+    scroll-margin-top: 5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-line bg-surface shadow-[0_1px_2px_rgb(15_23_42/0.05)];
+  }
+
+  .btn {
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-transparent px-4 py-2 text-sm
+      font-semibold whitespace-nowrap transition-colors select-none
+      disabled:cursor-not-allowed disabled:opacity-60;
+  }
+  /* White on teal-800 is 7.4:1, readable in both themes. */
+  .btn-primary {
+    @apply bg-teal-800 text-white shadow-sm hover:bg-teal-900;
+  }
+  .btn-secondary {
+    @apply border-line bg-surface text-foreground hover:bg-sunken;
+  }
+  .btn-ghost {
+    @apply text-muted hover:bg-sunken hover:text-foreground;
+  }
+  .btn-sm {
+    @apply min-h-8 rounded-lg px-3 py-1;
+  }
+
+  .icon-btn {
+    @apply inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted transition-colors
+      hover:bg-sunken hover:text-foreground;
+  }
+
+  .chip {
+    @apply inline-flex min-h-9 items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1 text-sm
+      text-foreground transition-colors hover:border-teal-600/50 hover:bg-accent-soft;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold whitespace-nowrap;
+  }
+
+  .input {
+    @apply block min-h-12 w-full rounded-xl border border-line bg-surface px-4 py-2 text-foreground outline-none
+      transition placeholder:text-muted/80 focus:border-teal-600 focus:ring-4 focus:ring-teal-600/15
+      focus-visible:outline-none;
+  }
+
+  .link {
+    @apply font-medium text-accent underline-offset-4 hover:underline;
+  }
+
+  .eyebrow {
+    @apply text-xs font-semibold tracking-[0.14em] text-accent uppercase;
+  }
+
+  .ref {
+    @apply ml-0.5 align-super text-[0.68rem] font-semibold text-accent no-underline hover:underline;
+  }
+
+  .skeleton {
+    @apply animate-pulse rounded-lg bg-sunken;
+  }
+
+  .prose-civic {
+    @apply text-[1.02rem] leading-7 text-pretty;
+  }
+}
+
+/* The section someone jumped to gets a soft highlight, so they can see where they landed. */
+.law-section:target {
+  @apply border-teal-600/60 ring-4 ring-teal-600/10;
+}
+
+@media print {
+  :root,
+  .dark {
+    --background: #ffffff;
+    --foreground: #0f172a;
+    --surface: #ffffff;
+    --muted: #475569;
+    --border: #cbd5e1;
+    color-scheme: light;
+  }
+}

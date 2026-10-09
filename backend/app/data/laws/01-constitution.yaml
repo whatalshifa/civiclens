@@ -1,0 +1,158 @@
+id: constitution
+title: The Constitution of India
+short_name: Constitution
+year: 1950
+citation: Adopted 26 November 1949, in force from 26 January 1950
+keywords: constitution fundamental rights article
+unit: Article
+source: constitution
+summary: >-
+  The highest law of India. Part III lists the Fundamental Rights every person or citizen can
+  go to court to enforce. Below are the articles people most often need, explained simply.
+sections:
+  - number: "14"
+    title: Equality before law
+    keywords: equal equality treated same discrimination unfair government
+    summary: >-
+      The government must treat everyone equally under the law and give everyone the same
+      protection of the law. This covers every person in India, not only citizens. It does not
+      stop the government from treating different groups differently for a fair and sensible
+      reason, but it forbids arbitrary treatment.
+
+  - number: "15"
+    title: No discrimination by religion, race, caste, sex or place of birth
+    keywords: discrimination caste religion gender woman women shop hotel well road reservation
+    summary: >-
+      The government cannot discriminate against a citizen only because of religion, race,
+      caste, sex or place of birth. No citizen can be kept out of shops, public restaurants,
+      hotels, places of entertainment, or wells, tanks, bathing ghats and roads meant for the
+      public on these grounds. The government may still make special provisions for women,
+      children, Scheduled Castes and Tribes, other backward classes and economically weaker
+      sections.
+
+  - number: "16"
+    title: Equal opportunity in government jobs
+    keywords: government job employment recruitment reservation appointment public sector
+    summary: >-
+      Every citizen has an equal chance at government jobs and appointments. Nobody can be
+      refused a government job only because of religion, race, caste, sex, descent, place of
+      birth or residence. Reservations for backward classes and economically weaker sections
+      are allowed.
+
+  - number: "17"
+    title: Untouchability abolished
+    keywords: untouchability caste dalit discrimination temple water atrocity
+    summary: >-
+      Untouchability is abolished and its practice in any form is forbidden. Enforcing any
+      disability that comes from untouchability is a crime. The Protection of Civil Rights Act,
+      1955 and the Scheduled Castes and Scheduled Tribes (Prevention of Atrocities) Act, 1989
+      set out the punishments.
+
+  - number: "19"
+    title: Six freedoms of every citizen
+    keywords: freedom speech expression protest assembly union association move travel live work business internet
+    summary: >-
+      Every citizen has the freedom to speak and express themselves, to gather peacefully
+      without weapons, to form associations or unions, to move freely anywhere in India, to
+      live and settle in any part of India, and to practise any profession, trade or business.
+      The government can place reasonable limits by law, for reasons such as the sovereignty
+      and integrity of India, security of the State, public order, decency or morality,
+      contempt of court, defamation and incitement to an offence.
+
+  - number: "20"
+    title: Protection when accused of a crime
+    keywords: punishment accused crime double jeopardy confession self incrimination witness against yourself
+    summary: >-
+      You cannot be punished for an act that was not a crime when you did it, or given a
+      heavier punishment than the law allowed at that time. You cannot be prosecuted and
+      punished twice for the same offence. And if you are accused of an offence, you cannot
+      be forced to be a witness against yourself.
+
+  - number: "21"
+    title: Right to life and personal liberty
+    keywords: life liberty privacy dignity custody police detention health environment livelihood speedy trial
+    summary: >-
+      No person can be deprived of life or personal liberty except by a procedure set out in
+      law, and the Supreme Court has held that this procedure must be fair, just and
+      reasonable. Courts have read this article widely: it includes the right to live with
+      dignity, the right to privacy (recognised by the Supreme Court in 2017), a speedy trial,
+      free legal aid and a healthy environment.
+
+  - number: "21A"
+    title: Right to education
+    keywords: education school child children free admission study
+    summary: >-
+      Every child aged six to fourteen has the right to free and compulsory education, in the
+      way the law lays down. That law is the Right of Children to Free and Compulsory
+      Education Act, 2009. This article was added in 2002.
+
+  - number: "22"
+    title: Protection against arrest and detention
+    keywords: arrest police custody lawyer advocate magistrate 24 hours detention grounds
+    summary: >-
+      Anyone arrested must be told the grounds of arrest as soon as possible and has the right
+      to consult and be defended by a lawyer of their choice. They must be produced before the
+      nearest magistrate within 24 hours (not counting travel time) and cannot be held longer
+      without the magistrate's order. These protections work differently for preventive
+      detention, which has its own safeguards in the same article.
+
+  - number: "23"
+    title: No trafficking or forced labour
+    keywords: trafficking forced labour bonded labour begar slavery unpaid work
+    summary: >-
+      Trafficking in human beings and forced labour (begar, or work without pay) are
+      forbidden, and breaking this rule is a crime. The Bonded Labour System (Abolition) Act,
+      1976 is one law that enforces it.
+
+  - number: "24"
+    title: No children in factories, mines or hazardous work
+    keywords: child labour children work factory mine employment hazardous
+    summary: >-
+      No child below the age of fourteen may be employed in a factory, a mine or any other
+      hazardous work. The Child and Adolescent Labour (Prohibition and Regulation) Act, 1986
+      sets out the details and punishments.
+
+  - number: "25"
+    title: Freedom of religion
+    keywords: religion faith worship belief conscience temple mosque church gurdwara
+    summary: >-
+      Every person is equally entitled to freedom of conscience and the right to freely
+      profess, practise and spread their religion, subject to public order, morality and
+      health. The government can still regulate economic, political and other secular
+      activities connected with religious practice, and make laws for social welfare and
+      reform.
+
+  - number: "32"
+    title: Right to go to the Supreme Court
+    keywords: supreme court petition writ habeas corpus violation fundamental rights enforce
+    summary: >-
+      If any of your Fundamental Rights is violated, you have the right to go directly to the
+      Supreme Court. The court can issue orders called writs, such as habeas corpus (to
+      produce a person held unlawfully) and mandamus (to make an official do their legal
+      duty). This right is itself a Fundamental Right.
+
+  - number: "39A"
+    title: Equal justice and free legal aid
+    keywords: free lawyer legal aid poor court case legal services authority
+    summary: >-
+      The government must make sure the legal system promotes justice on equal terms, and in
+      particular provide free legal aid so that nobody is denied justice because they are
+      poor or face other disadvantages. This is a Directive Principle, so courts cannot
+      enforce it on its own, but the Legal Services Authorities Act, 1987 puts it into practice:
+      eligible people can ask their District Legal Services Authority for a free lawyer.
+
+  - number: "226"
+    title: High Courts can issue writs
+    keywords: high court petition writ violation rights government order challenge
+    summary: >-
+      Every High Court can issue writs to any person or authority within its territory, to
+      enforce Fundamental Rights and also other legal rights. For most people this is the
+      closer and more common route than going to the Supreme Court under Article 32.
+
+  - number: "326"
+    title: Right to vote at 18
+    keywords: vote voting election voter id register age 18 adult franchise
+    summary: >-
+      Elections to the Lok Sabha and the state assemblies are held on adult suffrage: every
+      citizen aged 18 or more is entitled to be registered as a voter, unless disqualified by
+      law on grounds such as unsoundness of mind, crime or corrupt or illegal practice.

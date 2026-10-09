@@ -1,0 +1,39 @@
+# Runs the whole app on your laptop: database, API and website.
+#   docker compose up --build    then open http://localhost:3000
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: civiclens
+      POSTGRES_PASSWORD: civiclens
+      POSTGRES_DB: civiclens
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U civiclens"]
+      interval: 2s
+      retries: 15
+
+  api:
+    build: ./backend
+    environment:
+      CL_DATABASE_URL: postgresql+psycopg://civiclens:civiclens@db:5432/civiclens
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  web:
+    build: ./frontend
+    environment:
+      API_URL: http://api:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+
+volumes:
+  pgdata:

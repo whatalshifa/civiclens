@@ -1,0 +1,112 @@
+id: consumer-protection-act-2019
+title: The Consumer Protection Act, 2019
+short_name: Consumer Protection Act
+year: 2019
+citation: Act No. 35 of 2019
+keywords: consumer court complaint
+unit: Section
+source: india-code
+summary: >-
+  Protects people who buy goods or pay for services, online or offline. If a product is
+  defective, a service falls short or a seller cheats, you can complain to a Consumer
+  Commission, usually without a lawyer. Complaints can be filed online on the e-Daakhil portal.
+sections:
+  - number: 2(7)
+    title: Who is a consumer
+    keywords: consumer buyer customer online shopping e-commerce resale business purpose
+    summary: >-
+      A consumer is anyone who buys goods or pays for a service, or promises to pay, including
+      online, through teleshopping, direct selling or multi-level marketing. Someone who buys
+      goods to resell them or for a commercial purpose is not a consumer, but using goods to
+      earn your own living by self-employment does not count as commercial.
+
+  - number: 2(9)
+    title: Your rights as a consumer
+    keywords: consumer rights information price quality choice heard redress awareness
+    summary: >-
+      Consumers have the right to be protected from hazardous goods and services; to be told
+      the quality, quantity, potency, purity, standard and price; to have access to a variety
+      of goods and services at competitive prices; to be heard; to seek redress against unfair
+      or restrictive trade practices; and to consumer awareness.
+
+  - number: 2(11)
+    title: What a "deficiency" in service means
+    keywords: deficiency service poor service delay negligence bank telecom courier insurance hospital
+    summary: >-
+      A deficiency is any fault, imperfection, shortcoming or inadequacy in the quality,
+      nature or manner of a service compared with what the law or a contract requires. It
+      includes negligence, and deliberately hiding relevant information from the consumer.
+
+  - number: 2(47)
+    title: Unfair trade practices
+    keywords: cheating misleading advertisement false claim bill receipt refund return defective refused
+    summary: >-
+      Unfair trade practices include false claims about goods or services, misleading
+      advertisements, and false offers. They also include not giving a proper bill or cash
+      memo, refusing to take back defective goods or refund for a deficient service within
+      the promised time (or 30 days if none was promised), and sharing a consumer's personal
+      information given in confidence.
+
+  - number: "10"
+    title: Central Consumer Protection Authority
+    keywords: ccpa authority regulator class action recall misleading ads
+    summary: >-
+      Sets up the Central Consumer Protection Authority to protect consumers as a class. It
+      can investigate unfair trade practices, order recalls of unsafe goods and refunds, act
+      against misleading advertisements, and file complaints on behalf of consumers.
+
+  - number: "34"
+    title: Where to file a consumer complaint
+    keywords: district commission consumer court jurisdiction where to file value limit 50 lakh
+    summary: >-
+      Most complaints start at the District Consumer Commission. You can file where the
+      seller or service provider is, where the problem arose, or where you live or work. The
+      Act let District Commissions hear claims up to ₹1 crore; rules made in 2021 lowered
+      this to claims where the amount paid is up to ₹50 lakh, with bigger claims going to the
+      State or National Commission.
+
+  - number: "35"
+    title: How to file a complaint
+    keywords: file complaint how to consumer court online edaakhil fee lawyer
+    summary: >-
+      A complaint can be filed by the consumer, a registered consumer association, several
+      consumers with the same interest, the government or the Central Authority. It can be
+      filed electronically. You don't need a lawyer. Rules under the Act charge no fee for
+      claims up to ₹5 lakh.
+
+  - number: "38"
+    title: How long a case should take
+    keywords: time limit hearing decision months consumer case procedure
+    summary: >-
+      The Commission should decide a complaint within three months of the other side
+      receiving notice, or within five months if goods need lab testing. It should avoid
+      adjourning hearings without good reason.
+
+  - number: "41"
+    title: Appealing a District Commission order
+    keywords: appeal state commission 45 days unhappy order
+    summary: >-
+      If you are unhappy with a District Commission's order, you can appeal to the State
+      Commission within 45 days. A trader appealing against an order to pay must first
+      deposit half the amount ordered.
+
+  - number: "69"
+    title: Two-year time limit
+    keywords: limitation time limit two years late delay deadline
+    summary: >-
+      A complaint must be filed within two years from the day the problem arose. A
+      Commission can accept a late complaint if you show a good reason for the delay.
+
+  - number: "72"
+    title: Punishment for ignoring a Commission's order
+    keywords: penalty order not followed jail fine compliance
+    summary: >-
+      Anyone who fails to obey an order of a Consumer Commission can be jailed for one month
+      to three years, fined ₹25,000 to ₹1 lakh, or both.
+
+  - number: "83"
+    title: Claims for harm from defective products
+    keywords: product liability injury defective product harm manufacturer seller compensation
+    summary: >-
+      If a defective product or a deficient service causes you harm, you can bring a product
+      liability claim against the manufacturer, the service provider or the seller.

@@ -1,0 +1,98 @@
+# Every fact in CivicLens points at one of these. Add a source here before adding a fact.
+#
+# url: the official page where anyone can check the fact. Some government sites are slow or
+#      change their addresses; scripts/check_sources.py reports any link that stops working.
+
+- id: eci-ge-2024
+  title: General Election to the 18th Lok Sabha, 2024 — results
+  publisher: Election Commission of India
+  url: https://results.eci.gov.in/
+  published_on: 2024-06-04
+
+- id: eci-bye-2024-11
+  title: Bye-elections to Parliamentary and Assembly Constituencies, November 2024 — results
+  publisher: Election Commission of India
+  url: https://results.eci.gov.in/
+  published_on: 2024-11-23
+
+- id: eci-mh-2024
+  title: General Election to the Maharashtra Legislative Assembly, 2024 — results
+  publisher: Election Commission of India
+  url: https://results.eci.gov.in/
+  published_on: 2024-11-23
+
+- id: eci-up-2022
+  title: General Election to the Uttar Pradesh Legislative Assembly, 2022 — results
+  publisher: Election Commission of India
+  url: https://results.eci.gov.in/
+  published_on: 2022-03-10
+
+- id: eci-pb-2022
+  title: General Election to the Punjab Legislative Assembly, 2022 — results
+  publisher: Election Commission of India
+  url: https://results.eci.gov.in/
+  published_on: 2022-03-10
+
+- id: eci-gj-2022
+  title: General Election to the Gujarat Legislative Assembly, 2022 — results
+  publisher: Election Commission of India
+  url: https://results.eci.gov.in/
+  published_on: 2022-12-08
+
+- id: eci-ka-2023
+  title: General Election to the Karnataka Legislative Assembly, 2023 — results
+  publisher: Election Commission of India
+  url: https://results.eci.gov.in/
+  published_on: 2023-05-13
+
+- id: eci-tg-2023
+  title: General Election to the Telangana Legislative Assembly, 2023 — results
+  publisher: Election Commission of India
+  url: https://results.eci.gov.in/
+  published_on: 2023-12-03
+
+- id: eci-dl-2025
+  title: General Election to the Legislative Assembly of the NCT of Delhi, 2025 — results
+  publisher: Election Commission of India
+  url: https://results.eci.gov.in/
+  published_on: 2025-02-08
+
+- id: delimitation-2008
+  title: Delimitation of Parliamentary and Assembly Constituencies Order, 2008
+  publisher: Election Commission of India
+  url: https://www.eci.gov.in/
+  note: Fixes which areas make up each seat. Used to place PIN areas in seats.
+
+- id: india-post-pincodes
+  title: All India Pincode Directory
+  publisher: Department of Posts, Government of India (Open Government Data Platform)
+  url: https://www.data.gov.in/
+  note: Search the platform for "All India Pincode Directory". Lists every PIN code with its post offices, district and state.
+
+- id: constitution
+  title: The Constitution of India (as amended)
+  publisher: Legislative Department, Ministry of Law and Justice
+  url: https://legislative.gov.in/constitution-of-india/
+
+- id: india-code
+  title: India Code — the official collection of all central Acts
+  publisher: Legislative Department, Ministry of Law and Justice
+  url: https://www.indiacode.nic.in/
+  note: Search by the Act's name or number to read its full, up-to-date text.
+
+- id: consumer-jurisdiction-rules-2021
+  title: Consumer Protection (Jurisdiction of the District Commission, the State Commission and the National Commission) Rules, 2021
+  publisher: Department of Consumer Affairs, Government of India
+  url: https://consumeraffairs.nic.in/
+
+- id: council-of-ministers-2024
+  title: Union Council of Ministers and their portfolios
+  publisher: Prime Minister's Office, Government of India
+  url: https://www.pmindia.gov.in/
+  published_on: 2024-06-10
+  note: Portfolios as allocated on 10 June 2024. Later reshuffles may change them.
+
+- id: lok-sabha-members
+  title: Members of the 18th Lok Sabha
+  publisher: Lok Sabha Secretariat
+  url: https://sansad.in/ls/members

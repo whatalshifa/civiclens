@@ -1,0 +1,103 @@
+id: bnss-2023
+title: The Bharatiya Nagarik Suraksha Sanhita, 2023
+short_name: BNSS
+year: 2023
+citation: Act No. 46 of 2023
+keywords: crpc criminal procedure police
+unit: Section
+source: india-code
+summary: >-
+  The law on how police and criminal courts work. It replaced the Code of Criminal Procedure
+  (CrPC) on 1 July 2024. These sections cover your rights when you report a crime, are
+  questioned, or are arrested.
+sections:
+  - number: "35"
+    title: When police can arrest without a warrant
+    keywords: arrest without warrant police notice appearance elderly 60 years
+    summary: >-
+      Police can arrest without a warrant only in the situations this section lists. For
+      many offences where arrest isn't necessary, police must instead send you a notice to
+      appear; if you comply, you should not be arrested unless the officer records reasons.
+      For offences punishable with less than three years, a person who is infirm or above 60
+      cannot be arrested without permission from an officer of at least Deputy
+      Superintendent rank.
+
+  - number: "36"
+    title: How an arrest must be made
+    keywords: arrest memo name badge witness family identification procedure
+    summary: >-
+      An arresting officer must wear a clear, visible name tag. They must prepare an arrest
+      memo, witnessed by a family member or a respected local person, and signed by the
+      person arrested.
+
+  - number: "38"
+    title: Right to meet a lawyer during questioning
+    keywords: lawyer advocate interrogation questioning police station meet
+    summary: >-
+      A person who is arrested and questioned by police has the right to meet a lawyer of
+      their choice during the questioning, though not for the whole of it.
+
+  - number: 43(5)
+    title: Arrest of women at night
+    keywords: woman women arrest night sunset sunrise female officer
+    summary: >-
+      Except in exceptional circumstances, no woman may be arrested after sunset and before
+      sunrise. In such circumstances a woman police officer must get prior permission from a
+      Judicial Magistrate, with a written report.
+
+  - number: "47"
+    title: Right to know why you are arrested, and about bail
+    keywords: arrest grounds reason bail bailable told informed
+    summary: >-
+      The officer must immediately tell the arrested person the full details of the offence
+      or other grounds for the arrest. If the offence is bailable, they must also tell the
+      person they are entitled to be released on bail and can arrange sureties.
+
+  - number: "48"
+    title: Your family must be told
+    keywords: inform family relative friend arrest where held
+    summary: >-
+      The police must inform a relative, friend or other person nominated by the arrested
+      person about the arrest and where they are being held, and tell the arrested person of
+      this right as soon as they reach the police station.
+
+  - number: "58"
+    title: No more than 24 hours without a magistrate
+    keywords: 24 hours custody magistrate detention police station lock up
+    summary: >-
+      Police cannot keep an arrested person in custody for more than 24 hours (not counting
+      travel to the court) without an order from a magistrate.
+
+  - number: "173"
+    title: Reporting a crime (FIR), including Zero FIR and e-FIR
+    keywords: fir police complaint report crime zero fir efir online refused copy free cognizable
+    summary: >-
+      You can report a serious (cognizable) crime orally or electronically at any police
+      station, whatever the area where it happened, which is called a Zero FIR. An e-FIR
+      must be signed within three days. You get a free copy of the FIR straight away. If the
+      station refuses to register it, you can send the substance of the complaint to the
+      Superintendent of Police, and after that approach a Magistrate under section 175(3).
+
+  - number: "179"
+    title: Who can be made to come to the police station
+    keywords: summons witness police station women elderly children disabled questioning at home
+    summary: >-
+      Police can require witnesses to attend for questioning, but women, men under 15 or
+      over 60, people with a mental or physical disability and people who are seriously ill
+      cannot be required to come anywhere other than where they live.
+
+  - number: "478"
+    title: Bail in bailable offences
+    keywords: bail bailable release surety bond
+    summary: >-
+      A person arrested for a bailable offence must be released on bail if they are ready to
+      give it. If they can't afford a surety within a week, the court may presume they are
+      poor and release them on their own bond.
+
+  - number: "479"
+    title: Limit on keeping undertrials in jail
+    keywords: undertrial jail prison detention half sentence first time offender release
+    summary: >-
+      An undertrial prisoner who has spent half the maximum sentence for the offence in
+      custody must be released on bail, and a first-time offender after one-third. This does
+      not apply to offences punishable with death or life imprisonment.

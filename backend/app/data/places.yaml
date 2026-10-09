@@ -1,0 +1,410 @@
+# Seats, the people who hold them, and which PIN codes fall in which seats.
+#
+# Phase 1 ships a hand-checked sample: about twenty areas across states and parties. The data
+# pipeline will replace it with every PIN code and seat. Rules for adding anything here:
+#   * Every seat, person, fact and PIN link names a `source` from sources.yaml.
+#   * A representative's `elected_on` is the day their source (an election result) was declared.
+#   * Names and parties are written the way the Election Commission writes them, in full.
+#   * Order is by state and seat name. Nothing is ordered or styled by party.
+
+constituencies:
+  # ---- Lok Sabha (MPs) ----
+  - id: ls-bangalore-rural
+    house: lok_sabha
+    name: Bangalore Rural
+    state: Karnataka
+    source: delimitation-2008
+    representative:
+      name: Dr. C. N. Manjunath
+      party: Bharatiya Janata Party
+      elected_in: General Election 2024
+      source: eci-ge-2024
+
+  - id: ls-bangalore-south
+    house: lok_sabha
+    name: Bangalore South
+    state: Karnataka
+    source: delimitation-2008
+    representative:
+      name: Tejasvi Surya
+      party: Bharatiya Janata Party
+      elected_in: General Election 2024
+      source: eci-ge-2024
+
+  - id: ls-baramati
+    house: lok_sabha
+    name: Baramati
+    state: Maharashtra
+    source: delimitation-2008
+    representative:
+      name: Supriya Sule
+      party: Nationalist Congress Party – Sharadchandra Pawar
+      elected_in: General Election 2024
+      source: eci-ge-2024
+
+  - id: ls-chennai-central
+    house: lok_sabha
+    name: Chennai Central
+    state: Tamil Nadu
+    source: delimitation-2008
+    representative:
+      name: Dayanidhi Maran
+      party: Dravida Munnetra Kazhagam
+      elected_in: General Election 2024
+      source: eci-ge-2024
+
+  - id: ls-diamond-harbour
+    house: lok_sabha
+    name: Diamond Harbour
+    state: West Bengal
+    source: delimitation-2008
+    representative:
+      name: Abhishek Banerjee
+      party: All India Trinamool Congress
+      elected_in: General Election 2024
+      source: eci-ge-2024
+
+  - id: ls-gandhinagar
+    house: lok_sabha
+    name: Gandhinagar
+    state: Gujarat
+    source: delimitation-2008
+    representative:
+      name: Amit Shah
+      party: Bharatiya Janata Party
+      elected_in: General Election 2024
+      source: eci-ge-2024
+      facts:
+        - label: Office held
+          value: Union Minister of Home Affairs and Minister of Cooperation
+          as_of: 2024-06-10
+          source: council-of-ministers-2024
+
+  - id: ls-gorakhpur
+    house: lok_sabha
+    name: Gorakhpur
+    state: Uttar Pradesh
+    source: delimitation-2008
+    representative:
+      name: Ravi Kishan (Ravindra Shukla)
+      party: Bharatiya Janata Party
+      elected_in: General Election 2024
+      source: eci-ge-2024
+
+  - id: ls-hajipur
+    house: lok_sabha
+    name: Hajipur
+    state: Bihar
+    reserved_for: SC
+    source: delimitation-2008
+    representative:
+      name: Chirag Paswan
+      party: Lok Janshakti Party (Ram Vilas)
+      elected_in: General Election 2024
+      source: eci-ge-2024
+      facts:
+        - label: Office held
+          value: Union Minister of Food Processing Industries
+          as_of: 2024-06-10
+          source: council-of-ministers-2024
+
+  - id: ls-hyderabad
+    house: lok_sabha
+    name: Hyderabad
+    state: Telangana
+    source: delimitation-2008
+    representative:
+      name: Asaduddin Owaisi
+      party: All India Majlis-E-Ittehadul Muslimeen
+      elected_in: General Election 2024
+      source: eci-ge-2024
+
+  - id: ls-kannauj
+    house: lok_sabha
+    name: Kannauj
+    state: Uttar Pradesh
+    source: delimitation-2008
+    representative:
+      name: Akhilesh Yadav
+      party: Samajwadi Party
+      elected_in: General Election 2024
+      source: eci-ge-2024
+
+  - id: ls-lucknow
+    house: lok_sabha
+    name: Lucknow
+    state: Uttar Pradesh
+    source: delimitation-2008
+    representative:
+      name: Rajnath Singh
+      party: Bharatiya Janata Party
+      elected_in: General Election 2024
+      source: eci-ge-2024
+      facts:
+        - label: Office held
+          value: Union Minister of Defence
+          as_of: 2024-06-10
+          source: council-of-ministers-2024
+
+  - id: ls-mandi
+    house: lok_sabha
+    name: Mandi
+    state: Himachal Pradesh
+    source: delimitation-2008
+    representative:
+      name: Kangana Ranaut
+      party: Bharatiya Janata Party
+      elected_in: General Election 2024
+      source: eci-ge-2024
+
+  - id: ls-medak
+    house: lok_sabha
+    name: Medak
+    state: Telangana
+    source: delimitation-2008
+    representative:
+      name: Raghunandan Rao Madhavaneni
+      party: Bharatiya Janata Party
+      elected_in: General Election 2024
+      source: eci-ge-2024
+
+  - id: ls-mumbai-south
+    house: lok_sabha
+    name: Mumbai South
+    state: Maharashtra
+    source: delimitation-2008
+    representative:
+      name: Arvind Ganpat Sawant
+      party: Shiv Sena (Uddhav Balasaheb Thackeray)
+      elected_in: General Election 2024
+      source: eci-ge-2024
+
+  - id: ls-nagpur
+    house: lok_sabha
+    name: Nagpur
+    state: Maharashtra
+    source: delimitation-2008
+    representative:
+      name: Nitin Jairam Gadkari
+      party: Bharatiya Janata Party
+      elected_in: General Election 2024
+      source: eci-ge-2024
+      facts:
+        - label: Office held
+          value: Union Minister of Road Transport and Highways
+          as_of: 2024-06-10
+          source: council-of-ministers-2024
+
+  - id: ls-new-delhi
+    house: lok_sabha
+    name: New Delhi
+    state: Delhi
+    source: delimitation-2008
+    representative:
+      name: Bansuri Swaraj
+      party: Bharatiya Janata Party
+      elected_in: General Election 2024
+      source: eci-ge-2024
+
+  - id: ls-pune
+    house: lok_sabha
+    name: Pune
+    state: Maharashtra
+    source: delimitation-2008
+    representative:
+      name: Murlidhar Mohol
+      party: Bharatiya Janata Party
+      elected_in: General Election 2024
+      source: eci-ge-2024
+      facts:
+        - label: Office held
+          value: Union Minister of State for Cooperation and for Civil Aviation
+          as_of: 2024-06-10
+          source: council-of-ministers-2024
+
+  - id: ls-purnia
+    house: lok_sabha
+    name: Purnia
+    state: Bihar
+    source: delimitation-2008
+    representative:
+      name: Rajesh Ranjan (Pappu Yadav)
+      party: Independent
+      elected_in: General Election 2024
+      source: eci-ge-2024
+
+  - id: ls-rae-bareli
+    house: lok_sabha
+    name: Rae Bareli
+    state: Uttar Pradesh
+    source: delimitation-2008
+    representative:
+      name: Rahul Gandhi
+      party: Indian National Congress
+      elected_in: General Election 2024
+      source: eci-ge-2024
+      facts:
+        - label: Office held
+          value: Leader of the Opposition in the Lok Sabha
+          as_of: 2024-06-25
+          source: lok-sabha-members
+
+  - id: ls-sangrur
+    house: lok_sabha
+    name: Sangrur
+    state: Punjab
+    source: delimitation-2008
+    representative:
+      name: Gurmeet Singh Meet Hayer
+      party: Aam Aadmi Party
+      elected_in: General Election 2024
+      source: eci-ge-2024
+
+  - id: ls-thiruvananthapuram
+    house: lok_sabha
+    name: Thiruvananthapuram
+    state: Kerala
+    source: delimitation-2008
+    representative:
+      name: Dr. Shashi Tharoor
+      party: Indian National Congress
+      elected_in: General Election 2024
+      source: eci-ge-2024
+
+  - id: ls-varanasi
+    house: lok_sabha
+    name: Varanasi
+    state: Uttar Pradesh
+    source: delimitation-2008
+    representative:
+      name: Narendra Modi
+      party: Bharatiya Janata Party
+      elected_in: General Election 2024
+      source: eci-ge-2024
+      facts:
+        - label: Office held
+          value: Prime Minister of India
+          as_of: 2024-06-10
+          source: council-of-ministers-2024
+
+  - id: ls-wayanad
+    house: lok_sabha
+    name: Wayanad
+    state: Kerala
+    source: delimitation-2008
+    representative:
+      name: Priyanka Gandhi Vadra
+      party: Indian National Congress
+      elected_in: Bye-election, November 2024
+      source: eci-bye-2024-11
+      facts:
+        - label: Why there was a bye-election
+          value: Rahul Gandhi won both Wayanad and Rae Bareli in 2024 and kept Rae Bareli, leaving Wayanad vacant.
+          source: lok-sabha-members
+
+  # ---- Vidhan Sabha (MLAs) ----
+  - id: ac-dl-new-delhi
+    house: vidhan_sabha
+    name: New Delhi
+    state: Delhi
+    source: delimitation-2008
+    representative:
+      name: Parvesh Sahib Singh
+      party: Bharatiya Janata Party
+      elected_in: Delhi Assembly Election 2025
+      source: eci-dl-2025
+
+  - id: ac-gj-ghatlodia
+    house: vidhan_sabha
+    name: Ghatlodia
+    state: Gujarat
+    source: delimitation-2008
+    representative:
+      name: Bhupendra Patel
+      party: Bharatiya Janata Party
+      elected_in: Gujarat Assembly Election 2022
+      source: eci-gj-2022
+
+  - id: ac-ka-kanakapura
+    house: vidhan_sabha
+    name: Kanakapura
+    state: Karnataka
+    source: delimitation-2008
+    representative:
+      name: D. K. Shivakumar
+      party: Indian National Congress
+      elected_in: Karnataka Assembly Election 2023
+      source: eci-ka-2023
+
+  - id: ac-mh-baramati
+    house: vidhan_sabha
+    name: Baramati
+    state: Maharashtra
+    source: delimitation-2008
+    representative:
+      name: Ajit Anantrao Pawar
+      party: Nationalist Congress Party
+      elected_in: Maharashtra Assembly Election 2024
+      source: eci-mh-2024
+
+  - id: ac-pb-dhuri
+    house: vidhan_sabha
+    name: Dhuri
+    state: Punjab
+    source: delimitation-2008
+    representative:
+      name: Bhagwant Mann
+      party: Aam Aadmi Party
+      elected_in: Punjab Assembly Election 2022
+      source: eci-pb-2022
+
+  - id: ac-tg-siddipet
+    house: vidhan_sabha
+    name: Siddipet
+    state: Telangana
+    source: delimitation-2008
+    representative:
+      name: T. Harish Rao
+      party: Bharat Rashtra Samithi
+      elected_in: Telangana Assembly Election 2023
+      source: eci-tg-2023
+
+  - id: ac-up-gorakhpur-urban
+    house: vidhan_sabha
+    name: Gorakhpur Urban
+    state: Uttar Pradesh
+    source: delimitation-2008
+    representative:
+      name: Yogi Adityanath
+      party: Bharatiya Janata Party
+      elected_in: Uttar Pradesh Assembly Election 2022
+      source: eci-up-2022
+
+# PIN areas in the sample. `seats` lists every seat the area falls in; mark a seat `partial`
+# when only part of the area is in it.
+pincodes:
+  - { pin: "110001", area: New Delhi G.P.O., district: New Delhi, state: Delhi, seats: [ls-new-delhi, ac-dl-new-delhi] }
+  - { pin: "148001", area: Sangrur, district: Sangrur, state: Punjab, seats: [ls-sangrur] }
+  - { pin: "148024", area: Dhuri, district: Sangrur, state: Punjab, seats: [ls-sangrur, ac-pb-dhuri] }
+  - { pin: "175001", area: Mandi, district: Mandi, state: Himachal Pradesh, seats: [ls-mandi] }
+  - { pin: "209725", area: Kannauj, district: Kannauj, state: Uttar Pradesh, seats: [ls-kannauj] }
+  - { pin: "221001", area: Varanasi, district: Varanasi, state: Uttar Pradesh, seats: [ls-varanasi] }
+  - { pin: "226001", area: Lucknow G.P.O., district: Lucknow, state: Uttar Pradesh, seats: [ls-lucknow] }
+  - { pin: "229001", area: Rae Bareli, district: Raebareli, state: Uttar Pradesh, seats: [ls-rae-bareli] }
+  - { pin: "273001", area: Gorakhpur, district: Gorakhpur, state: Uttar Pradesh, seats: [ls-gorakhpur, ac-up-gorakhpur-urban] }
+  - { pin: "380061", area: Ghatlodia, district: Ahmedabad, state: Gujarat, seats: [ls-gandhinagar, ac-gj-ghatlodia] }
+  - { pin: "382010", area: Gandhinagar, district: Gandhinagar, state: Gujarat, seats: [ls-gandhinagar] }
+  - { pin: "400001", area: Mumbai G.P.O., district: Mumbai, state: Maharashtra, seats: [ls-mumbai-south] }
+  - { pin: "411001", area: Pune G.P.O., district: Pune, state: Maharashtra, seats: [ls-pune] }
+  - { pin: "413102", area: Baramati, district: Pune, state: Maharashtra, seats: [ls-baramati, ac-mh-baramati] }
+  - { pin: "440001", area: Nagpur G.P.O., district: Nagpur, state: Maharashtra, seats: [ls-nagpur] }
+  - { pin: "500002", area: Hyderabad (Old City), district: Hyderabad, state: Telangana, seats: [ls-hyderabad] }
+  - { pin: "502103", area: Siddipet, district: Siddipet, state: Telangana, seats: [ls-medak, ac-tg-siddipet] }
+  - { pin: "560004", area: Basavanagudi, district: Bengaluru Urban, state: Karnataka, seats: [ls-bangalore-south] }
+  - { pin: "562117", area: Kanakapura, district: Ramanagara, state: Karnataka, seats: [ls-bangalore-rural, ac-ka-kanakapura] }
+  - { pin: "600003", area: Park Town, district: Chennai, state: Tamil Nadu, seats: [ls-chennai-central] }
+  - { pin: "673121", area: Kalpetta, district: Wayanad, state: Kerala, seats: [ls-wayanad] }
+  - { pin: "695001", area: Thiruvananthapuram G.P.O., district: Thiruvananthapuram, state: Kerala, seats: [ls-thiruvananthapuram] }
+  - { pin: "743331", area: Diamond Harbour, district: South 24 Parganas, state: West Bengal, seats: [ls-diamond-harbour] }
+  - { pin: "844101", area: Hajipur, district: Vaishali, state: Bihar, seats: [ls-hajipur] }
+  - { pin: "854301", area: Purnia, district: Purnia, state: Bihar, seats: [ls-purnia] }

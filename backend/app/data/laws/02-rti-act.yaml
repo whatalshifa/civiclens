@@ -1,0 +1,143 @@
+id: rti-act-2005
+title: The Right to Information Act, 2005
+short_name: RTI Act
+year: 2005
+citation: Act No. 22 of 2005
+keywords: rti right to information
+unit: Section
+source: india-code
+summary: >-
+  Lets any citizen ask any government office for information it holds, and get an answer
+  within 30 days. Officials who refuse without good reason can be fined. Applications to
+  central government offices can be filed online at rtionline.gov.in.
+sections:
+  - number: 2(f)
+    title: What counts as "information"
+    keywords: information records documents files email data copies what can i ask
+    summary: >-
+      Information means any material in any form: records, documents, memos, e-mails,
+      opinions, advice, press releases, circulars, orders, logbooks, contracts, reports,
+      papers, samples, models and electronic data. It also covers information about a private
+      body that a public authority can get under any law.
+
+  - number: 2(h)
+    title: Which offices you can ask
+    keywords: public authority government office department ngo funded body municipality panchayat
+    summary: >-
+      A public authority is any body set up by the Constitution, by a law of Parliament or a
+      state, or by a government notification. This includes bodies owned, controlled or
+      substantially funded by the government, and non-government organisations that are
+      substantially funded by the government. Municipalities and panchayats are included.
+
+  - number: 2(j)
+    title: What the right lets you do
+    keywords: inspect files certified copy sample notes electronic copy
+    summary: >-
+      The right to information includes inspecting work, documents and records; taking notes,
+      extracts or certified copies; taking certified samples of material; and getting
+      information on floppies, tapes, disks or in any other electronic form.
+
+  - number: "3"
+    title: Every citizen has the right to information
+    keywords: right citizen ask information who can ask
+    summary: >-
+      Subject to the rest of the Act, all citizens have the right to information.
+
+  - number: "4"
+    title: Offices must publish information on their own
+    keywords: website publish proactive disclosure budget officers salaries
+    summary: >-
+      Every public authority must keep its records properly and publish key facts without
+      being asked: how it is organised and what it does, the powers and duties of its
+      officers, its rules and manuals, the salaries of its officials, its budget, how
+      subsidies are given and to whom, and the contact details of its Public Information
+      Officers. It should publish as much as possible on its own, so that people need to file
+      fewer RTI requests.
+
+  - number: "5"
+    title: Public Information Officers
+    keywords: pio public information officer apio who to send
+    summary: >-
+      Every public authority must name Public Information Officers (PIOs) to deal with
+      requests, and Assistant PIOs at sub-district level to receive them. A PIO can ask any
+      other officer for help, and that officer is treated as a PIO for penalties if they fail
+      to help.
+
+  - number: "6"
+    title: How to ask
+    keywords: apply application request how to file fee format language online reason
+    summary: >-
+      Write your request, on paper or electronically, in English, Hindi or the official
+      language of the area, and send it to the PIO with the fee. If you can't write, the PIO
+      must help you put the request in writing. You don't have to give any reason for
+      wanting the information, or any personal details except what is needed to contact you.
+      If the information is held by a different public authority, the PIO must transfer your
+      request there within five days and tell you.
+
+  - number: "7"
+    title: How many days they have to reply, and fees
+    keywords: how long days deadline time limit reply late 48 hours life liberty bpl fee free
+    summary: >-
+      The PIO must give the information, or reject the request with reasons, within 30 days.
+      If it concerns someone's life or liberty, the limit is 48 hours. No answer in time
+      counts as a refusal. People below the poverty line pay no fee, and if the deadline is
+      missed the information must be given free of charge. A rejection must say why, how
+      long you have to appeal, and who to appeal to.
+
+  - number: "8"
+    title: What can be withheld
+    keywords: exempt exemption refuse denied privacy personal information security third party cabinet
+    summary: >-
+      Some information is exempt: anything that would harm India's sovereignty, security or
+      economic interests; information a court has forbidden; information that would breach
+      Parliament's privilege; trade secrets; information held in trust; information that
+      would endanger someone's life; information that would hamper an investigation;
+      cabinet papers before a decision is made; and personal information. Even exempt
+      information can be given if the public interest outweighs the harm. Information that
+      can't be refused to Parliament or a state legislature can't be refused to you. The
+      Digital Personal Data Protection Act, 2023 changes the personal information clause;
+      check the current wording on India Code.
+
+  - number: "11"
+    title: Information about someone else
+    keywords: third party objection notice someone else's information
+    summary: >-
+      If the information you asked for relates to a third party who treated it as
+      confidential, the PIO must tell them within five days and let them object. The PIO
+      then decides, weighing the public interest against any harm to the third party.
+
+  - number: "18"
+    title: Complaints to the Information Commission
+    keywords: complaint information commission no pio refused no reply excessive fee wrong information
+    summary: >-
+      You can complain directly to the Central or State Information Commission if: no PIO has
+      been appointed, your request was refused, you got no reply in time, you were asked for
+      an unreasonable fee, or you were given incomplete, misleading or false information.
+
+  - number: "19"
+    title: Appeals
+    keywords: appeal first appeal second appeal information commission 30 days 90 days unhappy reply
+    summary: >-
+      If you get no reply in time or are unhappy with it, file a first appeal within 30 days
+      with the officer senior to the PIO in the same office. It should be decided within 30
+      days (45 at most). If you are still unhappy, file a second appeal with the Central or
+      State Information Commission within 90 days. In the appeal, the burden is on the PIO to
+      show that refusing was justified.
+
+  - number: "20"
+    title: Fines on officials
+    keywords: penalty fine pio punish 250 per day 25000 delay
+    summary: >-
+      The Information Commission can fine a PIO ₹250 for each day of delay, up to ₹25,000, if
+      they refused a request or failed to reply in time without reasonable cause, refused in
+      bad faith, knowingly gave false or misleading information, destroyed the information,
+      or obstructed it. The PIO must be heard first. The Commission can also recommend
+      disciplinary action.
+
+  - number: "24"
+    title: Intelligence and security agencies
+    keywords: intelligence agency security exempt organisation corruption human rights
+    summary: >-
+      The Act does not apply to the intelligence and security organisations listed in its
+      Second Schedule. Even from them, information about allegations of corruption or human
+      rights violations must be given.

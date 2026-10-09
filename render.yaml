@@ -1,0 +1,21 @@
+# Render Blueprint for the CivicLens API. In Render: New > Blueprint > pick this repo.
+# The database is on Neon and the website on Vercel; see docs/DEPLOY.md.
+services:
+  - type: web
+    name: civiclens-api
+    runtime: docker
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    region: singapore
+    healthCheckPath: /api/health
+    envVars:
+      - key: CL_ENV
+        value: production
+      # Copy this value to the website's API_PROXY_SECRET.
+      - key: CL_PROXY_SECRET
+        generateValue: true
+      # Render asks for this when the Blueprint is first created: the Neon connection string.
+      - key: CL_DATABASE_URL
+        sync: false
