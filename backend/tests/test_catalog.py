@@ -19,17 +19,31 @@ def test_the_shipped_data_is_consistent():
 def test_every_representative_and_fact_has_a_dated_source(session):
     for rep in session.scalars(select(Representative)):
         assert rep.source.url.startswith("https://")
-        assert rep.elected_on == rep.source.published_on
+        assert rep.source.published_on is not None
+        # A result's date is the day it was declared; a member list says who sits, not since when.
+        if rep.source_id == "lok-sabha-sitting-members":
+            assert rep.elected_on is None
+        else:
+            assert rep.elected_on == rep.source.published_on
         for fact in rep.facts:
             assert fact.source.url.startswith("https://")
 
 
 def test_seats_are_never_ordered_or_grouped_by_party():
-    # Neutrality: the data file lists seats by house, then state and name; never by party.
-    seats = read_catalog().places.constituencies
+    # Neutrality: the hand-checked file lists seats by house, then id; the generated file by state
+    # and name. Never by party.
+    hand = yaml.safe_load((DATA_DIR / "places.yaml").read_text(encoding="utf-8"))["constituencies"]
     for house in ("lok_sabha", "vidhan_sabha"):
-        in_house = [s for s in seats if s.house == house]
-        assert [s.id for s in in_house] == sorted(s.id for s in in_house)
+        in_house = [s["id"] for s in hand if s["house"] == house]
+        assert in_house == sorted(in_house)
+    generated = [s for s in read_catalog().places.constituencies if s.id not in {h["id"] for h in hand}]
+    assert [(s.state, s.name) for s in generated] == sorted((s.state, s.name) for s in generated)
+
+
+def test_every_lok_sabha_seat_is_covered():
+    seats = [s for s in read_catalog().places.constituencies if s.house == "lok_sabha"]
+    assert len(seats) == 543
+    assert len({s.id for s in seats}) == 543
 
 
 @pytest.fixture

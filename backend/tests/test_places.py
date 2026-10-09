@@ -61,3 +61,46 @@ def test_coverage_lists_examples_that_all_resolve(client):
     assert len(cov["examples"]) >= 4
     for example in cov["examples"]:
         assert client.get(f"/api/places/{example['pin']}").status_code == 200
+
+
+def test_seats_are_listed_by_state_then_name_never_party(client):
+    states = client.get("/api/seats").json()
+    names = [s["state"] for s in states]
+    assert names == sorted(names)
+    seats = [seat for s in states for seat in s["seats"]]
+    assert len(seats) == 543
+    for s in states:
+        assert [seat["name"] for seat in s["seats"]] == sorted(seat["name"] for seat in s["seats"])
+    shillong = next(seat for seat in seats if seat["id"] == "ls-shillong")
+    assert shillong["member"] is None and shillong["reserved_for"] == "ST"
+    assert client.get("/api/seats", params={"house": "vidhan_sabha"}).json()
+    assert client.get("/api/seats", params={"house": "rajya_sabha"}).status_code == 422
+
+
+def test_a_seat_page_has_its_member_sources_and_pin_codes(client):
+    seat = client.get("/api/seats/ls-baramati").json()
+    assert seat["seat"]["representative"]["elected_on"]
+    assert seat["source"]["id"] == "delimitation-2008"
+    assert [p["pin"] for p in seat["pins"]] == ["413102"]
+    assert [s["id"] for s in seat["pins_sources"]] == ["delimitation-2008"]
+
+    # A seat from the official member list: no result date, since the list doesn't give one.
+    listed = client.get("/api/seats/ls-kollam").json()["seat"]
+    assert listed["representative"]["elected_on"] is None
+    assert listed["representative"]["source"]["id"] == "lok-sabha-sitting-members"
+    assert listed["representative"]["source"]["published_on"]
+
+    vacant = client.get("/api/seats/ls-shillong").json()
+    assert vacant["seat"]["representative"] is None
+    assert vacant["seat"]["vacancy"] == "Previous member died"
+    assert vacant["pins"] == []
+
+    assert client.get("/api/seats/ls-nowhere").status_code == 404
+    assert client.get("/api/seats/LS_BAD").status_code == 404
+
+
+def test_seats_without_pin_codes_can_still_be_found_by_name(client):
+    found = client.get("/api/places", params={"q": "shillong"}).json()
+    assert found["seats"] == [
+        {"id": "ls-shillong", "house": "lok_sabha", "name": "Shillong", "state": "Meghalaya", "pins": []}
+    ]

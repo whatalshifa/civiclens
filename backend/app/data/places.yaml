@@ -1,7 +1,9 @@
 # Seats, the people who hold them, and which PIN codes fall in which seats.
 #
-# Phase 1 ships a hand-checked sample: about twenty areas across states and parties. The data
-# pipeline will replace it with every PIN code and seat. Rules for adding anything here:
+# A hand-checked sample: about twenty areas across states and parties. The data pipeline adds every
+# other Lok Sabha seat from the Lok Sabha's member list (generated/lok-sabha.csv); an entry here
+# always wins over a generated one, and the pipeline reports any difference between the two.
+# Rules for adding anything here:
 #   * Every seat, person, fact and PIN link names a `source` from sources.yaml.
 #   * A representative's `elected_on` is the day their source (an election result) was declared.
 #   * Names and parties are written the way the Election Commission writes them, in full.
@@ -156,6 +158,8 @@ constituencies:
       party: Bharatiya Janata Party
       elected_in: General Election 2024
       source: eci-ge-2024
+      # The Lok Sabha's member list spells it "Kangna"; the Election Commission's result, "Kangana".
+      listed_as: {name: Kangna Ranaut}
 
   - id: ls-medak
     house: lok_sabha
@@ -178,6 +182,8 @@ constituencies:
       party: Shiv Sena (Uddhav Balasaheb Thackeray)
       elected_in: General Election 2024
       source: eci-ge-2024
+      # The Lok Sabha's member list misspells the party as "Thackrey".
+      listed_as: {party: Shiv Sena (Uddhav Balasaheb Thackrey)}
 
   - id: ls-nagpur
     house: lok_sabha

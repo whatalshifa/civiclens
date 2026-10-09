@@ -30,7 +30,7 @@ class RepresentativeOut(Out):
     name: str
     party: str
     elected_in: str
-    elected_on: date
+    elected_on: date | None
     source: SourceOut
     facts: list[FactOut]
 
@@ -43,6 +43,7 @@ class SeatOut(Out):
     reserved_for: str | None
     partial: bool = False
     representative: RepresentativeOut | None
+    vacancy: str | None = None
 
 
 class PlaceOut(BaseModel):
@@ -77,9 +78,32 @@ class PlaceSearchOut(BaseModel):
     seats: list[SeatBrief]
 
 
+class SeatListItem(BaseModel):
+    id: str
+    house: str
+    name: str
+    state: str
+    reserved_for: str | None
+    member: str | None  # None when the seat is vacant
+    party: str | None
+
+
+class StateSeatsOut(BaseModel):
+    state: str
+    seats: list[SeatListItem]
+
+
+class SeatPageOut(BaseModel):
+    seat: SeatOut
+    source: SourceOut  # what fixes the seat's area
+    pins: list[PlaceBrief]  # PIN codes in (or partly in) the seat, as far as CivicLens knows
+    pins_sources: list[SourceOut]
+
+
 class CoverageOut(BaseModel):
     pincodes: int
     seats: int
+    lok_sabha_seats: int
     states: list[str]
     examples: list[PlaceBrief]
     ai_enabled: bool

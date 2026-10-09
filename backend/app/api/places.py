@@ -1,7 +1,7 @@
 """Find your representatives: PIN code -> seats -> the people who hold them."""
 
 import re
-from typing import Annotated
+from typing import Annotated, Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func, or_, select
@@ -17,10 +17,13 @@ from app.schemas import (
     PlaceOut,
     PlaceSearchOut,
     SeatBrief,
+    SeatListItem,
     SeatOut,
+    SeatPageOut,
     SourceOut,
+    StateSeatsOut,
 )
-from app.services.catalog import PIN_PATTERN
+from app.services.catalog import ID_PATTERN, PIN_PATTERN
 
 router = APIRouter(prefix="/api", tags=["places"], dependencies=[Depends(require_proxy)])
 
@@ -88,9 +91,10 @@ def search_places(
         .order_by(Pincode.state, Pincode.area)
         .limit(10)
     ).all()
+    # An outer join: most seats have no PIN codes yet, but can still be found by name.
     seats = session.execute(
-        select(Constituency, func.array_agg(PincodeConstituency.pin))
-        .join(PincodeConstituency, PincodeConstituency.constituency_id == Constituency.id)
+        select(Constituency, func.array_remove(func.array_agg(PincodeConstituency.pin), None))
+        .outerjoin(PincodeConstituency, PincodeConstituency.constituency_id == Constituency.id)
         .where(Constituency.name.ilike(term))
         .group_by(Constituency.id)
         .order_by(Constituency.state, Constituency.name)
@@ -105,6 +109,66 @@ def search_places(
     )
 
 
+@router.get("/seats", response_model=list[StateSeatsOut])
+def list_seats(
+    session: SessionDep, house: Literal["lok_sabha", "vidhan_sabha"] = "lok_sabha"
+) -> list[StateSeatsOut]:
+    """Every seat in a house, by state and then name. Never ordered by party."""
+    rows = session.execute(
+        select(Constituency, Representative.name, Representative.party)
+        .outerjoin(Representative, Representative.constituency_id == Constituency.id)
+        .where(Constituency.house == house)
+        .order_by(Constituency.state, Constituency.name)
+    ).all()
+    states: dict[str, list[SeatListItem]] = {}
+    for c, member, party in rows:
+        states.setdefault(c.state, []).append(
+            SeatListItem(
+                id=c.id,
+                house=c.house,
+                name=c.name,
+                state=c.state,
+                reserved_for=c.reserved_for,
+                member=member,
+                party=party,
+            )
+        )
+    return [StateSeatsOut(state=state, seats=seats) for state, seats in states.items()]
+
+
+@router.get("/seats/{seat_id}", response_model=SeatPageOut)
+def get_seat(seat_id: str, session: SessionDep) -> SeatPageOut:
+    if not ID_PATTERN.match(seat_id):
+        raise HTTPException(404, "There's no seat with that id.")
+    seat = session.scalar(
+        select(Constituency)
+        .where(Constituency.id == seat_id)
+        .options(
+            selectinload(Constituency.representative).options(
+                selectinload(Representative.source), selectinload(Representative.facts)
+            )
+        )
+    )
+    if seat is None:
+        raise HTTPException(404, "There's no seat with that id.")
+    links = session.execute(
+        select(Pincode, PincodeConstituency.source_id)
+        .join(PincodeConstituency, PincodeConstituency.pin == Pincode.pin)
+        .where(PincodeConstituency.constituency_id == seat_id)
+        .order_by(Pincode.pin)
+    ).all()
+    source_ids = {seat.source_id, *(source_id for _, source_id in links)}
+    sources = {s.id: s for s in session.scalars(select(Source).where(Source.id.in_(source_ids)))}
+    # Hand-checked PIN codes and mapped ones cite different sources; list each one used.
+    pins_sources = sorted({source_id for _, source_id in links})
+    return SeatPageOut(
+        seat=SeatOut.model_validate(seat),
+        source=SourceOut.model_validate(sources[seat.source_id]),
+        pins=[_brief(p) for p, _ in links],
+        pins_sources=[SourceOut.model_validate(sources[i]) for i in pins_sources],
+    )
+
+
 @router.get("/coverage", response_model=CoverageOut)
 def coverage(session: SessionDep, settings: Annotated[Settings, Depends(get_settings)]) -> CoverageOut:
     """How much of India the data covers, and a few PIN codes to try."""
@@ -113,6 +177,10 @@ def coverage(session: SessionDep, settings: Annotated[Settings, Depends(get_sett
     return CoverageOut(
         pincodes=session.scalar(select(func.count()).select_from(Pincode)) or 0,
         seats=session.scalar(select(func.count()).select_from(Constituency)) or 0,
+        lok_sabha_seats=session.scalar(
+            select(func.count()).select_from(Constituency).where(Constituency.house == "lok_sabha")
+        )
+        or 0,
         states=list(session.scalars(select(Constituency.state).distinct().order_by(Constituency.state))),
         examples=[_brief(by_pin[pin]) for pin in EXAMPLE_PINS if pin in by_pin],
         ai_enabled=settings.ai_enabled,
