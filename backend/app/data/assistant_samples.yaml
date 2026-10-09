@@ -1,0 +1,163 @@
+# Prepared answers the rights assistant replays when the AI is switched off (no API key).
+#
+# Each sample lists the tool calls the assistant makes, in order, and its final answer. The tool
+# calls run for real against the data, and the answer's citations go through the same check as a
+# live answer: a citation to a section not read in `steps` is removed. tests/test_assistant.py
+# fails if any sample cites a section it didn't read, or reads one its searches didn't find.
+#
+# Every statement in an answer must come from the summary of a section it cites.
+
+- id: arrest
+  question: The police arrested my brother last night and won't tell us why. What are his rights?
+  steps:
+    - tool: search_laws
+      input: {query: arrest grounds told reason, act_id: null}
+    - tool: read_section
+      input: {act_id: bnss-2023, number: "47"}
+    - tool: read_section
+      input: {act_id: constitution, number: "22"}
+    - tool: search_laws
+      input: {query: arrest family informed lawyer magistrate 24 hours, act_id: bnss-2023}
+    - tool: read_section
+      input: {act_id: bnss-2023, number: "48"}
+    - tool: read_section
+      input: {act_id: bnss-2023, number: "38"}
+    - tool: read_section
+      input: {act_id: bnss-2023, number: "58"}
+  answer: |
+    He has the right to be told why he was arrested, and your family has the right to be told where he is being held. The police can't keep him for more than 24 hours without a magistrate's order.
+
+    What the law says:
+    - The arresting officer must immediately tell him the full details of the offence or other grounds for the arrest, and if the offence is bailable, that he can be released on bail [[bnss-2023#47]]. The Constitution also guarantees that he must be told the grounds as soon as possible [[constitution#22]].
+    - The police must inform a relative or friend he names about the arrest and where he is being held [[bnss-2023#48]].
+    - He can meet a lawyer of his choice during questioning [[bnss-2023#38]], and has the right to be defended by a lawyer of his choice [[constitution#22]].
+    - He must be produced before a magistrate within 24 hours, not counting travel time [[bnss-2023#58]].
+
+    What you can do:
+    1. Go to the police station, ask whether he is held there, and ask for the grounds of arrest.
+    2. Ask whether the offence is bailable. If it is, he is entitled to bail [[bnss-2023#47]].
+    3. Contact a lawyer. If you can't afford one, ask the District Legal Services Authority for free legal aid (helpline 15100).
+    4. If he isn't produced before a magistrate within 24 hours, tell the lawyer at once.
+
+- id: ration-card
+  question: I applied for a ration card six months ago and nothing has happened. What can I do?
+  steps:
+    - tool: search_laws
+      input: {query: how to ask for information fee reply days, act_id: rti-act-2005}
+    - tool: read_section
+      input: {act_id: rti-act-2005, number: "6"}
+    - tool: read_section
+      input: {act_id: rti-act-2005, number: "7"}
+    - tool: search_laws
+      input: {query: appeal no reply, act_id: rti-act-2005}
+    - tool: read_section
+      input: {act_id: rti-act-2005, number: "19"}
+    - tool: prepare_rti_request
+      input:
+        public_authority: Office of the District Supply Officer (Food and Civil Supplies Department)
+        information:
+          - The current status of my ration card application, with its application number and date
+          - The names and designations of the officials my application is pending with, and since when
+          - The daily progress made on my application, with copies of any notes on its file
+          - The time limit within which ration card applications are to be decided under the rules
+  answer: |
+    The RTI Act is the strongest tool you have here: ask the office, in writing, where your application is and who is holding it up. They must answer within 30 days.
+
+    What the law says:
+    - You can send a written request to the office's Public Information Officer (PIO), in English, Hindi or your state's language. You don't have to give a reason [[rti-act-2005#6]].
+    - The PIO must reply within 30 days. People below the poverty line pay no fee, and no answer in time counts as a refusal [[rti-act-2005#7]].
+    - If you get no reply or are unhappy with it, you can file a first appeal within 30 days with the officer senior to the PIO, and then a second appeal with the Information Commission [[rti-act-2005#19]].
+
+    What you can do:
+    1. Use the RTI application below. It already asks for the status of your application and who it is pending with. Add your name, address and application number.
+    2. Send it to the PIO of your district's food and civil supplies office, with the ₹10 fee (or a copy of your BPL card).
+    3. Keep a copy and proof of sending. If there's no reply in 30 days, file a first appeal [[rti-act-2005#19]].
+
+- id: faulty-phone
+  question: A shop sold me a faulty phone and refuses to replace or repair it. Can I complain?
+  steps:
+    - tool: search_laws
+      input: {query: consumer complaint defective goods, act_id: consumer-protection-act-2019}
+    - tool: read_section
+      input: {act_id: consumer-protection-act-2019, number: "2(9)"}
+    - tool: search_laws
+      input: {query: where how to file complaint time limit, act_id: consumer-protection-act-2019}
+    - tool: read_section
+      input: {act_id: consumer-protection-act-2019, number: "34"}
+    - tool: read_section
+      input: {act_id: consumer-protection-act-2019, number: "35"}
+    - tool: read_section
+      input: {act_id: consumer-protection-act-2019, number: "69"}
+  answer: |
+    Yes. You can file a complaint with the District Consumer Commission, online, without a lawyer, and for a phone's price there is no fee.
+
+    What the law says:
+    - As a consumer you have the right to seek redress against unfair trade practices and to be heard [[consumer-protection-act-2019#2(9)]].
+    - Most complaints start at the District Consumer Commission. You can file where the shop is, where the problem arose, or where you live or work [[consumer-protection-act-2019#34]].
+    - You can file it electronically and don't need a lawyer. There is no fee for claims up to ₹5 lakh [[consumer-protection-act-2019#35]].
+    - You must file within two years from the day the problem arose [[consumer-protection-act-2019#69]].
+
+    What you can do:
+    1. Collect the bill, the warranty card and any messages with the shop.
+    2. Write to the shop (an email works) asking for a repair or replacement by a date. Keep a copy.
+    3. If they still refuse, file a complaint online on the government's e-Daakhil portal, attaching these documents.
+
+- id: school-donation
+  question: A private school is asking for a donation before it will admit my 6-year-old. Is that allowed?
+  steps:
+    - tool: search_laws
+      input: {query: school donation capitation fee admission, act_id: null}
+    - tool: read_section
+      input: {act_id: rte-act-2009, number: "13"}
+    - tool: read_section
+      input: {act_id: rte-act-2009, number: 12(1)(c)}
+    - tool: search_laws
+      input: {query: complain child rights, act_id: rte-act-2009}
+    - tool: read_section
+      input: {act_id: rte-act-2009, number: "32"}
+  answer: |
+    No. No school may collect a donation (a "capitation fee") for admission, and no school may test a child or interview the parents to decide admission.
+
+    What the law says:
+    - The Right to Education Act bans capitation fees and screening for admission. A school that takes one can be fined up to ten times the amount [[rte-act-2009#13]].
+    - Private unaided schools must also keep at least 25% of their entry-class seats for children from weaker sections and disadvantaged groups in the neighbourhood, who study free until class 8 [[rte-act-2009#12(1)(c)]].
+
+    What you can do:
+    1. Ask the school to put the demand in writing, or keep any message or receipt that shows it.
+    2. Write a complaint to the local authority (your municipal or block education office). It must decide within three months [[rte-act-2009#32]].
+    3. If you aren't satisfied, appeal to the State Commission for Protection of Child Rights [[rte-act-2009#32]].
+    4. If your family may qualify for the 25% seats, check your state's online RTE admission process.
+
+- id: domestic-violence
+  question: My husband hits me and says he will throw me out of the house. What protection does the law give me?
+  steps:
+    - tool: search_laws
+      input: {query: domestic violence protection, act_id: dv-act-2005}
+    - tool: read_section
+      input: {act_id: dv-act-2005, number: "3"}
+    - tool: read_section
+      input: {act_id: dv-act-2005, number: "18"}
+    - tool: search_laws
+      input: {query: shared household evicted, act_id: dv-act-2005}
+    - tool: read_section
+      input: {act_id: dv-act-2005, number: "17"}
+    - tool: search_laws
+      input: {query: protection officer magistrate apply, act_id: dv-act-2005}
+    - tool: read_section
+      input: {act_id: dv-act-2005, number: "8"}
+    - tool: read_section
+      input: {act_id: dv-act-2005, number: "12"}
+  answer: |
+    If you are in danger right now, call 112. The law protects you: a magistrate can order your husband to stop the violence, and you have the right to stay in your home.
+
+    What the law says:
+    - Domestic violence includes physical, verbal, emotional and economic abuse [[dv-act-2005#3]].
+    - A magistrate can order him to stop any act of violence, stop contacting you, and not take away your belongings or shared bank accounts [[dv-act-2005#18]].
+    - You have the right to live in the shared home whether or not you own any part of it, and you can't be evicted except by following the law [[dv-act-2005#17]].
+    - Every district has Protection Officers who help women apply to the magistrate and find shelter, medical help and legal aid [[dv-act-2005#8]].
+    - You, a Protection Officer or someone on your behalf can apply. The first hearing should usually be within three days [[dv-act-2005#12]].
+
+    What you can do:
+    1. Contact your district's Protection Officer, or the women's helpline 181, and ask for help applying for a protection order and a residence order.
+    2. Ask the District Legal Services Authority for a free lawyer (helpline 15100).
+    3. Keep a record of incidents and any medical papers.

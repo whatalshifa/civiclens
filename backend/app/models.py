@@ -182,3 +182,30 @@ class DataVersion(Base):
     name: Mapped[str] = mapped_column(String(40), primary_key=True)
     digest: Mapped[str] = mapped_column(String(64))
     loaded_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class AssistantRun(Base):
+    """One question put to the rights assistant: how it was answered and what it cost.
+
+    The question itself is deliberately not stored. People describe their own troubles here
+    (an arrest, a violent home), and a record we don't keep can't leak.
+    """
+
+    __tablename__ = "assistant_runs"
+    __table_args__ = (
+        CheckConstraint("mode IN ('ai', 'demo', 'off')", name="assistant_runs_mode"),
+        Index("assistant_runs_created_at", "created_at"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    # ai = answered live by Claude, demo = a prepared sample replayed, off = AI switched off.
+    mode: Mapped[str] = mapped_column(String(8))
+    # answered, or what went wrong ("error", "refusal", "too_long").
+    outcome: Mapped[str] = mapped_column(String(16))
+    rounds: Mapped[int] = mapped_column(Integer, default=0)
+    tool_calls: Mapped[int] = mapped_column(Integer, default=0)
+    input_tokens: Mapped[int] = mapped_column(Integer, default=0)
+    output_tokens: Mapped[int] = mapped_column(Integer, default=0)
+    # Citations the AI wrote but hadn't read, which were taken out before showing the answer.
+    dropped_citations: Mapped[int] = mapped_column(Integer, default=0)

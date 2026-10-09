@@ -5,6 +5,7 @@ import os
 os.environ.setdefault("CL_DATABASE_URL", "postgresql+psycopg://postgres@localhost:5432/civiclens_test")
 os.environ["CL_LOAD_DATA_ON_START"] = "false"  # the fixtures below load it once instead
 os.environ["ANTHROPIC_API_KEY"] = ""
+os.environ["CL_DEMO_STEP_DELAY"] = "0"
 
 import pytest
 from fastapi.testclient import TestClient
