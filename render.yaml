@@ -19,3 +19,6 @@ services:
       # Render asks for this when the Blueprint is first created: the Neon connection string.
       - key: CL_DATABASE_URL
         sync: false
+      # Optional: leave it empty to run the rights assistant in demo mode.
+      - key: ANTHROPIC_API_KEY
+        sync: false

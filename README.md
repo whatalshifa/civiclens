@@ -16,6 +16,11 @@ words. Strictly nonpartisan: every fact links to the official record it came fro
 - **Search the law in plain words.** "Police won't register my FIR" finds BNSS section 173 (Zero FIR).
   Postgres full-text search ranks 71 sections of the Constitution and five Acts, and highlights why
   each one matched.
+- **Ask the rights assistant.** Describe your situation and an AI agent searches the law, reads the
+  sections that apply and answers in plain words, showing each step as it happens. Every citation is
+  checked against the sections it actually read before you see it.
+- **Draft an RTI application.** A short form writes a ready-to-send application under the RTI Act,
+  in English or Hindi, entirely in your browser.
 - **Read laws simply.** Each section has a plain-language summary, clearly labelled as a summary, with
   a link to the official text.
 - **Nonpartisan by design.** Same fields for everyone, ordered by place, never by party. No ratings,
@@ -27,9 +32,14 @@ words. Strictly nonpartisan: every fact links to the official record it came fro
 |---|---|---|
 | ![MP and MLA for Baramati](docs/screenshots/representatives.png) | ![Search results](docs/screenshots/search.png) | ![Phone view](docs/screenshots/phone.png) |
 
+| The rights assistant, step by step | Draft an RTI application |
+|---|---|
+| ![The assistant answering with cited sections](docs/screenshots/assistant.png) | ![The RTI drafter with a live letter preview](docs/screenshots/rti.png) |
+
 ## Built with
 
-Next.js 16 (server components) · FastAPI · PostgreSQL full-text search · SQLAlchemy and Alembic ·
+Next.js 16 (server components) · FastAPI · Claude API with tool use (an agent loop) · Server-Sent
+Events · PostgreSQL full-text search · SQLAlchemy and Alembic ·
 Playwright and axe for browser tests · GitHub Actions.
 
 ## How it fits together
@@ -59,9 +69,9 @@ Tests: `cd backend && pytest` (needs Postgres; see `tests/conftest.py`) and
 
 ## Status
 
-Phase 1: representatives for a hand-checked sample of 25 PIN codes in 12 states, and the law
-library. Coming next: a rights assistant that looks up the law step by step and cites every section
-it uses, help drafting RTI applications, and a scheduled pipeline that loads every PIN code and seat
-from official records.
+- Phase 1: representatives for a hand-checked sample of 25 PIN codes in 12 states, and the law library.
+- Phase 2: the rights assistant and the RTI drafter. The live site runs the assistant in demo mode
+  (five sample questions) until an API key is added.
+- Next: a scheduled pipeline that loads every PIN code and seat from official records.
 
 CivicLens is an independent project, not a government website, and doesn't give legal advice.

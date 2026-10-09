@@ -137,12 +137,53 @@ body {
     @apply ml-0.5 align-super text-[0.68rem] font-semibold text-accent no-underline hover:underline;
   }
 
+  /* A citation in the assistant's answer: a small numbered pill linking to the section. */
+  .cite {
+    @apply inline-flex h-[1.15rem] min-w-[1.15rem] items-center justify-center rounded-full bg-accent-soft px-1
+      text-[0.68rem] leading-none font-semibold text-accent no-underline hover:bg-teal-700 hover:text-white;
+  }
+
+  .field-label {
+    @apply mb-1.5 block text-sm font-semibold;
+  }
+
+  .field-hint {
+    @apply mt-1 text-xs text-muted;
+  }
+
   .skeleton {
     @apply animate-pulse rounded-lg bg-sunken;
   }
 
   .prose-civic {
     @apply text-[1.02rem] leading-7 text-pretty;
+  }
+}
+
+/* NavProgress: the bar appears only if a page takes a moment, the note only if it takes a while. */
+.nav-progress {
+  animation: appear 0s linear 300ms both;
+}
+.nav-progress > div {
+  animation: slide 1.1s ease-in-out infinite;
+}
+.nav-progress-note {
+  animation: appear 0.2s ease-out 2.5s both;
+}
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes slide {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(300%);
   }
 }
 

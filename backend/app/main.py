@@ -5,7 +5,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
-from app.api import laws, places
+from app.api import assistant, laws, places
 from app.config import get_settings
 from app.db import SessionDep, get_session_factory
 from app.services.catalog import load_catalog
@@ -30,7 +30,7 @@ async def lifespan(app: FastAPI):
 _public = get_settings().env != "production"  # the interactive API docs are for development only
 app = FastAPI(
     title="CivicLens API",
-    version="0.1.0",
+    version="0.2.0",
     lifespan=lifespan,
     docs_url="/docs" if _public else None,
     redoc_url=None,
@@ -40,12 +40,13 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=get_settings().cors_origins,
-    allow_methods=["GET"],
+    allow_methods=["GET", "POST"],
     allow_headers=["Content-Type"],
 )
 
 app.include_router(places.router)
 app.include_router(laws.router)
+app.include_router(assistant.router)
 
 
 @app.get("/api/health")

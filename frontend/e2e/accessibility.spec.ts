@@ -1,7 +1,17 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
-const PAGES = ["/", "/pin/413102", "/pin/999999", "/laws", "/laws/rti-act-2005", "/laws/search?q=arrest", "/about"];
+const PAGES = [
+  "/",
+  "/pin/413102",
+  "/pin/999999",
+  "/laws",
+  "/laws/rti-act-2005",
+  "/laws/search?q=arrest",
+  "/about",
+  "/assistant?sample=arrest",
+  "/rti?authority=Municipal%20Corporation&info=Copies%20of%20the%20road%20repair%20contract",
+];
 
 for (const theme of ["light", "dark"] as const) {
   test(`pages meet WCAG AA in ${theme} mode`, async ({ page }) => {

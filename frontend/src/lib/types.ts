@@ -9,7 +9,12 @@ export type Source = {
   note: string | null;
 };
 
-export type Fact = { label: string; value: string; as_of: string | null; source: Source };
+export type Fact = {
+  label: string;
+  value: string;
+  as_of: string | null;
+  source: Source;
+};
 
 export type Representative = {
   id: string;
@@ -44,11 +49,22 @@ export type Place = {
   missing: House[];
 };
 
-export type PlaceBrief = { pin: string; area: string; district: string; state: string };
+export type PlaceBrief = {
+  pin: string;
+  area: string;
+  district: string;
+  state: string;
+};
 
 export type PlaceSearch = {
   places: PlaceBrief[];
-  seats: { id: string; house: House; name: string; state: string; pins: string[] }[];
+  seats: {
+    id: string;
+    house: House;
+    name: string;
+    state: string;
+    pins: string[];
+  }[];
 };
 
 export type Coverage = {
@@ -70,7 +86,13 @@ export type ActBrief = {
   section_count: number;
 };
 
-export type Section = { number: string; anchor: string; title: string; summary: string; official_text: string | null };
+export type Section = {
+  number: string;
+  anchor: string;
+  title: string;
+  summary: string;
+  official_text: string | null;
+};
 
 export type Act = ActBrief & { source: Source; sections: Section[] };
 
@@ -84,4 +106,54 @@ export type SearchHit = {
   snippet: string;
 };
 
-export type SearchResults = { query: string; total: number; results: SearchHit[] };
+export type SearchResults = {
+  query: string;
+  total: number;
+  results: SearchHit[];
+};
+
+export type AssistantInfo = {
+  ai_enabled: boolean;
+  samples: { id: string; question: string }[];
+};
+
+/** A section the assistant read and cited. */
+export type Citation = {
+  key: string;
+  act_id: string;
+  act_short_name: string;
+  unit: "Article" | "Section";
+  number: string;
+  title: string;
+  anchor: string;
+};
+
+export type StepFound = Pick<Citation, "act_id" | "act_short_name" | "unit" | "number" | "title">;
+
+/** One event of the assistant's answer stream (see backend app/services/assistant.py). */
+export type AssistantEvent =
+  | { type: "start"; mode: "ai" | "demo" | "off"; question: string }
+  | {
+      type: "step";
+      tool: "search_laws" | "read_section" | "find_representatives" | "prepare_rti_request";
+      label: string;
+      detail?: string;
+      found?: StepFound[];
+      pin?: string;
+      link?: string;
+      error: boolean;
+    }
+  | {
+      type: "answer";
+      mode: "ai" | "demo";
+      text: string;
+      citations: Citation[];
+      dropped: number;
+      rti_link: string | null;
+    }
+  | { type: "off"; message: string }
+  | { type: "error"; message: string }
+  | { type: "done" };
+
+export type StepEvent = Extract<AssistantEvent, { type: "step" }>;
+export type AnswerEvent = Extract<AssistantEvent, { type: "answer" }>;
