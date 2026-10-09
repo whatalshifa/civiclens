@@ -1,0 +1,3 @@
+-r requirements.txt
+# Only the data pipeline (python -m pipeline) needs these; the API does not.
+shapely==2.1.2

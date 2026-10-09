@@ -5,6 +5,9 @@ const PAGES = [
   "/",
   "/pin/413102",
   "/pin/999999",
+  "/seats",
+  "/seats/ls-kollam",
+  "/seats/ls-shillong",
   "/laws",
   "/laws/rti-act-2005",
   "/laws/search?q=arrest",
@@ -15,6 +18,7 @@ const PAGES = [
 
 for (const theme of ["light", "dark"] as const) {
   test(`pages meet WCAG AA in ${theme} mode`, async ({ page }) => {
+    test.slow(); // the list of every seat is a long page to check
     await page.emulateMedia({ colorScheme: theme });
     for (const path of PAGES) {
       await page.goto(path);

@@ -21,7 +21,8 @@ export type Representative = {
   name: string;
   party: string;
   elected_in: string;
-  elected_on: string;
+  // null when the source is a member list, which says who sits now but not when they were elected
+  elected_on: string | null;
   source: Source;
   facts: Fact[];
 };
@@ -36,6 +37,26 @@ export type Seat = {
   reserved_for: string | null;
   partial: boolean;
   representative: Representative | null;
+  vacancy: string | null;
+};
+
+export type SeatListItem = {
+  id: string;
+  house: House;
+  name: string;
+  state: string;
+  reserved_for: string | null;
+  member: string | null;
+  party: string | null;
+};
+
+export type StateSeats = { state: string; seats: SeatListItem[] };
+
+export type SeatPage = {
+  seat: Seat;
+  source: Source;
+  pins: PlaceBrief[];
+  pins_sources: Source[];
 };
 
 export type Place = {
@@ -70,6 +91,7 @@ export type PlaceSearch = {
 export type Coverage = {
   pincodes: number;
   seats: number;
+  lok_sabha_seats: number;
   states: string[];
   examples: PlaceBrief[];
   ai_enabled: boolean;

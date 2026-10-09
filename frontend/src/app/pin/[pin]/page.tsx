@@ -72,8 +72,8 @@ export default async function PinPage({ params }: PageProps<"/pin/[pin]">) {
       <aside className="mt-8 rounded-2xl bg-sunken p-5 text-sm">
         <p className="font-semibold">How we show representatives</p>
         <p className="mt-1 text-muted">
-          Every representative gets the same fields, in the same order, with no ratings, photos or party colours.
-          Each fact links to the official record it came from. Spotted a mistake?{" "}
+          Every representative gets the same fields, in the same order, with no ratings, photos or party colours. Each
+          fact links to the official record it came from. Spotted a mistake?{" "}
           <a
             className="link"
             href={`https://github.com/whatalshifa/civiclens/issues/new?title=${encodeURIComponent(`Data correction for PIN ${place.pin}`)}`}
@@ -103,19 +103,16 @@ async function NotCovered({ pin }: { pin: string }) {
       <p className="eyebrow">PIN code {pin}</p>
       <h1 className="mt-2 text-3xl font-bold tracking-tight">We don&apos;t have this PIN code yet</h1>
       <p className="mt-3 text-muted">
-        CivicLens is starting with a hand-checked sample
-        {coverage && (
-          <>
-            {" "}
-            of {coverage.pincodes} PIN codes across {coverage.states.length} states
-          </>
-        )}
-        , and is adding the rest of India from official records. Until then, your voter ID card names your
-        constituencies, and the Election Commission&apos;s{" "}
+        CivicLens has{" "}
+        <Link href="/seats" className="link">
+          every Lok Sabha seat and its MP
+        </Link>
+        {coverage && <>, but only {coverage.pincodes.toLocaleString("en-IN")} PIN codes so far</>}. Your voter ID card
+        names your constituency, and the Election Commission&apos;s{" "}
         <a href="https://electoralsearch.eci.gov.in/" className="link" target="_blank" rel="noopener noreferrer">
           Electoral Search
         </a>{" "}
-        shows them too.
+        shows it too; then find your seat in the list.
       </p>
       {coverage && coverage.examples.length > 0 && (
         <div className="mt-6">

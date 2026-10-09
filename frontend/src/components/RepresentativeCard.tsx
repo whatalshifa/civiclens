@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { Ref, type SourceNotes } from "@/components/Sources";
 import { HOUSE_NAMES, formatDate } from "@/lib/format";
 import type { Fact, House, Seat } from "@/lib/types";
@@ -22,13 +24,23 @@ const ROLE: Record<House, string> = {
     "Your MLA speaks for you in the state assembly: state laws and budget, police, hospitals, schools and roads.",
 };
 
-export function RepresentativeCard({ seat, notes }: { seat: Seat; notes: SourceNotes }) {
+/**
+ * One seat and the person who holds it. On a PIN code page it's "your" MP; on a seat's own page
+ * (`yours={false}`) it isn't, and the seat name doesn't link to the page it's already on.
+ */
+export function RepresentativeCard({ seat, notes, yours = true }: { seat: Seat; notes: SourceNotes; yours?: boolean }) {
   const house = HOUSE_NAMES[seat.house];
   const rep = seat.representative;
+  const seatName = (
+    <>
+      {seat.name}, {seat.state}
+      {seat.reserved_for && <> (reserved for {seat.reserved_for})</>}
+    </>
+  );
   return (
     <article className="card flex flex-col p-5 sm:p-6" aria-labelledby={`${seat.id}-name`}>
       <p className="eyebrow">
-        Your {house.short} · {house.body}
+        {yours ? `Your ${house.short}` : house.role} · {house.body}
       </p>
       {rep ? (
         <>
@@ -41,12 +53,22 @@ export function RepresentativeCard({ seat, notes }: { seat: Seat; notes: SourceN
             <dd>{rep.party}</dd>
             <dt className="text-muted">Seat</dt>
             <dd>
-              {seat.name}, {seat.state}
-              {seat.reserved_for && <> (reserved for {seat.reserved_for})</>}
+              {yours ? (
+                <Link href={`/seats/${seat.id}`} className="link">
+                  {seatName}
+                </Link>
+              ) : (
+                seatName
+              )}
             </dd>
             <dt className="text-muted">Elected</dt>
             <dd>
-              {rep.elected_in}, result declared {formatDate(rep.elected_on)}
+              {rep.elected_in}
+              {rep.elected_on ? (
+                <>, result declared {formatDate(rep.elected_on)}</>
+              ) : (
+                rep.source.published_on && <>, as listed on {formatDate(rep.source.published_on)}</>
+              )}
             </dd>
             {rep.facts.map((fact) => (
               <FactRow key={fact.label} fact={fact} notes={notes} />
@@ -59,7 +81,9 @@ export function RepresentativeCard({ seat, notes }: { seat: Seat; notes: SourceN
             {seat.name}
           </h2>
           <p className="mt-3 text-sm text-muted">
-            This seat is vacant or we don&apos;t have its current {house.short} yet.
+            {seat.vacancy
+              ? `The Lok Sabha's member list shows this seat as vacant (${seat.vacancy.toLowerCase()}). It stays vacant until a by-election.`
+              : `We don't have this seat's current ${house.short} yet.`}
           </p>
         </>
       )}

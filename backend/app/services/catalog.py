@@ -1,10 +1,13 @@
 """Loads the data files in app/data into the database, after checking them.
 
-The data files are the single source of truth: people (and later the data pipeline) edit the
-YAML, and this module turns it into rows. Loading is all-or-nothing in one transaction, so
+The data files are the single source of truth. People edit the YAML; the data pipeline writes
+the files in app/data/generated (see backend/pipeline). This module checks both and turns them
+into rows. Where a hand-checked file and a generated one describe the same seat or PIN code,
+the hand-checked one wins. Loading is all-or-nothing in one transaction, so
 visitors never see half-loaded data, and it is skipped when the files haven't changed.
 """
 
+import csv
 import hashlib
 import logging
 import re
@@ -14,7 +17,7 @@ from typing import Literal
 
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, model_validator
-from sqlalchemy import delete, select, text
+from sqlalchemy import delete, insert, select, text
 from sqlalchemy.orm import Session
 
 from app.models import (
@@ -64,12 +67,24 @@ class FactIn(Strict):
     as_of: date | None = None
 
 
+class ListedAs(Strict):
+    """How an official list spells a name or party that we write differently on purpose."""
+
+    name: str | None = None
+    party: str | None = None
+
+
 class RepresentativeIn(Strict):
     name: str
     party: str
     elected_in: str
     source: str
+    # True when the source is an election result, whose date is the day it was declared. False
+    # for a member list, which says who sits now but not when they were elected.
+    result_declared: bool = True
     facts: list[FactIn] = []
+    # Spellings the data pipeline's official list uses, acknowledged as the same person and party.
+    listed_as: ListedAs | None = None
 
 
 class ConstituencyIn(Strict):
@@ -80,6 +95,7 @@ class ConstituencyIn(Strict):
     reserved_for: Literal["SC", "ST"] | None = None
     source: str
     representative: RepresentativeIn | None = None
+    vacancy: str | None = None  # why there's no representative, from the official list
 
     @model_validator(mode="after")
     def _prefix_matches_house(self):
@@ -145,6 +161,86 @@ def _read_yaml(path: Path):
         return yaml.safe_load(f)
 
 
+GENERATED_SEAT_SOURCE = "lok-sabha-sitting-members"
+GENERATED_PIN_SOURCE = "india-post-pincodes"
+GENERATED_PIN_SEATS_SOURCE = "pin-seat-mapping"
+
+
+def _csv_rows(path: Path) -> list[dict]:
+    if not path.exists():
+        return []
+    with path.open(encoding="utf-8", newline="") as f:
+        return list(csv.DictReader(line for line in f if not line.startswith("#")))
+
+
+def _generated_seats(path: Path) -> list[ConstituencyIn]:
+    """Lok Sabha seats from the data pipeline's file (generated/lok-sabha.csv)."""
+    return [
+        ConstituencyIn(
+            id=row["id"],
+            house="lok_sabha",
+            name=row["constituency"],
+            state=row["state"],
+            reserved_for=row["reserved_for"] or None,
+            source="delimitation-2008",
+            representative=RepresentativeIn(
+                name=row["member"],
+                party=row["party"],
+                elected_in="Sitting member of the 18th Lok Sabha",
+                source=GENERATED_SEAT_SOURCE,
+                result_declared=False,
+            )
+            if row["member"]
+            else None,
+            vacancy=row["note"] or None,
+        )
+        for row in _csv_rows(path)
+    ]
+
+
+def _generated_pincodes(path: Path) -> list[dict]:
+    """PIN codes from the data pipeline's file (generated/pincodes.csv). A seat id ending in *
+    holds only part of the PIN code."""
+    return [
+        {
+            "pin": row["pin"],
+            "area": row["area"],
+            "district": row["district"],
+            "state": row["state"],
+            "seats": [
+                {"id": seat.rstrip("*"), "partial": seat.endswith("*")} for seat in row["lok_sabha"].split()
+            ],
+            "source": GENERATED_PIN_SOURCE,
+            "seats_source": GENERATED_PIN_SEATS_SOURCE,
+        }
+        for row in _csv_rows(path)
+    ]
+
+
+def _merge_generated(raw_places: dict, data_dir: Path) -> dict:
+    """Adds the generated seats and PIN codes to the hand-checked ones. A hand-checked seat with
+    the same state and name (or id), or a hand-checked PIN code, replaces its generated row."""
+    hand = raw_places.get("constituencies") or []
+    taken = {c["id"] for c in hand} | {
+        (c["state"], _name_key(c["name"])) for c in hand if c["house"] == "lok_sabha"
+    }
+    extra = [
+        c.model_dump(exclude_none=True)
+        for c in _generated_seats(data_dir / "generated" / "lok-sabha.csv")
+        if c.id not in taken and (c.state, _name_key(c.name)) not in taken
+    ]
+    hand_pins = raw_places.get("pincodes") or []
+    pins_taken = {str(p["pin"]) for p in hand_pins}
+    extra_pins = [
+        p for p in _generated_pincodes(data_dir / "generated" / "pincodes.csv") if p["pin"] not in pins_taken
+    ]
+    return {**raw_places, "constituencies": hand + extra, "pincodes": hand_pins + extra_pins}
+
+
+def _name_key(name: str) -> str:
+    return re.sub(r"[^a-z0-9]", "", name.lower())
+
+
 def _unique(ids: list[str], what: str) -> None:
     seen: set[str] = set()
     for i in ids:
@@ -156,9 +252,11 @@ def _unique(ids: list[str], what: str) -> None:
 def read_catalog(data_dir: Path = DATA_DIR) -> Catalog:
     """Reads and checks every data file. Raises CatalogError naming the first problem found."""
     try:
+        generated_sources = sorted((data_dir / "generated").glob("sources*.yaml"))
         catalog = Catalog(
-            sources=_read_yaml(data_dir / "sources.yaml"),
-            places=_read_yaml(data_dir / "places.yaml"),
+            sources=_read_yaml(data_dir / "sources.yaml")
+            + [s for p in generated_sources for s in _read_yaml(p)],
+            places=_merge_generated(_read_yaml(data_dir / "places.yaml"), data_dir),
             acts=[_read_yaml(p) for p in sorted((data_dir / "laws").glob("*.yaml"))],
         )
     except (OSError, yaml.YAMLError, ValueError) as exc:
@@ -214,7 +312,7 @@ def read_catalog(data_dir: Path = DATA_DIR) -> Catalog:
 def digest(data_dir: Path = DATA_DIR) -> str:
     """A fingerprint of every data file, so unchanged data isn't reloaded."""
     h = hashlib.sha256()
-    for path in sorted(data_dir.rglob("*.yaml")):
+    for path in sorted([*data_dir.rglob("*.yaml"), *data_dir.rglob("*.csv")]):
         h.update(path.relative_to(data_dir).as_posix().encode())
         h.update(path.read_bytes())
     return h.hexdigest()
@@ -257,6 +355,7 @@ def load_catalog(session: Session, data_dir: Path = DATA_DIR, *, force: bool = F
                 state=c.state,
                 reserved_for=c.reserved_for,
                 source_id=c.source,
+                vacancy=c.vacancy,
             )
         )
     session.flush()
@@ -271,7 +370,7 @@ def load_catalog(session: Session, data_dir: Path = DATA_DIR, *, force: bool = F
                 name=rep.name,
                 party=rep.party,
                 elected_in=rep.elected_in,
-                elected_on=sources[rep.source].published_on,
+                elected_on=sources[rep.source].published_on if rep.result_declared else None,
                 source_id=rep.source,
                 facts=[
                     RepresentativeFact(
@@ -282,16 +381,24 @@ def load_catalog(session: Session, data_dir: Path = DATA_DIR, *, force: bool = F
             )
         )
 
-    for p in catalog.places.pincodes:
-        session.add(Pincode(pin=p.pin, area=p.area, district=p.district, state=p.state, source_id=p.source))
-    session.flush()
-    for p in catalog.places.pincodes:
-        for link in p.links():
-            session.add(
-                PincodeConstituency(
-                    pin=p.pin, constituency_id=link.id, partial=link.partial, source_id=p.seats_source
-                )
-            )
+    # Bulk inserts: the generated file has about 19,000 PIN codes.
+    pins = catalog.places.pincodes
+    if pins:
+        session.execute(
+            insert(Pincode),
+            [
+                dict(pin=p.pin, area=p.area, district=p.district, state=p.state, source_id=p.source)
+                for p in pins
+            ],
+        )
+        session.execute(
+            insert(PincodeConstituency),
+            [
+                dict(pin=p.pin, constituency_id=link.id, partial=link.partial, source_id=p.seats_source)
+                for p in pins
+                for link in p.links()
+            ],
+        )
 
     for position, a in enumerate(catalog.acts):
         session.add(

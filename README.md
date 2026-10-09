@@ -13,6 +13,9 @@ words. Strictly nonpartisan: every fact links to the official record it came fro
 
 - **Find your representatives.** A PIN code leads to the Lok Sabha and Vidhan Sabha seats it falls
   in and the people who hold them. Every fact carries a numbered source, like a footnote, and a date.
+- **Every Lok Sabha seat, kept current.** All 543 seats and their sitting MPs, from the Lok Sabha's
+  own list. A weekly data pipeline checks it and opens a pull request when something changes, so a
+  person reviews every update before it goes live.
 - **Search the law in plain words.** "Police won't register my FIR" finds BNSS section 173 (Zero FIR).
   Postgres full-text search ranks 71 sections of the Constitution and five Acts, and highlights why
   each one matched.
@@ -40,7 +43,7 @@ words. Strictly nonpartisan: every fact links to the official record it came fro
 
 Next.js 16 (server components) · FastAPI · Claude API with tool use (an agent loop) · Server-Sent
 Events · PostgreSQL full-text search · SQLAlchemy and Alembic ·
-Playwright and axe for browser tests · GitHub Actions.
+Shapely (spatial joins) · Playwright and axe for browser tests · GitHub Actions.
 
 ## How it fits together
 
@@ -48,6 +51,8 @@ Playwright and axe for browser tests · GitHub Actions.
 browser ──> Next.js website ──(server-side fetch + secret header)──> FastAPI ──> Postgres
                                                                        ▲
                                          app/data/*.yaml ──checked and loaded on start
+                                                ▲
+              official records ──weekly pipeline──> pull request ──> app/data/generated/*.csv
 ```
 
 The data lives in reviewable YAML files. On start the API checks them (every fact must name a
@@ -72,6 +77,9 @@ Tests: `cd backend && pytest` (needs Postgres; see `tests/conftest.py`) and
 - Phase 1: representatives for a hand-checked sample of 25 PIN codes in 12 states, and the law library.
 - Phase 2: the rights assistant and the RTI drafter. The live site runs the assistant in demo mode
   (five sample questions) until an API key is added.
-- Next: a scheduled pipeline that loads every PIN code and seat from official records.
+- Phase 3: a data pipeline. All 543 Lok Sabha seats and MPs from the Lok Sabha's list, refreshed
+  weekly by GitHub Actions through reviewed pull requests, and a PIN-code-to-seat mapper that places
+  India Post's offices on constituency maps.
+- Next: deployment, then every PIN code and state assembly seats.
 
 CivicLens is an independent project, not a government website, and doesn't give legal advice.

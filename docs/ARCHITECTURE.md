@@ -22,6 +22,19 @@ Why files and not a form? Files can be reviewed line by line on GitHub, so every
 is public and can be discussed before it goes live. That matters for a site that promises to be
 nonpartisan.
 
+Some files are written by a program instead of a person: the **data pipeline** (`backend/pipeline/`)
+reads official records and writes CSV files into `backend/app/data/generated/`. A weekly GitHub
+Actions job (`.github/workflows/refresh-data.yml`) runs it and opens a pull request when the official
+record changes, so even automatic updates go through the same public review. Where a hand-checked
+file and a generated one describe the same seat, the hand-checked one wins. The steps:
+
+- `pipeline/sansad.py` pages through the Lok Sabha's member API and keeps only public fields.
+- `pipeline/members.py` turns that into one row per seat (sitting member, or why it's vacant),
+  compares it with last week's file and with the hand-checked seats, and writes a report.
+- `pipeline/pins.py` places every post office on a map of constituency boundaries (a
+  "point in polygon" test, sped up with an R-tree spatial index from Shapely) to work out which seat
+  each PIN code is in. See [DATA.md](DATA.md) for why that's an approximation.
+
 ## 2. Checking and loading the data
 
 `backend/app/services/catalog.py` reads the files and checks them with Pydantic classes before
@@ -50,6 +63,11 @@ seats, and each seat to its representative and their facts, in one query with `s
 it doesn't make one database trip per seat). Seats come back Lok Sabha first, then Vidhan Sabha.
 If a PIN has no seat in one house yet, `missing` says so, and the website shows an honest "not in
 CivicLens yet" card instead of a gap.
+
+`GET /api/seats` lists every seat in a house by state and then name (never by party), and
+`GET /api/seats/{id}` gives one seat with its member, sources and the PIN codes in it. The website's
+`/seats` pages use these, so someone who knows their constituency but not how it maps to a PIN code
+can still find their MP.
 
 ## 4. Searching the law
 
@@ -130,8 +148,8 @@ and a browser test checks that nothing typed is sent anywhere. The assistant's
 
 ## 8. Tests
 
-- `backend/tests/`: 72 tests against a real Postgres, covering the data checks, the API, search and
-  the assistant.
+- `backend/tests/`: 98 tests against a real Postgres, covering the data checks, the API, search,
+  the assistant and the data pipeline (on small made-up member lists and maps).
 - `frontend/e2e/`: Playwright drives Chromium on a desktop and a phone screen through the real
   website, API and database, and `axe` checks every page for WCAG AA accessibility in light and dark
   mode.

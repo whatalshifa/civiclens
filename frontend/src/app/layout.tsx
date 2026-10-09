@@ -40,6 +40,7 @@ export const viewport: Viewport = {
 
 const NAV: { href: string; label: string; wide?: boolean }[] = [
   { href: "/", label: "Representatives" },
+  { href: "/seats", label: "Seats", wide: true },
   { href: "/laws", label: "Laws" },
   { href: "/assistant", label: "Ask" },
   { href: "/rti", label: "RTI" },

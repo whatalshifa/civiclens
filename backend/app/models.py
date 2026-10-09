@@ -53,6 +53,8 @@ class Constituency(Base):
     state: Mapped[str] = mapped_column(Text)
     reserved_for: Mapped[str | None] = mapped_column(String(10))  # "SC" or "ST" when reserved
     source_id: Mapped[str] = mapped_column(ForeignKey("sources.id"))
+    # Why the seat has no member, when the official list says ("Previous member died").
+    vacancy: Mapped[str | None] = mapped_column(Text)
 
     representative: Mapped["Representative | None"] = relationship(back_populates="constituency")
 
@@ -95,7 +97,8 @@ class Representative(Base):
     name: Mapped[str] = mapped_column(Text)
     party: Mapped[str] = mapped_column(Text)
     elected_in: Mapped[str] = mapped_column(Text)  # "General Election 2024"
-    elected_on: Mapped[date] = mapped_column(Date)  # the day the result was declared
+    # The day the result was declared. Unknown (None) when the source is a list of sitting members.
+    elected_on: Mapped[date | None] = mapped_column(Date)
     source_id: Mapped[str] = mapped_column(ForeignKey("sources.id"))
 
     constituency: Mapped[Constituency] = relationship(back_populates="representative")

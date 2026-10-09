@@ -15,3 +15,11 @@ export function cleanPin(value: string): string | null {
   const pin = value.replace(/\s/g, "");
   return /^[1-9][0-9]{5}$/.test(pin) ? pin : null;
 }
+
+/** "Andaman and Nicobar Islands" -> "andaman-and-nicobar-islands", for page anchors. */
+export function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}

@@ -58,6 +58,12 @@ export default async function Home({ searchParams }: PageProps<"/">) {
               </ul>
             </div>
           )}
+          <p className="mt-4 text-sm text-muted">
+            Don&apos;t know your PIN code&apos;s seat?{" "}
+            <Link href="/seats" className="link">
+              Browse every Lok Sabha seat
+            </Link>
+          </p>
         </div>
       </section>
 
@@ -140,8 +146,11 @@ export default async function Home({ searchParams }: PageProps<"/">) {
 
       {coverage && (
         <p className="mt-10 text-center text-sm text-muted">
-          Now covering a hand-checked sample of {coverage.pincodes} PIN codes and {coverage.seats} seats across{" "}
-          {coverage.states.length} states, with the rest of India on the way.{" "}
+          Covering{" "}
+          <Link href="/seats" className="link">
+            all {coverage.lok_sabha_seats} Lok Sabha seats
+          </Link>{" "}
+          and {coverage.pincodes.toLocaleString("en-IN")} PIN codes, from official records.{" "}
           <Link href="/about" className="link">
             How CivicLens works
           </Link>
