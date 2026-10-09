@@ -99,6 +99,31 @@ export default async function Home({ searchParams }: PageProps<"/">) {
         </div>
       </section>
 
+      <section className="mt-16 grid gap-4 md:grid-cols-2" aria-label="Get help with a problem">
+        <Link href="/assistant" className="card group block p-6 transition-colors hover:bg-sunken">
+          <p className="eyebrow">Rights assistant</p>
+          <h2 className="mt-2 text-xl font-bold tracking-tight">Ask about your situation</h2>
+          <p className="mt-2 text-muted">
+            Describe a problem in your own words. The assistant searches the law, reads the sections that apply and
+            answers with every one cited. You can watch each step it takes.
+          </p>
+          <p className="mt-4 text-sm font-semibold text-accent">
+            Try a sample question <span aria-hidden>→</span>
+          </p>
+        </Link>
+        <Link href="/rti" className="card group block p-6 transition-colors hover:bg-sunken">
+          <p className="eyebrow">Right to Information</p>
+          <h2 className="mt-2 text-xl font-bold tracking-tight">Draft an RTI application</h2>
+          <p className="mt-2 text-muted">
+            Ask any government office for its records. Fill in a short form and get a ready-to-send application in
+            English or Hindi. Nothing you type leaves your browser.
+          </p>
+          <p className="mt-4 text-sm font-semibold text-accent">
+            Start drafting <span aria-hidden>→</span>
+          </p>
+        </Link>
+      </section>
+
       <section className="mt-16 grid gap-4 sm:grid-cols-3" aria-label="What CivicLens promises">
         <PromiseCard title="Every fact has a source">
           Names, parties, offices and laws all link to the Election Commission, Parliament, India Code or another

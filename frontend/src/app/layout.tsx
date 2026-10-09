@@ -1,8 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { GeistSans } from "geist/font/sans";
 import Link from "next/link";
+import { Suspense } from "react";
 
 import { Logo } from "@/components/Logo";
+import { NavProgress } from "@/components/NavProgress";
 import { THEME_SCRIPT, ThemeToggle } from "@/components/ThemeToggle";
 import "./globals.css";
 
@@ -15,7 +17,10 @@ const DESCRIPTION =
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.SITE_URL ?? "http://localhost:3000"),
-  title: { default: "CivicLens: know who represents you and what your rights are", template: "%s · CivicLens" },
+  title: {
+    default: "CivicLens: know who represents you and what your rights are",
+    template: "%s · CivicLens",
+  },
   description: DESCRIPTION,
   applicationName: "CivicLens",
   openGraph: {
@@ -33,10 +38,12 @@ export const viewport: Viewport = {
   ],
 };
 
-const NAV = [
+const NAV: { href: string; label: string; wide?: boolean }[] = [
   { href: "/", label: "Representatives" },
   { href: "/laws", label: "Laws" },
-  { href: "/about", label: "About" },
+  { href: "/assistant", label: "Ask" },
+  { href: "/rti", label: "RTI" },
+  { href: "/about", label: "About", wide: true },
 ];
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -62,7 +69,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`btn btn-ghost btn-sm ${item.href === "/" ? "hidden sm:inline-flex" : ""}`}
+                  className={`btn btn-ghost btn-sm ${item.href === "/" || item.wide ? "hidden sm:inline-flex" : ""}`}
                 >
                   {item.label}
                 </Link>
@@ -71,6 +78,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             </nav>
           </div>
         </header>
+        <Suspense fallback={null}>
+          <NavProgress />
+        </Suspense>
         <main id="main" className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:py-12">
           {children}
         </main>
@@ -81,6 +91,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               Every fact links to its official source; please check there before relying on it.
             </p>
             <div className="flex gap-4">
+              <Link href="/about" className="hover:text-foreground">
+                About
+              </Link>
               <Link href="/about#sources" className="hover:text-foreground">
                 Sources
               </Link>

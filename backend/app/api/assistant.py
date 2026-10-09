@@ -50,6 +50,8 @@ class AssistantInfo(BaseModel):
 class Question(BaseModel):
     question: str = Field(min_length=3, max_length=600)
     sample: str | None = Field(default=None, max_length=40)
+    # Replay a sample without pauses: for the website rendering a sample's page on the server.
+    instant: bool = False
 
 
 @router.get("", response_model=AssistantInfo)
@@ -90,6 +92,9 @@ def ask(
                 "Please try again tomorrow, or try one of the sample questions.",
             )
         limiter.check(client_ip(request), "Too many questions from your network. Please wait a while.")
+
+    if body.instant:
+        settings = settings.model_copy(update={"demo_step_delay": 0})
 
     def stream() -> Iterator[str]:
         # Its own session: the request's one may be closed before a long answer finishes.

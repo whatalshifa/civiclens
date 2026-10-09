@@ -28,6 +28,8 @@ export default defineConfig({
           process.env.E2E_DATABASE_URL ?? "postgresql+psycopg://civiclens:civiclens@localhost:5432/civiclens",
         // The website must add this to every API request (src/lib/api.ts), as in production.
         CL_PROXY_SECRET: "e2e-proxy-secret",
+        // Samples still unfold step by step, just faster than on the real site.
+        CL_DEMO_STEP_DELAY: "0.1",
       },
     },
     {

@@ -6,7 +6,10 @@ test("an everyday question finds the right section and jumps to it", async ({ pa
   await page.getByRole("button", { name: "Search" }).click();
 
   await expect(page).toHaveURL(/\/laws\/search\?q=/);
-  const first = page.getByRole("listitem").filter({ has: page.getByRole("heading", { level: 2 }) }).first();
+  const first = page
+    .getByRole("listitem")
+    .filter({ has: page.getByRole("heading", { level: 2 }) })
+    .first();
   await expect(first).toContainText("BNSS · Section 173");
   await expect(first.locator("mark").first()).toBeVisible();
 
@@ -33,13 +36,23 @@ test("a search with no matches suggests what to do next", async ({ page }) => {
 
 test("every act page says its summaries are not the law and links the official text", async ({ page }) => {
   await page.goto("/laws");
-  const acts = await page.locator("main ul a[href^='/laws/']").evaluateAll((links) =>
-    links.map((a) => a.getAttribute("href")),
-  );
+  const acts = await page
+    .locator("main ul a[href^='/laws/']")
+    .evaluateAll((links) => links.map((a) => a.getAttribute("href")));
   expect(acts.length).toBeGreaterThanOrEqual(6);
   for (const href of acts) {
     await page.goto(href!);
     await expect(page.getByText("not the law itself")).toBeVisible();
     await expect(page.getByRole("link", { name: /Official text/ })).toHaveAttribute("href", /^https:\/\//);
   }
+});
+
+test("law search works without JavaScript", async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+  await page.goto("/laws");
+  await page.getByLabel("Search the laws").fill("bail");
+  await page.getByLabel("Search the laws").press("Enter");
+  await expect(page.getByRole("heading", { name: /match “bail”/ })).toBeVisible();
+  await context.close();
 });
