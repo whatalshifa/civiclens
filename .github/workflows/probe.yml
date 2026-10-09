@@ -1,0 +1,31 @@
+# Temporary: checks which data sources the pipeline can reach from GitHub Actions. Deleted after.
+name: probe
+on: push
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reachability
+        run: |
+          for u in https://query.wikidata.org/sparql https://api.data.gov.in https://data.gov.in https://results.eci.gov.in https://www.eci.gov.in https://sansad.in https://www.indiapost.gov.in https://lgdirectory.gov.in https://raw.githubusercontent.com; do
+            printf "%s " $u; curl -s -o /dev/null -m 20 -A "CivicLens data pipeline (https://github.com/whatalshifa/civiclens)" -w "%{http_code}\n" $u || echo fail
+          done
+      - name: Wikidata members of the 18th Lok Sabha
+        run: |
+          cat > q.rq <<'Q'
+          SELECT ?person ?personLabel ?district ?districtLabel ?groupLabel ?start ?end WHERE {
+            ?term rdfs:label "18th Lok Sabha"@en .
+            ?person p:P39 ?st . ?st pq:P2937 ?term .
+            OPTIONAL { ?st pq:P768 ?district }
+            OPTIONAL { ?st pq:P4100 ?group }
+            OPTIONAL { ?st pq:P580 ?start }
+            OPTIONAL { ?st pq:P582 ?end }
+            SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+          }
+          Q
+          curl -s -m 60 -G https://query.wikidata.org/sparql --data-urlencode query@q.rq -H "Accept: text/csv" -A "CivicLens data pipeline (https://github.com/whatalshifa/civiclens)" -o members.csv
+          wc -l members.csv; head -8 members.csv; grep -i -E "Baramati|Wayanad|Thiruvananthapuram" members.csv
+      - name: data.gov.in pincode directory (public sample key, 10 rows)
+        run: |
+          curl -s -m 60 "https://api.data.gov.in/resource/5c2f62fe-5afa-4119-a499-fec9d604d5bd?api-key=579b464db66ec23bdd000001cdd3946e44ce4aad7209ff7b23ac571b&format=json&limit=3" | head -c 3000; echo
+          curl -s -m 60 "https://api.data.gov.in/resource/5c2f62fe-5afa-4119-a499-fec9d604d5bd?api-key=579b464db66ec23bdd000001cdd3946e44ce4aad7209ff7b23ac571b&format=json&limit=3&filters%5Bpincode%5D=413102" | head -c 3000; echo
