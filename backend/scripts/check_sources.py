@@ -15,7 +15,13 @@ TIMEOUT_SECONDS = 30
 
 def check(url: str) -> str | None:
     """Returns None if the page opens, otherwise what went wrong."""
-    request = urllib.request.Request(url, headers={"User-Agent": "CivicLens source checker"})
+    # Some government sites refuse requests that don't look like a browser's (HTTP 406).
+    headers = {
+        "User-Agent": "Mozilla/5.0 (compatible; CivicLens source checker; +https://github.com/whatalshifa/civiclens)",
+        "Accept": "text/html,application/xhtml+xml,*/*;q=0.8",
+        "Accept-Language": "en-IN,en;q=0.9",
+    }
+    request = urllib.request.Request(url, headers=headers)
     try:
         with urllib.request.urlopen(request, timeout=TIMEOUT_SECONDS) as response:
             return None if response.status < 400 else f"HTTP {response.status}"
