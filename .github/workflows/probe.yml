@@ -7,30 +7,42 @@ jobs:
     env:
       UA: "CivicLens data pipeline (https://github.com/whatalshifa/civiclens)"
     steps:
-      - name: ECI results 2024
+      - name: Sansad members (public fields only)
         continue-on-error: true
         run: |
-          curl -s -m 60 -A "$UA" https://results.eci.gov.in/PcResultGenJune2024/index.htm -o eci.html; wc -c eci.html
-          grep -o 'href="[^"]*"' eci.html | sort -u | head -40
-          curl -s -m 60 -A "$UA" https://results.eci.gov.in/PcResultGenJune2024/candidateswise-S1335.htm -o c.html; wc -c c.html
-          sed -e 's/<[^>]*>/ /g' c.html | tr -s ' \n' | head -c 1500; echo
-      - name: Sansad members
+          python3 - <<'PY'
+          import json, urllib.request, os
+          rows = []
+          page = 1
+          while True:
+              url = f"https://sansad.in/api_ls/member?loksabha=18&page={page}&size=100"
+              req = urllib.request.Request(url, headers={"User-Agent": os.environ["UA"]})
+              data = json.load(urllib.request.urlopen(req, timeout=60))
+              for m in data["membersDtoList"]:
+                  rows.append((m["stateName"], m["constName"], m["status"], m["initial"], m["mpFirstLastName"], m["partyFname"], m.get("categoryCode")))
+              if page >= data["metaDatasDto"]["totalPages"]:
+                  break
+              page += 1
+          print("TOTAL", len(rows), "keys:", sorted(data["membersDtoList"][0].keys()))
+          for r in sorted(rows):
+              print("|".join(str(x).strip() for x in r))
+          PY
+      - name: Wikidata 18th Lok Sabha terms
         continue-on-error: true
         run: |
-          curl -s -m 60 -A "$UA" -L https://sansad.in/ls/members -o ls.html; wc -c ls.html
-          grep -o -E '(src|href)="[^"]*\.js"' ls.html | head; grep -o -E 'api[_a-zA-Z/]*' ls.html | sort -u | head
-          for u in "https://sansad.in/api_ls/member?loksabha=18&page=1&size=3" "https://sansad.in/api_ls/member/sitting?loksabha=18&page=1&size=3"; do echo "== $u"; curl -s -m 60 -A "$UA" "$u" | head -c 1500; echo; done
-      - name: Wikidata (small query)
+          cat > q.rq <<'Q'
+          SELECT ?districtLabel ?personLabel ?electedLabel ?start ?end WHERE {
+            ?person p:P39 ?st . ?st pq:P2937 wd:Q123052644 .
+            OPTIONAL { ?st pq:P768 ?district }
+            OPTIONAL { ?st pq:P2715 ?elected }
+            OPTIONAL { ?st pq:P580 ?start }
+            OPTIONAL { ?st pq:P582 ?end }
+            SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+          }
+          Q
+          curl -s -m 120 -G https://query.wikidata.org/sparql --data-urlencode query@q.rq -H "Accept: text/csv" -A "$UA" -o wd.csv
+          wc -l wd.csv; cut -d, -f3 wd.csv | sort | uniq -c | sort -rn | head -20; grep -v "2024 Indian general election" wd.csv | head -40
+      - name: ECI results again
         continue-on-error: true
         run: |
-          curl -s -m 90 -G https://query.wikidata.org/sparql -H "Accept: text/csv" -A "$UA" --data-urlencode 'query=SELECT ?term ?termLabel WHERE { ?term wdt:P31 wd:Q15238777 . ?term rdfs:label ?l . FILTER(LANG(?l)="en" && CONTAINS(?l, "Lok Sabha")) SERVICE wikibase:label { bd:serviceParam wikibase:language "en". } } LIMIT 30' | head -40
-          curl -s -m 60 -A "$UA" "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=18th%20Lok%20Sabha&language=en&format=json" | head -c 1000; echo
-      - name: data.gov.in (longer timeout)
-        continue-on-error: true
-        run: |
-          curl -s -m 120 -A "$UA" -w "\nHTTP %{http_code}\n" "https://api.data.gov.in/resource/5c2f62fe-5afa-4119-a499-fec9d604d5bd?api-key=579b464db66ec23bdd000001cdd3946e44ce4aad7209ff7b23ac571b&format=json&limit=3" | head -c 2500; echo
-      - name: India Post and LGD
-        continue-on-error: true
-        run: |
-          curl -s -m 60 -A "$UA" -L https://www.indiapost.gov.in/vas/pages/findpincode.aspx -o ip.html -w "HTTP %{http_code}\n"; wc -c ip.html; grep -o -i -E 'href="[^"]*(pincode|download|csv|xls)[^"]*"' ip.html | head
-          curl -s -m 60 -A "$UA" -L https://lgdirectory.gov.in/ -o lgd.html -w "HTTP %{http_code}\n"; grep -o -i -E 'href="[^"]*(download|constituency|report)[^"]*"' lgd.html | sort -u | head -20
+          for i in 1 2 3; do curl -s -m 60 -A "$UA" -w "HTTP %{http_code}\n" https://results.eci.gov.in/PcResultGenJune2024/index.htm -o eci.html && break; sleep 5; done; wc -c eci.html; grep -o 'href="[^"]*"' eci.html | sort -u | head -30
