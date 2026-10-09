@@ -1,43 +1,51 @@
 """Checks that every source link in app/data/sources.yaml still opens.
 
 Government sites move pages around, and a dead link breaks the promise that every fact can be
-checked. CI runs this as a report (python -m scripts.check_sources); it prints each link's status
-and exits with 1 if any failed, so the job shows red without blocking a merge.
+checked. CI runs this as a report (python -m scripts.check_sources).
+
+Many government sites also block automated visitors (403, 406), rate-limit them (429) or are
+briefly down (5xx, timeouts). Those say nothing about whether the page exists, so they are
+reported as "couldn't check". Only a missing page (404, 410) or an unknown host counts as dead,
+and only dead links make the script exit with 1.
 """
 
 import sys
+import urllib.error
 import urllib.request
 
 from app.services.catalog import read_catalog
 
 TIMEOUT_SECONDS = 30
+DEAD_STATUSES = {404, 410}
 
 
-def check(url: str) -> str | None:
-    """Returns None if the page opens, otherwise what went wrong."""
-    # Some government sites refuse requests that don't look like a browser's (HTTP 406).
-    headers = {
-        "User-Agent": "Mozilla/5.0 (compatible; CivicLens source checker; +https://github.com/whatalshifa/civiclens)",
-        "Accept": "text/html,application/xhtml+xml,*/*;q=0.8",
-        "Accept-Language": "en-IN,en;q=0.9",
-    }
-    request = urllib.request.Request(url, headers=headers)
+def check(url: str) -> tuple[str, str]:
+    """Returns ("ok" | "dead" | "unknown", detail)."""
+    request = urllib.request.Request(
+        url, headers={"User-Agent": "CivicLens source checker", "Accept": "text/html,*/*"}
+    )
     try:
         with urllib.request.urlopen(request, timeout=TIMEOUT_SECONDS) as response:
-            return None if response.status < 400 else f"HTTP {response.status}"
-    except Exception as exc:  # timeouts, DNS failures, TLS errors and HTTP errors alike
-        return str(exc)
+            return "ok", f"HTTP {response.status}"
+    except urllib.error.HTTPError as exc:
+        return ("dead" if exc.code in DEAD_STATUSES else "unknown"), f"HTTP {exc.code}"
+    except urllib.error.URLError as exc:
+        # An unknown host means the address is wrong; anything else (timeouts) is inconclusive.
+        reason = str(exc.reason)
+        return ("dead" if "Name or service not known" in reason else "unknown"), reason
+    except Exception as exc:
+        return "unknown", str(exc)
 
 
 def main() -> int:
-    failed = 0
-    urls = sorted({s.url for s in read_catalog().sources})
-    for url in urls:
-        problem = check(url)
-        print(f"{'FAIL' if problem else 'ok  '} {url}{f'  ({problem})' if problem else ''}")
-        failed += bool(problem)
-    print(f"\n{len(urls) - failed} of {len(urls)} source links open.")
-    return 1 if failed else 0
+    labels = {"ok": "ok   ", "dead": "DEAD ", "unknown": "?    "}
+    counts = {"ok": 0, "dead": 0, "unknown": 0}
+    for url in sorted({s.url for s in read_catalog().sources}):
+        result, detail = check(url)
+        counts[result] += 1
+        print(f"{labels[result]} {url}  ({detail})")
+    print(f"\n{counts['ok']} open, {counts['unknown']} couldn't be checked, {counts['dead']} dead.")
+    return 1 if counts["dead"] else 0
 
 
 if __name__ == "__main__":
