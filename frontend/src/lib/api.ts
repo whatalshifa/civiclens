@@ -73,3 +73,21 @@ export async function replaySample(sample: string): Promise<AssistantEvent[]> {
   for await (const event of readEvents(response.body)) events.push(event);
   return events;
 }
+
+/** A CSV download from the API, cached like the pages, for the open data route. */
+export async function apiCsv(path: string): Promise<string> {
+  const headers: Record<string, string> = { accept: "text/csv" };
+  if (process.env.API_PROXY_SECRET) headers["x-civiclens-proxy"] = process.env.API_PROXY_SECRET;
+  let response: Response;
+  try {
+    response = await fetch(`${API_URL}${path}`, {
+      headers,
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+      next: { revalidate: REVALIDATE_SECONDS },
+    });
+  } catch {
+    throw new ApiError(503, "We couldn't reach the CivicLens server. Please try again in a minute.");
+  }
+  if (!response.ok) throw new ApiError(response.status, "There's no dataset with that name.");
+  return response.text();
+}

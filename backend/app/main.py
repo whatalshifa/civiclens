@@ -5,7 +5,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
-from app.api import accuracy, assistant, laws, places
+from app.api import accuracy, assistant, data, laws, places
 from app.config import get_settings
 from app.db import SessionDep, get_session_factory
 from app.services.catalog import load_catalog
@@ -48,6 +48,7 @@ app.include_router(places.router)
 app.include_router(laws.router)
 app.include_router(assistant.router)
 app.include_router(accuracy.router)
+app.include_router(data.router)
 
 
 @app.get("/api/health")
