@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { ACT_HELP, FreeHelp } from "@/components/FreeHelp";
 import { LawSearchForm } from "@/components/LawSearchForm";
 import { ApiError, api } from "@/lib/api";
 import type { Act } from "@/lib/types";
@@ -93,6 +94,7 @@ export default async function ActPage({ params }: PageProps<"/laws/[act]">) {
               )}
             </article>
           ))}
+          <FreeHelp topics={ACT_HELP[act.id]} className="mt-8" />
         </div>
       </div>
     </div>

@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { FreeHelp } from "@/components/FreeHelp";
 import { RtiDrafter } from "@/components/rti/RtiDrafter";
+import { todayInIndia } from "@/lib/letters";
 
 export const metadata: Metadata = {
   title: "Draft an RTI application",
@@ -11,7 +13,13 @@ export const metadata: Metadata = {
 
 const RTI = "/laws/rti-act-2005";
 
-const NEXT_STEPS = [
+const NEXT_STEPS: {
+  when: string;
+  what: string;
+  ref: string;
+  label: string;
+  draft?: { href: string; label: string };
+}[] = [
   {
     when: "Within 30 days",
     what: "The office must reply, or reject the request with reasons.",
@@ -29,6 +37,7 @@ const NEXT_STEPS = [
     what: "File a first appeal with the officer senior to the PIO, in the same office.",
     ref: "s-19",
     label: "Section 19",
+    draft: { href: "/rti/appeal", label: "Draft the appeal" },
   },
   {
     when: "Within 90 days of that",
@@ -84,7 +93,7 @@ export default async function RtiPage({ searchParams }: PageProps<"/rti">) {
             <li>
               <span className="text-foreground">State and local offices</span>: post it to the office&apos;s Public
               Information Officer by registered post, or hand it in and ask for a dated receipt. Many states also have
-              their own RTI portal. Each state sets its own fee, often ₹10.
+              their own RTI portal. Each state sets its own fee: pick the state in the form to see it.
             </li>
             <li>
               You don&apos;t have to give any reason for asking{" "}
@@ -112,6 +121,14 @@ export default async function RtiPage({ searchParams }: PageProps<"/rti">) {
                   <Link href={`${RTI}#${step.ref}`} className="link whitespace-nowrap">
                     {step.label}
                   </Link>
+                  {step.draft && (
+                    <>
+                      {". "}
+                      <Link href={step.draft.href} className="link whitespace-nowrap">
+                        {step.draft.label}
+                      </Link>
+                    </>
+                  )}
                 </span>
               </li>
             ))}
@@ -130,11 +147,8 @@ export default async function RtiPage({ searchParams }: PageProps<"/rti">) {
           </p>
         </div>
       </section>
+
+      <FreeHelp className="mt-6" />
     </div>
   );
-}
-
-function todayInIndia(): string {
-  // en-CA formats dates as yyyy-mm-dd, the format a date input takes.
-  return new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
 }

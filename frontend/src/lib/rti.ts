@@ -5,12 +5,16 @@
  * (proviso to section 7(5)). It runs in the browser only: what people type never leaves it.
  */
 
-export type Language = "en" | "hi";
+import { blank, formatDate, items, type Language, lines, numbered } from "@/lib/letters";
+import { type Jurisdiction, RTI_RULES } from "@/lib/rti-states";
+
+export { items, type Language };
 export type Format = "copies" | "email" | "inspection";
 export type FeeMode = "ipo" | "dd" | "stamp" | "cash" | "online" | "bpl";
 
 export type RtiDraft = {
   language: Language;
+  jurisdiction: Jurisdiction;
   authority: string;
   authorityAddress: string;
   information: string; // one item per line
@@ -29,6 +33,7 @@ export type RtiDraft = {
 
 export const EMPTY_DRAFT: RtiDraft = {
   language: "en",
+  jurisdiction: "central",
   authority: "",
   authorityAddress: "",
   information: "",
@@ -79,13 +84,6 @@ export const FORMATS: Record<Format, { en: string; hi: string }> = {
   },
 };
 
-export function items(information: string): string[] {
-  return information
-    .split("\n")
-    .map((line) => line.replace(/^\s*(\d+[.)]|[-•*])\s*/, "").trim())
-    .filter(Boolean);
-}
-
 /** What still has to be filled in before the letter can be sent. Empty means ready. */
 export function missing(d: RtiDraft): string[] {
   const out: string[] = [];
@@ -96,36 +94,18 @@ export function missing(d: RtiDraft): string[] {
   return out;
 }
 
-function formatDate(iso: string, language: Language): string {
-  if (!iso) return "__________";
-  const [y, m, day] = iso.split("-").map(Number);
-  const date = new Date(Date.UTC(y, m - 1, day));
-  return date.toLocaleDateString(language === "hi" ? "hi-IN" : "en-IN", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    timeZone: "UTC",
-  });
-}
-
-const blank = (value: string, fallback = "____________________") => value.trim() || fallback;
-
-function lines(...parts: (string | false | null | undefined)[]): string {
-  return parts.filter((p): p is string => typeof p === "string").join("\n");
-}
-
 export function buildLetter(d: RtiDraft): string {
-  const list = items(d.information);
-  const numbered = (list.length ? list : ["____________________"]).map((item, i) => `${i + 1}. ${item}`).join("\n");
+  const list = numbered(items(d.information));
   const contact = [d.phone.trim(), d.email.trim()].filter(Boolean);
-  return d.language === "hi" ? hindi(d, numbered, contact) : english(d, numbered, contact);
+  return d.language === "hi" ? hindi(d, list, contact) : english(d, list, contact);
 }
 
-function english(d: RtiDraft, numbered: string, contact: string[]): string {
+function english(d: RtiDraft, list: string, contact: string[]): string {
+  const amount = RTI_RULES[d.jurisdiction].fee;
   const fee =
     d.feeMode === "bpl"
       ? "I belong to a Below Poverty Line family, so no fee is payable under the proviso to Section 7(5) of the Act. A copy of my BPL card is enclosed."
-      : `I have paid the application fee of Rs. 10${FEE_PHRASES[d.feeMode]}${
+      : `I have paid the application fee of Rs. ${amount}${FEE_PHRASES[d.feeMode]}${
           d.feeReference.trim() ? ` (${d.feeReference.trim()})` : ""
         }.`;
   const format = {
@@ -148,7 +128,7 @@ function english(d: RtiDraft, numbered: string, contact: string[]): string {
     "",
     "Under the Right to Information Act, 2005, I request the following information:",
     "",
-    numbered,
+    list,
     "",
     d.period.trim() ? `Period the information should cover: ${d.period.trim()}` : false,
     d.period.trim() ? "" : false,
@@ -178,11 +158,12 @@ function english(d: RtiDraft, numbered: string, contact: string[]): string {
   );
 }
 
-function hindi(d: RtiDraft, numbered: string, contact: string[]): string {
+function hindi(d: RtiDraft, list: string, contact: string[]): string {
+  const amount = RTI_RULES[d.jurisdiction].fee;
   const fee =
     d.feeMode === "bpl"
       ? "मैं गरीबी रेखा से नीचे (BPL) के परिवार से हूँ, अतः अधिनियम की धारा 7(5) के परंतुक के अंतर्गत कोई शुल्क देय नहीं है। मेरे BPL कार्ड की प्रति संलग्न है।"
-      : `मैंने ₹10 का आवेदन शुल्क ${FEE_MODES[d.feeMode].hi} द्वारा जमा किया है${
+      : `मैंने ₹${amount} का आवेदन शुल्क ${FEE_MODES[d.feeMode].hi} द्वारा जमा किया है${
           d.feeReference.trim() ? ` (${d.feeReference.trim()})` : ""
         }।`;
   const format = {
@@ -205,7 +186,7 @@ function hindi(d: RtiDraft, numbered: string, contact: string[]): string {
     "",
     "सूचना का अधिकार अधिनियम, 2005 के अंतर्गत मैं निम्नलिखित सूचना प्राप्त करना चाहता/चाहती हूँ:",
     "",
-    numbered,
+    list,
     "",
     d.period.trim() ? `सूचना की अवधि: ${d.period.trim()}` : false,
     d.period.trim() ? "" : false,

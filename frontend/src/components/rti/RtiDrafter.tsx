@@ -1,7 +1,11 @@
 "use client";
 
-import { useId, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
+import { Check, Choice, Field, Fieldset } from "@/components/letters/form";
+import { LetterPreview } from "@/components/letters/LetterPreview";
+import { RtiRuleCard } from "@/components/rti/RtiRuleCard";
+import { SentTracker } from "@/components/rti/SentTracker";
 import {
   buildLetter,
   EMPTY_DRAFT,
@@ -12,6 +16,7 @@ import {
   missing,
   type RtiDraft,
 } from "@/lib/rti";
+import { JURISDICTIONS, RTI_RULES, type Jurisdiction } from "@/lib/rti-states";
 
 /** The RTI application form with a live preview of the letter. Nothing typed here leaves the browser. */
 export function RtiDrafter({
@@ -29,35 +34,12 @@ export function RtiDrafter({
     information,
     date: today,
   });
-  const [copied, setCopied] = useState(false);
   const letter = useMemo(() => buildLetter(draft), [draft]);
   const todo = missing(draft);
 
   function set<K extends keyof RtiDraft>(key: K, value: RtiDraft[K]) {
     setDraft((d) => ({ ...d, [key]: value }));
-    setCopied(false);
   }
-
-  function download() {
-    const blob = new Blob([letter], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "rti-application.txt";
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  async function copy() {
-    try {
-      await navigator.clipboard.writeText(letter);
-      setCopied(true);
-    } catch {
-      setCopied(false);
-    }
-  }
-
-  const hi = draft.language === "hi";
 
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-10">
@@ -67,6 +49,26 @@ export function RtiDrafter({
         aria-label="RTI application details"
       >
         <Fieldset legend="1. Where it goes">
+          <Field
+            label="Which government runs the office"
+            hint="Ministries, railways, central universities and government banks are central. Police, schools, hospitals and municipal offices are usually the state's."
+          >
+            {(id) => (
+              <select
+                id={id}
+                className="input"
+                value={draft.jurisdiction}
+                onChange={(e) => set("jurisdiction", e.target.value as Jurisdiction)}
+              >
+                {JURISDICTIONS.map((j) => (
+                  <option key={j} value={j}>
+                    {RTI_RULES[j].name}
+                  </option>
+                ))}
+              </select>
+            )}
+          </Field>
+          <RtiRuleCard jurisdiction={draft.jurisdiction} />
           <Field
             label="Public authority (the office that has the information)"
             hint="Be specific: the department and district, if you know them."
@@ -136,20 +138,12 @@ export function RtiDrafter({
             }))}
             onChange={(v) => set("format", v)}
           />
-          <label className="flex items-start gap-3 rounded-xl border border-line bg-surface p-3 text-sm">
-            <input
-              type="checkbox"
-              className="mt-0.5 h-4 w-4 accent-teal-700"
-              checked={draft.lifeOrLiberty}
-              onChange={(e) => set("lifeOrLiberty", e.target.checked)}
-            />
-            <span>
-              <span className="font-semibold">It concerns someone&apos;s life or liberty</span>
-              <span className="block text-muted">
-                For example, a person held in custody. The office must then reply within 48 hours.
-              </span>
-            </span>
-          </label>
+          <Check
+            checked={draft.lifeOrLiberty}
+            onChange={(v) => set("lifeOrLiberty", v)}
+            title="It concerns someone's life or liberty"
+            detail="For example, a person held in custody. The office must then reply within 48 hours."
+          />
         </Fieldset>
 
         <Fieldset legend="3. Fee">
@@ -257,133 +251,30 @@ export function RtiDrafter({
         </Fieldset>
       </form>
 
-      <div className="lg:sticky lg:top-20 lg:self-start">
-        <div className="mb-3 flex flex-wrap items-center justify-between gap-3 print:hidden">
-          <h2 className="font-semibold">Your application</h2>
-          <div
-            role="radiogroup"
-            aria-label="Language of the letter"
-            className="flex rounded-xl border border-line bg-surface p-0.5"
-          >
-            {(["en", "hi"] as const).map((lang) => (
-              <button
-                key={lang}
-                type="button"
-                role="radio"
-                aria-checked={draft.language === lang}
-                onClick={() => set("language", lang)}
-                className="btn btn-sm aria-checked:bg-teal-800 aria-checked:text-white"
-                lang={lang}
-              >
-                {lang === "en" ? "English" : "हिंदी"}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <article
-          aria-label="Letter preview"
-          tabIndex={0}
-          lang={hi ? "hi" : "en"}
-          className="card max-h-[70vh] overflow-auto p-5 font-serif text-[0.95rem] leading-relaxed whitespace-pre-wrap sm:p-8 lg:max-h-[calc(100vh-14rem)] print:max-h-none print:overflow-visible print:border-0 print:p-0 print:shadow-none"
-        >
-          {letter}
-        </article>
-
-        <div className="mt-4 print:hidden">
-          {todo.length > 0 && (
-            <p className="mb-3 text-sm text-muted" aria-live="polite">
-              Still to fill in: {todo.join(", ")}.
-            </p>
-          )}
-          <div className="flex flex-wrap gap-2">
-            <button type="button" className="btn btn-primary" onClick={() => window.print()}>
-              Print or save as PDF
-            </button>
-            <button type="button" className="btn btn-secondary" onClick={download}>
-              Download
-            </button>
-            <button type="button" className="btn btn-secondary" onClick={copy}>
-              {copied ? "Copied" : "Copy text"}
-            </button>
-          </div>
-          <p className="mt-3 text-xs text-muted">
-            Everything you type stays in this browser. CivicLens never receives or stores it.
-          </p>
-        </div>
-      </div>
+      <LetterPreview
+        title="Your application"
+        letter={letter}
+        filename="rti-application.txt"
+        todo={todo}
+        language={draft.language}
+        onLanguage={(lang) => set("language", lang)}
+      >
+        <SentTracker
+          today={today}
+          application={{
+            authority: draft.authority,
+            authorityAddress: draft.authorityAddress,
+            information: draft.information,
+            jurisdiction: draft.jurisdiction,
+            lifeOrLiberty: draft.lifeOrLiberty,
+            name: draft.name,
+            address: draft.address,
+            phone: draft.phone,
+            email: draft.email,
+            place: draft.place,
+          }}
+        />
+      </LetterPreview>
     </div>
-  );
-}
-
-function Fieldset({ legend, children }: { legend: string; children: React.ReactNode }) {
-  return (
-    <fieldset className="space-y-4">
-      <legend className="mb-3 text-base font-semibold">{legend}</legend>
-      {children}
-    </fieldset>
-  );
-}
-
-function Field({
-  label,
-  hint,
-  optional = false,
-  children,
-}: {
-  label: string;
-  hint?: string;
-  optional?: boolean;
-  children: (id: string) => React.ReactNode;
-}) {
-  const id = useId();
-  return (
-    <div>
-      <label htmlFor={id} className="field-label">
-        {label}
-        {optional && <span className="ml-1.5 font-normal text-muted">(optional)</span>}
-      </label>
-      {children(id)}
-      {hint && <p className="field-hint">{hint}</p>}
-    </div>
-  );
-}
-
-function Choice<T extends string>({
-  legend,
-  value,
-  options,
-  onChange,
-  columns = false,
-}: {
-  legend: string;
-  value: T;
-  options: { value: T; label: string }[];
-  onChange: (value: T) => void;
-  columns?: boolean;
-}) {
-  const name = useId();
-  return (
-    <fieldset>
-      <legend className="field-label">{legend}</legend>
-      <div className={`grid gap-2 ${columns ? "sm:grid-cols-2" : ""}`}>
-        {options.map((option) => (
-          <label
-            key={option.value}
-            className="flex min-h-11 cursor-pointer items-center gap-3 rounded-xl border border-line bg-surface px-3 py-2 text-sm has-[:checked]:border-teal-600/60 has-[:checked]:bg-accent-soft"
-          >
-            <input
-              type="radio"
-              name={name}
-              value={option.value}
-              checked={value === option.value}
-              onChange={() => onChange(option.value)}
-              className="h-4 w-4 accent-teal-700"
-            />
-            {option.label}
-          </label>
-        ))}
-      </div>
-    </fieldset>
   );
 }

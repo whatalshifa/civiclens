@@ -43,7 +43,7 @@ const NAV: { href: string; label: string; wide?: boolean }[] = [
   { href: "/seats", label: "Seats", wide: true },
   { href: "/laws", label: "Laws" },
   { href: "/assistant", label: "Ask" },
-  { href: "/rti", label: "RTI" },
+  { href: "/letters", label: "Letters" },
   { href: "/about", label: "About", wide: true },
 ];
 
@@ -70,7 +70,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`btn btn-ghost btn-sm ${item.href === "/" || item.wide ? "hidden sm:inline-flex" : ""}`}
+                  className={`btn btn-ghost btn-sm max-sm:px-2 ${item.href === "/" || item.wide ? "hidden sm:inline-flex" : ""}`}
                 >
                   {item.label}
                 </Link>
