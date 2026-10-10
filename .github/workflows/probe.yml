@@ -7,37 +7,26 @@ jobs:
     env:
       UA: "Mozilla/5.0 (X11; Linux x86_64) CivicLens data pipeline (https://github.com/whatalshifa/civiclens)"
     steps:
-      - name: Question totals for one member
+      - name: How the dashboard builds uname
         continue-on-error: true
         run: |
-          curl -s -m 60 -A "$UA" "https://sansad.in/api_ls/question/member/qetFilteredQuestionsAns?loksabhaNo=18&memberCode=5814&page=1&size=2&locale=en" -o q.json
-          python3 -c "import json; d=json.load(open('q.json')); print({k:v for k,v in d[0].items() if k!='listOfQuestions'}); print([(q['member'],q['type'],q['date'],q['sessionNo']) for q in d[0]['listOfQuestions']])"
-          curl -s -m 60 -A "$UA" "https://sansad.in/api_ls/question/qetFilteredQuestionsAns?loksabhaNo=18&page=1&size=1&locale=en" | python3 -c "import json,sys; d=json.load(sys.stdin); print({k:v for k,v in d[0].items() if k!='listOfQuestions'})"
-      - name: Attendance per session, member 5814, and how many members per session
-        continue-on-error: true
-        run: |
-          for s in 1 2 3 4 5 6 7 8 9; do
-            curl -s -m 60 -A "$UA" "https://sansad.in/api_ls/member/getMemberAttendanceMemberWise?loksabha=18&session=$s&locale=en" -o a.json
-            n=$(curl -s -m 60 -A "$UA" "https://sansad.in/api_ls/member/attendance/session-dates?loksabha=18&session=$s" | python3 -c "import json,sys; print(len(json.load(sys.stdin)))" 2>/dev/null)
-            python3 -c "import json; d=json.load(open('a.json')); me=[x for x in d if x['mpsno']==5814]; z=sum(1 for x in d if x['signedDaysCount']==0); print('session $s days=$n members',len(d),'zero',z,'me',me, 'keys', sorted(d[0].keys()) if d else None)" 2>&1 | head -c 600; echo
-          done
-      - name: MPLADS combos
-        continue-on-error: true
-        run: |
-          P(){ echo "== $1 $2"; curl -s -m 60 -A "$UA" -X POST -H "Content-Type: application/json" -d "$2" "https://mplads.mospi.gov.in/rest/PreLoginDashboardData/$1" -w "\n[%{http_code}]" | head -c 900; echo; }
-          P getStateData '{"uname":"0,0,0,2"}'
-          P getStateData '{"uname":"7"}'
-          P getMpNamesData '{"uname":"0,0,0,2"}'
-          P getMpAndConstCombo '{"uname":"0,0,0,2"}'
-          P getMpAndConstCombo '{"uname":"7"}'
-          P getConstituencyData '{"uname":"0,0,0,2"}'
-          P getTilesData '{"uname":"0,0,0,7"}'
           curl -s -m 60 -A "$UA" https://mplads.mospi.gov.in/libs/simplegrid/preLoginDashboard.js -o p.js
           python3 - <<'PY'
           import re
           s = open("p.js", encoding="utf-8", errors="ignore").read()
           s = re.sub(r"\\u([0-9a-fA-F]{4})", lambda m: chr(int(m.group(1), 16)), s)
           s = re.sub(r"\\x([0-9a-fA-F]{2})", lambda m: chr(int(m.group(1), 16)), s)
-          for m in re.finditer(r"uname", s):
-              print("...", s[max(0, m.start()-250): m.end()+150].replace("\n", " "))
+          s = re.sub(r'"([^"]*)"\.split\(""\)\.reverse\(\)\.join\(""\)', lambda m: '"' + m.group(1)[::-1] + '"', s)
+          for pat in [r"_0x3g964c\(", r"getMpAndConstCombo", r"getConstituencyData", r"getMpNamesData", r"getTenureData", r"getRedirectUrl"]:
+              for m in list(re.finditer(pat, s))[:4]:
+                  print("=====", pat, "\n", s[max(0, m.start()-500): m.end()+300].replace("\n", " "))
           PY
+      - name: Tiles guesses for one MP
+        continue-on-error: true
+        run: |
+          P(){ echo "== $1 $2"; curl -s -m 60 -A "$UA" -X POST -H "Content-Type: application/json" -d "$2" "https://mplads.mospi.gov.in/rest/PreLoginDashboardData/$1" -w " [%{http_code}]" | head -c 500; echo; }
+          P getTenureData '{"uname":"0"}'
+          for u in "2,0,0,2" "0,0,3042276,2" "2,0,3042276,2" "2,3042276,0,2" "0,3042276,0,2" "2,0,3042276,7" "7,2,0,3042276" "7,2,3042276,0"; do P getTilesData "{\"uname\":\"$u\"}"; done
+          P getMpAndConstCombo '{"uname":"2"}'
+          P getMpAndConstCombo '{"uname":"2,7"}'
+          P getMpAndConstCombo '{"uname":"7,2"}'
