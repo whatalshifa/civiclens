@@ -1,4 +1,4 @@
-# Temporary: checks which state assembly websites publish member lists the pipeline can read. Deleted after.
+# Temporary: looks at the state assembly member lists the pipeline could read. Deleted after.
 name: probe2
 on: push
 jobs:
@@ -10,36 +10,32 @@ jobs:
     env:
       UA: "Mozilla/5.0 (X11; Linux x86_64) CivicLens data pipeline (https://github.com/whatalshifa/civiclens)"
     steps:
-      - name: Assembly member pages
-        continue-on-error: true
+      - name: Look at three lists
         run: |
-          for u in \
-            https://www.niyamasabha.nic.in/index.php/members \
-            https://www.niyamasabha.org/codes/members.htm \
-            https://www.assembly.tn.gov.in/ \
-            https://mls.org.in/ \
-            https://delhiassembly.delhi.gov.in/members \
-            https://kla.kar.nic.in/assembly/member/memberlist.htm \
-            https://uplegisassembly.gov.in/Members/Members_Eng.aspx \
-            https://www.wbassembly.gov.in/MLA_list.aspx \
-            https://www.telanganalegislature.org.in/web/tslegislature/mlas \
-            https://aplegislature.org/web/legislative-assembly/members \
-            https://gujaratassembly.gov.in/members.htm \
-            https://rajassembly.nic.in/MembersPage.aspx \
-            https://mpvidhansabha.nic.in/ \
-            https://vidhansabha.bih.nic.in/ \
-            https://odishaassembly.nic.in/members.aspx \
-            https://punjabassembly.nic.in/ \
-            https://haryanaassembly.gov.in/ \
-            https://results.eci.gov.in/ \
-            "https://www.eci.gov.in/statistical-reports" \
-            ; do
-            curl -sL -m 40 -A "$UA" "$u" -o p.html -w "== %{http_code} %{size_download} %{url_effective} $u\n" || echo "== curl failed ($?) $u"
+          pip install -q pdfplumber
+          for u in https://mls.org.in/Maharashtra_Members.aspx https://haryanaassembly.gov.in/sitting-members/ https://www.niyamasabha.org/codes/members.htm; do
+            curl -sL -m 60 -A "$UA" "$u" -o p.html -w "== %{http_code} %{size_download} $u\n" || echo "== failed $u"
             python3 - <<'PY'
           import re
           t = open("p.html", encoding="utf-8", errors="ignore").read()
-          links = sorted(set(re.findall(r'href="([^"]*(?:[Mm]ember|MLA|mla)[^"]*)"', t)))[:12]
-          print("  links:", links)
-          print("  text:", re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", t))[:300])
+          rows = re.findall(r"<tr[^>]*>(.*?)</tr>", t, re.S)
+          print("  rows:", len(rows))
+          for r in rows[:6] + rows[40:43]:
+              cells = [re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", c)).strip() for c in re.findall(r"<t[dh][^>]*>(.*?)</t[dh]>", r, re.S)]
+              print("  ", cells[:8])
+          if not rows:
+              body = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", re.sub(r"<(script|style).*?</\1>", "", t, flags=re.S)))
+              i = body.find("Constituency")
+              print("  text:", body[max(0, i-200):i+1500])
+          print("  iframes/links:", sorted(set(re.findall(r'(?:src|href)="([^"]*(?:\.pdf|\.xls|\.aspx\?|member)[^"]*)"', t, re.I)))[:20])
           PY
           done
+          curl -sL -m 60 -A "$UA" https://mpvidhansabha.nic.in/AllMember16vs.pdf -o m.pdf -w "== %{http_code} %{size_download} mp pdf\n"
+          python3 - <<'PY'
+          import pdfplumber
+          with pdfplumber.open("m.pdf") as pdf:
+              print("pages", len(pdf.pages))
+              print(pdf.pages[0].extract_text()[:1500])
+              t = pdf.pages[0].extract_tables()
+              print(t[0][:5] if t else "no tables")
+          PY
