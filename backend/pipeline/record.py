@@ -9,6 +9,7 @@ CivicLens never turns them into a score or a ranking.
 import csv
 import io
 import time
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict, dataclass, fields
 from datetime import date
 from pathlib import Path
@@ -144,24 +145,40 @@ def build(
     return rows, Report(len(rows), sessions, no_attendance, no_fund)
 
 
-def fetch(members: list[Member], pause: float = 1.0):
-    """Everything `build` needs, from sansad.in and the MPLADS dashboard. About 1,100 requests,
-    spaced out to be gentle with both websites."""
+def fetch(members: list[Member], pause: float = 1.0, workers: int = 4):
+    """Everything `build` needs, from sansad.in and the MPLADS dashboard: about 1,100 requests.
+
+    A few run at a time, each worker pausing between requests, to be gentle with both websites
+    while finishing in minutes rather than an hour.
+    """
     sitting = [m for m in members if m.status.lower() == "sitting" and m.mpsno is not None]
-    questions = {}
-    for m in sitting:
-        questions[m.mpsno] = sansad.fetch_question_count(m.mpsno)
+
+    def question_count(m: Member) -> int:
+        count = sansad.fetch_question_count(m.mpsno)
         time.sleep(pause)
-    attendance, sessions = sansad.fetch_attendance(pause=pause)
-    fund_mps = mplads.fetch_mps(pause=pause)
-    wanted = match_fund(sitting_seats(members), fund_mps)
-    funds = {}
-    for f in wanted.values():
+        return count
+
+    def fund(f: mplads.FundMp) -> mplads.Fund | None:
         try:
-            funds[f.id] = mplads.fetch_fund(f.id)
+            return mplads.fetch_fund(f.id)
         except (OSError, ValueError, KeyError):
-            pass  # reported as unmatched; the rest of the run still counts
-        time.sleep(pause)
+            return None  # reported as unmatched; the rest of the run still counts
+        finally:
+            time.sleep(pause)
+
+    with ThreadPoolExecutor(workers) as pool:
+        questions = dict(zip([m.mpsno for m in sitting], pool.map(question_count, sitting), strict=True))
+        print(f"Counted questions for {len(questions)} MPs", flush=True)
+        attendance, sessions = sansad.fetch_attendance(pause=pause)
+        print(f"Read attendance for {sessions} sessions", flush=True)
+        fund_mps = mplads.fetch_mps(pause=pause)
+        wanted = list(match_fund(sitting_seats(members), fund_mps).values())
+        funds = {
+            f.id: result
+            for f, result in zip(wanted, pool.map(fund, wanted), strict=True)
+            if result is not None
+        }
+        print(f"Read MPLADS figures for {len(funds)} of {len(wanted)} matched MPs", flush=True)
     return questions, attendance, sessions, fund_mps, funds
 
 
