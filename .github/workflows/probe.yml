@@ -15,6 +15,6 @@ jobs:
       - working-directory: backend
         run: |
           pip install -q -r requirements.txt
-          python -m pipeline record --report report.md
+          python -u -m pipeline record --report report.md
           echo "=== CSV"; cat app/data/generated/lok-sabha-record.csv
           echo "=== SOURCES"; cat app/data/generated/sources-lok-sabha-record.yaml
