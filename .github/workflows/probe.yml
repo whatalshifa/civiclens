@@ -7,26 +7,23 @@ jobs:
     env:
       UA: "Mozilla/5.0 (X11; Linux x86_64) CivicLens data pipeline (https://github.com/whatalshifa/civiclens)"
     steps:
-      - name: How the dashboard builds uname
+      - name: house value in loksaba.js
         continue-on-error: true
         run: |
-          curl -s -m 60 -A "$UA" https://mplads.mospi.gov.in/libs/simplegrid/preLoginDashboard.js -o p.js
-          python3 - <<'PY'
-          import re
-          s = open("p.js", encoding="utf-8", errors="ignore").read()
-          s = re.sub(r"\\u([0-9a-fA-F]{4})", lambda m: chr(int(m.group(1), 16)), s)
-          s = re.sub(r"\\x([0-9a-fA-F]{2})", lambda m: chr(int(m.group(1), 16)), s)
-          s = re.sub(r'"([^"]*)"\.split\(""\)\.reverse\(\)\.join\(""\)', lambda m: '"' + m.group(1)[::-1] + '"', s)
-          for pat in [r"_0x3g964c\(", r"getMpAndConstCombo", r"getConstituencyData", r"getMpNamesData", r"getTenureData", r"getRedirectUrl"]:
-              for m in list(re.finditer(pat, s))[:4]:
-                  print("=====", pat, "\n", s[max(0, m.start()-500): m.end()+300].replace("\n", " "))
-          PY
-      - name: Tiles guesses for one MP
+          curl -s -m 60 -A "$UA" https://mplads.mospi.gov.in/libs/simplegrid/loksaba.js -o l.js
+          grep -oE '.{0,200}sethouse.{0,200}' l.js | head -5
+          curl -s -m 60 -A "$UA" https://mplads.mospi.gov.in/digigov/dashboard.html | grep -iE 'tenure|house|option' | head -30
+      - name: State to constituency to MP
         continue-on-error: true
         run: |
-          P(){ echo "== $1 $2"; curl -s -m 60 -A "$UA" -X POST -H "Content-Type: application/json" -d "$2" "https://mplads.mospi.gov.in/rest/PreLoginDashboardData/$1" -w " [%{http_code}]" | head -c 500; echo; }
-          P getTenureData '{"uname":"0"}'
-          for u in "2,0,0,2" "0,0,3042276,2" "2,0,3042276,2" "2,3042276,0,2" "0,3042276,0,2" "2,0,3042276,7" "7,2,0,3042276" "7,2,3042276,0"; do P getTilesData "{\"uname\":\"$u\"}"; done
-          P getMpAndConstCombo '{"uname":"2"}'
-          P getMpAndConstCombo '{"uname":"2,7"}'
-          P getMpAndConstCombo '{"uname":"7,2"}'
+          P(){ echo "== $1 $2"; curl -s -m 60 -A "$UA" -X POST -H "Content-Type: application/json" -d "$2" "https://mplads.mospi.gov.in/rest/PreLoginDashboardData/$1" -w " [%{http_code}]" | head -c 700; echo; }
+          P getStateData '{}'
+          curl -s -m 60 -A "$UA" -X POST -H "Content-Type: application/json" -d '{"id":"33"}' https://mplads.mospi.gov.in/rest/PreLoginDashboardData/getConstituencyData -o c.json; head -c 700 c.json; echo
+          C=$(python3 -c "import json; print(json.load(open('c.json'))[0]['ID'])" 2>/dev/null || echo 0)
+          echo "const=$C"
+          for h in 1 2 L LS; do for t in 7 2; do
+            P getMpAndConstCombo "{\"const_combo\":\"$C,$h,$t\"}"
+            P getMpNamesData "{\"state_combo\":\"33,$h,$t\"}"
+          done; done
+          P getTenureData '{"uname":"1"}'
+          P getTenureData '{"uname":"2"}'
