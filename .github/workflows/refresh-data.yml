@@ -1,7 +1,8 @@
 name: Refresh data
 
-# Every Monday, fetch the Lok Sabha's member list and, if anything changed, open a pull request
-# for a person to review. Nothing reaches the website until that pull request is merged.
+# Every Monday, fetch the Lok Sabha's member list and each MP's record (questions, attendance and
+# MPLADS fund) and, if anything changed, open a pull request for a person to review. Nothing
+# reaches the website until that pull request is merged.
 #
 # One-time setup: Settings > Actions > General > "Allow GitHub Actions to create and approve pull
 # requests" must be ticked, or the last step can't open the pull request.
@@ -50,8 +51,17 @@ jobs:
       - name: Fetch the Lok Sabha's member list
         run: python -m pipeline members --report "$RUNNER_TEMP/report.md"
 
-      - name: Show the report on this run's page
-        run: cat "$RUNNER_TEMP/report.md" >> "$GITHUB_STEP_SUMMARY"
+      # About 1,100 requests to sansad.in and the MPLADS dashboard, spaced a second apart. If either
+      # site is down, last week's records stay and the member refresh still goes ahead.
+      - name: Fetch each MP's questions, attendance and MPLADS fund
+        run: |
+          python -m pipeline record --report "$RUNNER_TEMP/record.md" || {
+            git checkout -- app/data/generated/lok-sabha-record.csv app/data/generated/sources-lok-sabha-record.yaml
+            echo "The MPs' records couldn't be fetched this week, so last week's stay." > "$RUNNER_TEMP/record.md"
+          }
+
+      - name: Show the reports on this run's page
+        run: cat "$RUNNER_TEMP/report.md" "$RUNNER_TEMP/record.md" >> "$GITHUB_STEP_SUMMARY"
 
       # Hand-checked seats (places.yaml) are never changed automatically. If the official list
       # disagrees with one, say so in an issue, since there's no data change to put in a pull request.
@@ -92,19 +102,21 @@ jobs:
           git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
           git checkout -B "$BRANCH"
           git add app/data/generated
-          git commit -m "Refresh Lok Sabha members from sansad.in ($(date -u +%F))"
+          git commit -m "Refresh Lok Sabha members and records ($(date -u +%F))"
           git push --force origin "$BRANCH"
 
           {
-            echo "The weekly data check found changes in the Lok Sabha's member list."
-            echo "Please compare them with https://sansad.in/ls/members before merging."
+            echo "The weekly data check found changes in the Lok Sabha's members or their records."
+            echo "Please compare member changes with https://sansad.in/ls/members before merging."
             echo "The backend tests passed on this data in [this run]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID)."
             echo
             cat "$RUNNER_TEMP/report.md"
+            echo
+            cat "$RUNNER_TEMP/record.md"
           } > "$RUNNER_TEMP/body.md"
 
           if [ -n "$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number')" ]; then
             gh pr edit "$BRANCH" --body-file "$RUNNER_TEMP/body.md"
           else
-            gh pr create --head "$BRANCH" --title "Data: Lok Sabha member changes" --body-file "$RUNNER_TEMP/body.md"
+            gh pr create --head "$BRANCH" --title "Data: Lok Sabha members and records" --body-file "$RUNNER_TEMP/body.md"
           fi

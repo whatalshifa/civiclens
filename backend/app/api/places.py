@@ -10,7 +10,7 @@ from sqlalchemy.orm import selectinload
 from app.api.guard import require_proxy
 from app.config import Settings, get_settings
 from app.db import SessionDep
-from app.models import Constituency, Pincode, PincodeConstituency, Representative, Source
+from app.models import Constituency, MemberRecord, Pincode, PincodeConstituency, Representative, Source
 from app.schemas import (
     CoverageOut,
     PlaceBrief,
@@ -33,6 +33,13 @@ HOUSES = ("lok_sabha", "vidhan_sabha")
 EXAMPLE_PINS = ("221001", "413102", "110001", "695001", "500002", "148024")
 
 
+# An MP's record and the three sources it cites, loaded with the representative.
+RECORD = [
+    selectinload(Representative.record).selectinload(getattr(MemberRecord, rel))
+    for rel in ("questions_source", "attendance_source", "fund_source")
+]
+
+
 def _brief(p: Pincode) -> PlaceBrief:
     return PlaceBrief(pin=p.pin, area=p.area, district=p.district, state=p.state)
 
@@ -52,6 +59,7 @@ def get_place(pin: str, session: SessionDep) -> PlaceOut:
             .options(
                 selectinload(Representative.source),
                 selectinload(Representative.facts),
+                *RECORD,
             )
         )
     )
@@ -145,7 +153,7 @@ def get_seat(seat_id: str, session: SessionDep) -> SeatPageOut:
         .where(Constituency.id == seat_id)
         .options(
             selectinload(Constituency.representative).options(
-                selectinload(Representative.source), selectinload(Representative.facts)
+                selectinload(Representative.source), selectinload(Representative.facts), *RECORD
             )
         )
     )
