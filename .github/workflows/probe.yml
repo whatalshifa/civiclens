@@ -7,40 +7,27 @@ jobs:
     env:
       UA: "Mozilla/5.0 (X11; Linux x86_64) CivicLens data pipeline (https://github.com/whatalshifa/civiclens)"
     steps:
-      - name: Sansad app bundles, looking for API paths
+      - name: MPLADS dashboard scripts
         continue-on-error: true
         run: |
-          curl -s -m 60 -A "$UA" https://sansad.in/ls/members -o ls.html -w "HTTP %{http_code}\n"; wc -c ls.html
-          grep -oE '(src|href)="[^"]+\.js"' ls.html | sort -u | head -20
-          for js in $(grep -oE 'src="[^"]+\.js"' ls.html | sed 's/src="//;s/"$//' | head -15); do
-            case "$js" in http*) url="$js";; /*) url="https://sansad.in$js";; *) url="https://sansad.in/ls/$js";; esac
-            curl -s -m 60 -A "$UA" "$url" -o b.js; echo "== $url $(wc -c < b.js)"
-            grep -oE '"/?api_[a-z]+/[A-Za-z0-9_/.-]+' b.js | sort -u | head -80
-          done
-      - name: Sansad candidate endpoints
+          curl -s -m 60 -A "$UA" https://mplads.mospi.gov.in/libs/simplegrid/loksaba.js | head -c 6000; echo
+          echo "=== preLogin"
+          curl -s -m 60 -A "$UA" https://mplads.mospi.gov.in/libs/simplegrid/preLoginDashboard.js -o p.js
+          grep -nE "url|ajax|fetch|\.json|getJSON|\.zul|Servlet|/rest/|/api" p.js | head -60
+      - name: Sansad question and attendance API names in the app bundles
         continue-on-error: true
         run: |
-          for u in \
-            "https://sansad.in/api_ls/member/memberDetails?mpsno=5265&loksabha=18" \
-            "https://sansad.in/api_ls/question/qetFilteredQuestionsAns?loksabhaNo=18&mpCode=5265&page=1&size=5" \
-            "https://sansad.in/api_ls/attendance/getMemberAttendance?loksabha=18&mpsno=5265" \
-            "https://sansad.in/api_ls/member/getMemberAttendance?loksabha=18&mpsno=5265" \
-            ; do echo "== $u"; curl -s -m 60 -A "$UA" "$u" -w "\nHTTP %{http_code}\n" | head -c 1500; echo; done
-      - name: MPLADS eSAKSHI dashboard
+          for page in https://sansad.in/ls/questions/questions-and-answers https://sansad.in/ls/members https://sansad.in/ls/members/attendance; do
+            curl -s -m 60 -A "$UA" "$page" -o p.html -w "== $page %{http_code}\n"
+            for js in $(grep -oE 'src="/ls/_next/[^"]+\.js"' p.html | sed 's/src="//;s/"$//'); do
+              curl -s -m 60 -A "$UA" "https://sansad.in$js" -o b.js
+              grep -oE '.{0,80}(api_ls|qetFiltered|ttendance)[^"`]{0,200}' b.js | head -20
+            done
+          done 2>&1 | sort -u | head -150
+      - name: Sansad questions with different member filters
         continue-on-error: true
         run: |
-          curl -s -m 60 -A "$UA" https://mplads.mospi.gov.in/digigov/dashboard.html -o d.html -w "HTTP %{http_code}\n"; wc -c d.html
-          grep -oE '(src|href)="[^"]+"' d.html | sort -u | head -40
-          grep -oE "https?://[^\"' )]+" d.html | sort -u | head -40
-          for js in $(grep -oE 'src="[^"]+\.js[^"]*"' d.html | sed 's/src="//;s/"$//' | grep -v -E 'jquery|bootstrap|chart|cdn' | head -10); do
-            case "$js" in http*) url="$js";; /*) url="https://mplads.mospi.gov.in$js";; *) url="https://mplads.mospi.gov.in/digigov/$js";; esac
-            curl -s -m 60 -A "$UA" "$url" -o m.js; echo "== $url $(wc -c < m.js)"
-            grep -oE "(https?://[^\"' ]+|/[A-Za-z0-9_]+/[A-Za-z0-9_/.-]*(api|Api|API|json|Json|get|Get)[A-Za-z0-9_/.-]*)" m.js | sort -u | head -60
-          done
-      - name: Affidavits and MyNeta terms
-        continue-on-error: true
-        run: |
-          for u in https://affidavit.eci.gov.in/ https://myneta.info/ https://myneta.info/LokSabha2024/ https://adrindia.org/content/terms-use https://adrindia.org/ ; do
-            curl -s -L -m 60 -A "$UA" "$u" -o p.html -w "== $u HTTP %{http_code} %{size_download}\n"
-            grep -ioE '.{0,120}(terms|licen[cs]e|copyright|creative commons|reproduc)[^<]{0,160}' p.html | head -8
+          for q in "mpCode=5265" "memberCode=5265" "mpsno=5265" "member=5265" "mpNo=5265"; do
+            u="https://sansad.in/api_ls/question/qetFilteredQuestionsAns?loksabhaNo=18&$q&page=1&size=3&locale=en"
+            echo "== $q"; curl -s -m 60 -A "$UA" "$u" | python3 -c "import json,sys; d=json.load(sys.stdin); print([ (x['member'], x['date']) for x in d[0]['listOfQuestions']][:3], {k:v for k,v in d[0].items() if k!='listOfQuestions'})" 2>&1 | head -c 800; echo
           done
