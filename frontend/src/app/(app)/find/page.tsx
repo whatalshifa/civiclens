@@ -20,7 +20,7 @@ export default async function FindPage({ searchParams }: PageProps<"/find">) {
   const params = await searchParams;
   const raw = [params.q, params.pin].find((v) => typeof v === "string") ?? "";
   const query = readFindQuery(raw);
-  if (!query) redirect("/?pin=invalid");
+  if (!query) redirect("/services?pin=invalid");
   if ("pin" in query) redirect(`/pin/${query.pin}`);
 
   const { seats, places } = await api<PlaceSearch>(`/api/places?q=${encodeURIComponent(query.name)}`);

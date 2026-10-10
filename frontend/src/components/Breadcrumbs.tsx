@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 
 /** The parent pages of each section, after GOV.UK breadcrumbs: they name where you are, not the page itself. */
 const PARENTS: { match: RegExp; trail: { href: string; label: string }[] }[] = [
-  { match: /^\/(pin|find)(\/|$)/, trail: [{ href: "/", label: "Find your MP and MLA" }] },
+  { match: /^\/(pin|find)(\/|$)/, trail: [{ href: "/services#find", label: "Find your MP and MLA" }] },
   { match: /^\/seats\/.+/, trail: [{ href: "/seats", label: "Seats and MPs" }] },
   { match: /^\/laws\/.+/, trail: [{ href: "/laws", label: "Law library" }] },
   { match: /^\/accuracy$/, trail: [{ href: "/assistant", label: "Rights assistant" }] },
@@ -16,8 +16,8 @@ const PARENTS: { match: RegExp; trail: { href: string; label: string }[] }[] = [
 
 export function Breadcrumbs() {
   const path = usePathname();
-  if (path === "/") return null;
-  const trail = [{ href: "/", label: "Home" }, ...(PARENTS.find((p) => p.match.test(path))?.trail ?? [])];
+  if (path === "/services") return null;
+  const trail = [{ href: "/services", label: "Home" }, ...(PARENTS.find((p) => p.match.test(path))?.trail ?? [])];
   return (
     <nav aria-label="Breadcrumb" className="mt-3 print:hidden">
       <ol className="flex flex-wrap items-center gap-y-1 text-sm">
