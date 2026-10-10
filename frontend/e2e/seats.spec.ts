@@ -40,3 +40,26 @@ test("an unknown seat is a 404", async ({ page }) => {
   const response = await page.goto("/seats/ls-nowhere");
   expect(response?.status()).toBe(404);
 });
+
+test("an MP's record shows questions, attendance and fund, each beside the average", async ({ page }) => {
+  await page.goto("/seats/ls-kollam");
+  const record = page.getByRole("region", { name: "Record in office" });
+  await expect(record.getByRole("heading", { name: "In Parliament" })).toBeVisible();
+  await expect(record.getByText(/^Questions asked$/)).toBeVisible();
+  await expect(record.getByText(/Signed the register on \d+ of \d+ sitting days \(\d+%\)/)).toBeVisible();
+  await expect(record.getByText(/· average \d+%/).first()).toBeVisible();
+  await expect(record.getByRole("heading", { name: "MP fund (MPLADS)" })).toBeVisible();
+  await expect(record.getByText(/\d+ recommended, \d+ sanctioned, \d+ completed/)).toBeVisible();
+  await expect(record.getByText(/not as a score/)).toBeVisible();
+  // Every number links to the official page it came from.
+  await expect(record.locator("a.ref")).toHaveCount(3);
+});
+
+test("a minister's record says attendance isn't recorded instead of showing zero", async ({ page }) => {
+  await page.goto("/seats/ls-lucknow");
+  const record = page.getByRole("region", { name: "Record in office" });
+  await expect(
+    record.getByText(/Not recorded. Ministers and the Speaker don't sign the attendance register./),
+  ).toBeVisible();
+  await expect(record.getByText(/Signed the register/)).toHaveCount(0);
+});

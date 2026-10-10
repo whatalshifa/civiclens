@@ -27,6 +27,9 @@ export function ParliamentRecord({ record, notes }: { record: MemberRecord; note
         <dt className="text-muted">Questions asked</dt>
         <dd>
           {COUNT.format(record.questions)}
+          {record.days_signed === null && record.questions === 0 && (
+            <span className="text-muted"> (ministers answer questions rather than ask them)</span>
+          )}
           <Average>{COUNT.format(Math.round(record.questions_average))}</Average>
           <Ref n={notes.cite(record.questions_source)} source={record.questions_source} />
         </dd>
@@ -71,13 +74,13 @@ export function ParliamentRecord({ record, notes }: { record: MemberRecord; note
         </p>
       )}
       <p className="mt-3 text-xs text-muted">
-        Counted from the start of the 18th Lok Sabha in June 2024 to {formatDate(record.as_of)}. The average for all MPs
-        is there for context, not as a score.
+        Counted from the start of the 18th Lok Sabha in June 2024 to {formatDate(record.as_of)}. Averages are there for
+        context, not as a score, and leave out ministers and the Speaker.
       </p>
     </section>
   );
 }
 
 function Average({ children }: { children: React.ReactNode }) {
-  return <span className="text-muted"> · average for all MPs {children}</span>;
+  return <span className="text-muted"> · average {children}</span>;
 }

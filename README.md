@@ -18,6 +18,10 @@ words. Strictly nonpartisan: every fact links to the official record it came fro
 - **Every Lok Sabha seat, kept current.** All 543 seats and their sitting MPs, from the Lok Sabha's
   own list. A weekly data pipeline checks it and opens a pull request when something changes, so a
   person reviews every update before it goes live.
+- **What your MP does in office.** Questions asked and attendance from the Lok Sabha's own records,
+  and their local area development fund (MPLADS) from the government's dashboard: money available
+  and spent, and works recommended, sanctioned and completed. Each number sits beside the average
+  for context. There's never a score or a ranking.
 - **Search the law in plain words.** "Police won't register my FIR" finds BNSS section 173 (Zero FIR).
   Postgres full-text search ranks 71 sections of the Constitution and five Acts, and highlights why
   each one matched.

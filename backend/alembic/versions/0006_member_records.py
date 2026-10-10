@@ -1,4 +1,4 @@
-"""each MP's questions, attendance and MPLADS fund, with the averages for all MPs
+"""each MP's questions, attendance and MPLADS fund, with the averages for context
 
 Revision ID: 0006
 Revises: 0005

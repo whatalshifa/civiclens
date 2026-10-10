@@ -497,10 +497,12 @@ def load_catalog(session: Session, data_dir: Path = DATA_DIR, *, force: bool = F
     records = [r for r in catalog.records if r.seat in with_people]
     if records:
         as_of = sources[RECORD_SOURCES["questions"]].published_on
+        # Ministers and the Speaker don't sign the register or ask questions, so every average is
+        # for the other MPs: comparing a backbencher with a minister's zero would mislead.
         averages = dict(
-            questions_average=_average([r.questions for r in records]),
+            questions_average=_average([r.questions for r in records if r.attendance is not None]),
             attendance_average=_average([r.attendance for r in records]),
-            fund_spent_average=_average([r.spent_share for r in records]),
+            fund_spent_average=_average([r.spent_share for r in records if r.attendance is not None]),
         )
         session.flush()
         session.execute(
