@@ -20,7 +20,7 @@ export function Answer({ answer }: { answer: AnswerEvent }) {
       </div>
 
       {answer.rti_link && (
-        <div className="mt-6 flex flex-col gap-3 rounded-xl border border-teal-600/30 bg-accent-soft p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-6 flex flex-col gap-3 rounded-sm border border-teal-600/30 bg-accent-soft p-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm">
             <span className="font-semibold">Your RTI application is ready to fill in.</span> Add your name and address,
             then print or download it.

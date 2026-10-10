@@ -55,7 +55,7 @@ export function LetterPreview({
           <div
             role="radiogroup"
             aria-label="Language of the letter"
-            className="flex rounded-xl border border-line bg-surface p-0.5"
+            className="flex rounded-sm border border-line bg-surface p-0.5"
           >
             {(["en", "hi"] as const).map((lang) => (
               <button

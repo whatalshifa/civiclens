@@ -6,7 +6,7 @@ import { RTI_RULES, type Jurisdiction } from "@/lib/rti-states";
 export function RtiRuleCard({ jurisdiction }: { jurisdiction: Jurisdiction }) {
   const rule = RTI_RULES[jurisdiction];
   return (
-    <div className="rounded-xl bg-accent-soft p-4 text-sm" aria-live="polite">
+    <div className="rounded-sm bg-accent-soft p-4 text-sm" aria-live="polite">
       <p>
         <span className="font-semibold">Fee: ₹{rule.fee}</span>, under the {rule.rules}. Fees change, so check the
         amount on the office&apos;s notice board or website before paying. People below the poverty line pay nothing.

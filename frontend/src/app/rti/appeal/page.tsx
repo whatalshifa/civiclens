@@ -23,7 +23,7 @@ export default function AppealPage() {
           </Link>{" "}
           / First appeal
         </nav>
-        <h1 className="mt-3 text-3xl font-bold tracking-tight text-balance sm:text-4xl">Draft an RTI first appeal</h1>
+        <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">Draft an RTI first appeal</h1>
         <p className="mt-4 text-muted">
           If the office didn&apos;t reply within 30 days, refused without a good reason, or gave you incomplete
           information, you can appeal to the officer senior to the Public Information Officer, in the same office. Do it

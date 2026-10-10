@@ -53,7 +53,7 @@ export default async function PinPage({ params }: PageProps<"/pin/[pin]">) {
   return (
     <div>
       <p className="eyebrow">PIN code {place.pin}</p>
-      <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
+      <h1 className="mt-2 text-4xl font-extrabold tracking-tight sm:text-5xl">
         {place.area}
         <Ref n={placeRef} source={place.source} />
       </h1>
@@ -71,7 +71,7 @@ export default async function PinPage({ params }: PageProps<"/pin/[pin]">) {
         ))}
       </div>
 
-      <aside className="mt-8 rounded-2xl bg-sunken p-5 text-sm">
+      <aside className="mt-8 rounded-none bg-sunken p-5 text-sm">
         <p className="font-semibold">How we show representatives</p>
         <p className="mt-1 text-muted">
           Every representative gets the same fields, in the same order, with no ratings, photos or party colours. Each
@@ -103,7 +103,7 @@ async function NotCovered({ pin }: { pin: string }) {
   return (
     <div className="mx-auto max-w-2xl">
       <p className="eyebrow">PIN code {pin}</p>
-      <h1 className="mt-2 text-3xl font-bold tracking-tight">We don&apos;t have this PIN code yet</h1>
+      <h1 className="mt-2 text-4xl font-extrabold tracking-tight">We don&apos;t have this PIN code yet</h1>
       <p className="mt-3 text-muted">
         CivicLens has{" "}
         <Link href="/seats" className="link">

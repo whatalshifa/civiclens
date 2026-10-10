@@ -17,7 +17,7 @@ export default async function DataPage() {
   return (
     <div className="max-w-3xl">
       <p className="eyebrow">Open data</p>
-      <h1 className="mt-3 text-3xl font-bold tracking-tight text-balance sm:text-4xl">Download the data</h1>
+      <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">Download the data</h1>
       <p className="mt-4 text-muted">
         Everything CivicLens shows, as spreadsheets you can open in Excel or Google Sheets. They are the same tables the
         pages read, refreshed every week. Every row links to the official source it came from.

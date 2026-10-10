@@ -23,7 +23,7 @@ export default function ConsumerPage() {
           </Link>{" "}
           / Consumer complaint
         </nav>
-        <h1 className="mt-3 text-3xl font-bold tracking-tight text-balance sm:text-4xl">Draft a consumer complaint</h1>
+        <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">Draft a consumer complaint</h1>
         <p className="mt-4 text-muted">
           Write to the seller or service provider first, and give them a fair time to put it right. If they don&apos;t,
           this letter is your proof that you tried, when you take the case to the Consumer Commission.

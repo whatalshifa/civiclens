@@ -41,7 +41,7 @@ export default function LettersPage() {
     <div>
       <div className="max-w-3xl">
         <p className="eyebrow">Letters</p>
-        <h1 className="mt-3 text-3xl font-bold tracking-tight text-balance sm:text-4xl">Letters you can send</h1>
+        <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">Letters you can send</h1>
         <p className="mt-4 text-muted">
           Fill in a short form and the letter is written as you type, in English or Hindi, citing the law it relies on.
           Everything you type stays in your browser.

@@ -32,7 +32,7 @@ export default async function FindPage({ searchParams }: PageProps<"/find">) {
   return (
     <div className="mx-auto max-w-2xl">
       <p className="eyebrow">Find your representatives</p>
-      <h1 className="mt-2 text-3xl font-bold tracking-tight">
+      <h1 className="mt-2 text-4xl font-extrabold tracking-tight">
         {seats.length + places.length > 0 ? <>Matches for &ldquo;{query.name}&rdquo;</> : <>Nothing matches &ldquo;{query.name}&rdquo;</>}
       </h1>
 

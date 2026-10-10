@@ -86,7 +86,7 @@ export function AppealDrafter({ today }: { today: string }) {
     <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-10">
       <form className="space-y-8 print:hidden" onSubmit={(e) => e.preventDefault()} aria-label="First appeal details">
         {saved && (
-          <div className="flex flex-col gap-3 rounded-xl border border-teal-600/30 bg-accent-soft p-4 text-sm sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-3 rounded-sm border border-teal-600/30 bg-accent-soft p-4 text-sm sm:flex-row sm:items-center sm:justify-between">
             <p>
               You saved an application sent on <strong>{formatDate(saved.sentOn)}</strong>
               {saved.authority.trim() ? ` to ${saved.authority.trim()}` : ""}.

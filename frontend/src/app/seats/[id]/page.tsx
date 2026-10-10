@@ -63,7 +63,7 @@ export default async function SeatPageView({ params }: PageProps<"/seats/[id]">)
           </>
         )}
       </p>
-      <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
+      <h1 className="mt-2 text-4xl font-extrabold tracking-tight sm:text-5xl">
         {seat.name}
         <Ref n={seatRef} source={page.source} />
       </h1>
@@ -114,7 +114,7 @@ export default async function SeatPageView({ params }: PageProps<"/seats/[id]">)
         </section>
       </div>
 
-      <aside className="mt-8 rounded-2xl bg-sunken p-5 text-sm">
+      <aside className="mt-8 rounded-none bg-sunken p-5 text-sm">
         <p className="font-semibold">Spotted a mistake?</p>
         <p className="mt-1 text-muted">
           Seats and members are checked against the Lok Sabha&apos;s own list every week.{" "}
