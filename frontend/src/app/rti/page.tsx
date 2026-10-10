@@ -56,18 +56,18 @@ export default async function RtiPage({ searchParams }: PageProps<"/rti">) {
     <div>
       <div className="max-w-3xl print:hidden">
         <p className="eyebrow">Right to Information</p>
-        <h1 className="mt-3 text-3xl font-bold tracking-tight text-balance sm:text-4xl">Draft an RTI application</h1>
+        <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">Draft an RTI application</h1>
         <p className="mt-4 text-muted">
           Any citizen can ask a government office for its records and information, and it must answer within 30 days.
           Fill in the form and your application is written as you type, in English or Hindi, ready to print and send.
         </p>
         {authority && (
-          <p className="mt-4 rounded-xl bg-accent-soft p-3 text-sm">
+          <p className="mt-4 rounded-sm bg-accent-soft p-3 text-sm">
             The rights assistant filled in the office and the questions. Check them, then add your own details.
           </p>
         )}
         <noscript>
-          <p className="mt-4 rounded-xl bg-sunken p-3 text-sm">
+          <p className="mt-4 rounded-sm bg-sunken p-3 text-sm">
             The letter below updates as you type when JavaScript is on. Without it, you can copy the template and fill
             in the blanks by hand.
           </p>

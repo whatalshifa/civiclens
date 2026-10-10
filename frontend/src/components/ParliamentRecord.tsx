@@ -22,11 +22,11 @@ export function ParliamentRecord({ record, notes }: { record: MemberRecord; note
   const fund = record.fund_allocated !== null && record.fund_spent !== null ? record : null;
   return (
     <section className="mt-5 border-t border-line pt-4" aria-label="Record in office">
-      <h3 className="text-xs font-semibold tracking-wide text-muted uppercase">In Parliament</h3>
+      <h3 className="eyebrow !text-muted">In Parliament</h3>
       <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
         <dt className="text-muted">Questions asked</dt>
         <dd>
-          {COUNT.format(record.questions)}
+          <span className="font-mono">{COUNT.format(record.questions)}</span>
           {record.days_signed === null && record.questions === 0 && (
             <span className="text-muted"> (ministers answer questions rather than ask them)</span>
           )}
@@ -37,7 +37,8 @@ export function ParliamentRecord({ record, notes }: { record: MemberRecord; note
         <dd>
           {attended !== null ? (
             <>
-              Signed the register on {record.days_signed} of {record.sitting_days} sitting days (
+              Signed the register on <span className="font-mono">{record.days_signed}</span> of{" "}
+              <span className="font-mono">{record.sitting_days}</span> sitting days (
               {formatPercent(100 * attended)})<Average>{formatPercent(record.attendance_average)}</Average>
             </>
           ) : (
@@ -47,17 +48,17 @@ export function ParliamentRecord({ record, notes }: { record: MemberRecord; note
         </dd>
       </dl>
 
-      <h3 className="mt-4 text-xs font-semibold tracking-wide text-muted uppercase">MP fund (MPLADS)</h3>
+      <h3 className="eyebrow mt-4 !text-muted">MP fund (MPLADS)</h3>
       {fund ? (
         <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
           <dt className="text-muted">Available</dt>
           <dd>
-            {formatRupees(fund.fund_allocated!)}
+            <span className="font-mono">{formatRupees(fund.fund_allocated!)}</span>
             <Ref n={notes.cite(record.fund_source)} source={record.fund_source} />
           </dd>
           <dt className="text-muted">Spent so far</dt>
           <dd>
-            {formatRupees(fund.fund_spent!)}
+            <span className="font-mono">{formatRupees(fund.fund_spent!)}</span>
             {fund.fund_allocated! > 0 && <> ({formatPercent((100 * fund.fund_spent!) / fund.fund_allocated!)})</>}
             <Average>{formatPercent(record.fund_spent_average)}</Average>
           </dd>

@@ -121,7 +121,7 @@ export default async function SearchPage({ searchParams }: PageProps<"/laws/sear
         </section>
       )}
 
-      <p className="mt-10 rounded-xl bg-sunken p-4 text-sm text-muted">
+      <p className="mt-10 rounded-sm bg-sunken p-4 text-sm text-muted">
         Search looks for your words in our plain-language summaries and the sections&apos; titles. It doesn&apos;t
         give legal advice. For help with a case, your District Legal Services Authority offers free legal aid to
         those who qualify.

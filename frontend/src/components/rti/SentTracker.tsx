@@ -45,7 +45,7 @@ export function SentTracker({ application, today }: { application: Omit<SentRti,
   if (saved) {
     const due = replyDue(saved.sentOn, saved.lifeOrLiberty);
     return (
-      <section aria-labelledby={`${id}-h`} className="mt-6 rounded-xl border border-line bg-surface p-4 text-sm">
+      <section aria-labelledby={`${id}-h`} className="mt-6 rounded-sm border border-line bg-surface p-4 text-sm">
         <h3 id={`${id}-h`} className="font-semibold">
           Sent on {formatDate(saved.sentOn)}
           {saved.authority.trim() ? ` to ${saved.authority.trim()}` : ""}
@@ -79,7 +79,7 @@ export function SentTracker({ application, today }: { application: Omit<SentRti,
   }
 
   return (
-    <section aria-labelledby={`${id}-h`} className="mt-6 rounded-xl border border-line bg-surface p-4 text-sm">
+    <section aria-labelledby={`${id}-h`} className="mt-6 rounded-sm border border-line bg-surface p-4 text-sm">
       <h3 id={`${id}-h`} className="font-semibold">
         Sent it? Track the reply
       </h3>

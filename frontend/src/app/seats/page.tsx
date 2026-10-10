@@ -19,7 +19,7 @@ export default async function SeatsPage() {
   return (
     <div>
       <p className="eyebrow">Lok Sabha</p>
-      <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">Every seat and its MP</h1>
+      <h1 className="mt-2 text-4xl font-extrabold tracking-tight sm:text-6xl">Every seat and its MP</h1>
       <p className="mt-3 max-w-2xl text-muted">
         All {total} Lok Sabha constituencies, by state and then name. {vacant > 0 && <>{vacant} are vacant. </>}
         Members come from the Lok Sabha&apos;s own list, checked every week; open a seat to see the source.
@@ -40,8 +40,8 @@ export default async function SeatsPage() {
       <div className="mt-10 space-y-10">
         {states.map((s) => (
           <section key={s.state} aria-labelledby={slugify(s.state)} className="scroll-mt-20">
-            <h2 id={slugify(s.state)} className="text-xl font-semibold">
-              {s.state} <span className="text-base font-normal text-muted">· {s.seats.length}</span>
+            <h2 id={slugify(s.state)} className="rule-heavy flex items-baseline justify-between pt-2 text-2xl font-extrabold">
+              {s.state} <span className="font-mono text-sm font-normal text-muted">{s.seats.length} seats</span>
             </h2>
             <ul className="mt-3 grid gap-x-6 sm:grid-cols-2 lg:grid-cols-3">
               {s.seats.map((seat) => (

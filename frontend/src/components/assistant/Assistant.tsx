@@ -216,7 +216,7 @@ export function Result({ run, headingRef }: { run: Run; headingRef?: React.Ref<H
         )}
 
         {run.off && (
-          <div className="mt-6 rounded-xl bg-sunken p-4 text-sm">
+          <div className="mt-6 rounded-sm bg-sunken p-4 text-sm">
             <p>{run.off}</p>
             <p className="mt-2">
               <Link href={`/laws/search?q=${encodeURIComponent(run.question.slice(0, 200))}`} className="link">
@@ -229,7 +229,7 @@ export function Result({ run, headingRef }: { run: Run; headingRef?: React.Ref<H
         {run.error && (
           <p
             role="alert"
-            className="mt-6 rounded-xl border border-rose-300/60 bg-rose-50 p-4 text-sm text-rose-900 dark:border-rose-500/30 dark:bg-rose-950/40 dark:text-rose-100"
+            className="mt-6 rounded-sm border border-rose-300/60 bg-rose-50 p-4 text-sm text-rose-900 dark:border-rose-500/30 dark:bg-rose-950/40 dark:text-rose-100"
           >
             {run.error}
           </p>

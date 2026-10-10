@@ -28,7 +28,7 @@ export default async function AccuracyPage() {
   return (
     <div className="max-w-3xl">
       <p className="eyebrow">Accuracy</p>
-      <h1 className="mt-3 text-3xl font-bold tracking-tight text-balance sm:text-4xl">
+      <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
         How accurate is the rights assistant?
       </h1>
       <p className="mt-4 text-muted">
@@ -41,7 +41,7 @@ export default async function AccuracyPage() {
           Live answers
         </h2>
         {live.runs === 0 ? (
-          <p className="mt-3 rounded-xl bg-sunken p-4 text-sm">
+          <p className="mt-3 rounded-sm bg-sunken p-4 text-sm">
             None yet. The AI is switched off on this site for now, so the assistant answers only its prepared sample
             questions. These numbers will start counting when it is switched on.
           </p>

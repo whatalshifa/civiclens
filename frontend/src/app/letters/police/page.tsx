@@ -23,7 +23,7 @@ export default function PolicePage() {
           </Link>{" "}
           / Police complaint
         </nav>
-        <h1 className="mt-3 text-3xl font-bold tracking-tight text-balance sm:text-4xl">
+        <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
           Police won&apos;t register your FIR?
         </h1>
         <p className="mt-4 text-muted">
@@ -35,7 +35,7 @@ export default function PolicePage() {
           </Link>
           .
         </p>
-        <p className="mt-4 rounded-xl bg-accent-soft p-3 text-sm">
+        <p className="mt-4 rounded-sm bg-accent-soft p-3 text-sm">
           <strong>If anyone is in danger now, call 112.</strong> You can report an FIR at any police station, even if it
           happened elsewhere (a &quot;zero FIR&quot;), and many states let you file one online.
         </p>

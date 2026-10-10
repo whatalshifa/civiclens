@@ -22,7 +22,7 @@ export default async function AssistantPage({ searchParams }: PageProps<"/assist
     <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-14">
       <div className="min-w-0">
         <p className="eyebrow">Rights assistant{info.ai_enabled ? "" : " · demo"}</p>
-        <h1 className="mt-3 text-3xl font-bold tracking-tight text-balance sm:text-4xl">
+        <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
           Ask what the law says about your situation
         </h1>
         <p className="mt-4 max-w-2xl text-muted">
@@ -46,7 +46,7 @@ export default async function AssistantPage({ searchParams }: PageProps<"/assist
             <li>It stays out of politics: no opinions on parties, politicians or governments.</li>
           </ul>
         </div>
-        <div className="rounded-2xl bg-sunken p-5 text-muted">
+        <div className="rounded-none bg-sunken p-5 text-muted">
           <p>
             <span className="font-semibold text-foreground">Not legal advice.</span> In an emergency, call{" "}
             <a href="tel:112" className="link">

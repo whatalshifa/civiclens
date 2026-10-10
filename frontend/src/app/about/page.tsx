@@ -30,7 +30,7 @@ export default async function AboutPage() {
   return (
     <div className="max-w-3xl">
       <p className="eyebrow">About</p>
-      <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">How CivicLens works</h1>
+      <h1 className="mt-2 text-4xl font-extrabold tracking-tight sm:text-5xl">How CivicLens works</h1>
       <p className="prose-civic mt-4 text-muted">
         CivicLens helps people in India find out who represents them and what the law says about their rights. It is an
         independent student project, not a government website, and it doesn&apos;t give legal advice.

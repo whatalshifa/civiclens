@@ -47,7 +47,7 @@ export function RepresentativeCard({ seat, notes, yours = true }: { seat: Seat; 
       </p>
       {rep ? (
         <>
-          <h2 id={`${seat.id}-name`} className="mt-2 text-2xl font-bold tracking-tight">
+          <h2 id={`${seat.id}-name`} className="mt-2 text-3xl font-extrabold tracking-tight">
             {rep.name}
             <Ref n={notes.cite(rep.source)} source={rep.source} />
           </h2>
@@ -92,7 +92,7 @@ export function RepresentativeCard({ seat, notes, yours = true }: { seat: Seat; 
         </>
       )}
       {seat.partial && (
-        <p className="mt-4 rounded-lg bg-sunken px-3 py-2 text-sm">
+        <p className="mt-4 rounded-sm bg-sunken px-3 py-2 text-sm">
           Only part of this PIN code is in {seat.name}. Check your voter ID card or the{" "}
           <a href="https://electoralsearch.eci.gov.in/" className="link" target="_blank" rel="noopener noreferrer">
             Electoral Search
@@ -102,7 +102,7 @@ export function RepresentativeCard({ seat, notes, yours = true }: { seat: Seat; 
       )}
       <p className="mt-5 text-sm text-muted">{ROLE[seat.house]}</p>
       <div className="mt-auto pt-5">
-        <p className="text-xs font-semibold tracking-wide text-muted uppercase">Check their record yourself</p>
+        <p className="eyebrow !text-muted">Check their record yourself</p>
         <ul className="mt-2 flex flex-wrap gap-2">
           {LOOK_UP[seat.house].map((link) => (
             <li key={link.href}>

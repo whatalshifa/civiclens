@@ -4,29 +4,32 @@
    "System" (the default) copies the device setting; the switch in the header can pin light or dark. */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Calm, institutional colours. The accent is a deep teal, chosen because it isn't the colour of
-   any major Indian party; party names are always plain text, never coloured. */
+/* A public gazette: black ink on newsprint, with heavy rules between sections. The one colour is
+   a deep teal, chosen because it isn't the colour of any major Indian party; party names are always
+   plain text, never coloured. */
 :root {
-  --background: #f6f7f9;
-  --foreground: #0f172a;
+  --background: #f5f5f0;
+  --foreground: #111816;
   --surface: #ffffff;
-  --sunken: #eef1f4;
-  --muted: #556070;
-  --border: #dde2e8;
+  --sunken: #ebece6;
+  --muted: #535d5a;
+  --border: #d5d8d1;
+  --rule: #111816;
   --accent: #0f6b63;
-  --accent-soft: #e3f2ef;
+  --accent-soft: #e1efec;
   --focus: #0f766e;
   --mark: #fdf0b8;
   color-scheme: light;
 }
 
 .dark {
-  --background: #0a0f14;
-  --foreground: #e6edf3;
-  --surface: #111821;
-  --sunken: #18212c;
-  --muted: #9aa7b5;
-  --border: #253140;
+  --background: #0b1110;
+  --foreground: #e7ecea;
+  --surface: #121a19;
+  --sunken: #19231f;
+  --muted: #9aa8a4;
+  --border: #26332f;
+  --rule: #e7ecea;
   --accent: #5ad1c0;
   --accent-soft: #0f2a29;
   --focus: #5ad1c0;
@@ -43,13 +46,17 @@
   --color-line: var(--border);
   --color-accent: var(--accent);
   --color-accent-soft: var(--accent-soft);
-  --font-sans: var(--font-geist-sans);
+  --color-rule: var(--rule);
+  /* Public Sans for reading, Archivo pressed narrow for headlines, JetBrains Mono for numbers. */
+  --font-sans: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-archivo), var(--font-public-sans), ui-sans-serif, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-family: var(--font-public-sans), system-ui, sans-serif;
   text-rendering: optimizeLegibility;
 }
 
@@ -61,8 +68,15 @@ body {
   mark {
     background: var(--mark);
     color: var(--foreground);
-    border-radius: 0.2rem;
+    border-radius: 0.1rem;
     padding: 0 0.1rem;
+  }
+  /* Headlines: narrow and heavy, like a newspaper's. */
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-stretch: 80%;
   }
   /* Leave room for the sticky header when jumping to a section. */
   [id] {
@@ -83,11 +97,11 @@ body {
 
 @layer components {
   .card {
-    @apply rounded-2xl border border-line bg-surface shadow-[0_1px_2px_rgb(15_23_42/0.05)];
+    @apply rounded-none border border-line border-t-[3px] border-t-rule bg-surface;
   }
 
   .btn {
-    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-transparent px-4 py-2 text-sm
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-sm border border-transparent px-4 py-2 text-sm
       font-semibold whitespace-nowrap transition-colors select-none
       disabled:cursor-not-allowed disabled:opacity-60;
   }
@@ -102,25 +116,25 @@ body {
     @apply text-muted hover:bg-sunken hover:text-foreground;
   }
   .btn-sm {
-    @apply min-h-8 rounded-lg px-3 py-1;
+    @apply min-h-8 rounded-sm px-3 py-1;
   }
 
   .icon-btn {
-    @apply inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted transition-colors
+    @apply inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-sm text-muted transition-colors
       hover:bg-sunken hover:text-foreground;
   }
 
   .chip {
-    @apply inline-flex min-h-9 items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1 text-sm
+    @apply inline-flex min-h-9 items-center gap-1.5 rounded-sm border border-line bg-surface px-3 py-1 text-sm
       text-foreground transition-colors hover:border-teal-600/50 hover:bg-accent-soft;
   }
 
   .badge {
-    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold whitespace-nowrap;
+    @apply inline-flex items-center gap-1 rounded-sm px-2 py-0.5 text-xs font-semibold whitespace-nowrap;
   }
 
   .input {
-    @apply block min-h-12 w-full rounded-xl border border-line bg-surface px-4 py-2 text-foreground outline-none
+    @apply block min-h-12 w-full rounded-sm border border-line bg-surface px-4 py-2 text-foreground outline-none
       transition placeholder:text-muted/80 focus:border-teal-600 focus:ring-4 focus:ring-teal-600/15
       focus-visible:outline-none;
   }
@@ -129,18 +143,24 @@ body {
     @apply font-medium text-accent underline-offset-4 hover:underline;
   }
 
+  /* Labels set like the form numbers and section marks of an official document. */
   .eyebrow {
-    @apply text-xs font-semibold tracking-[0.14em] text-accent uppercase;
+    @apply font-mono text-[0.7rem] font-medium tracking-[0.12em] text-accent uppercase;
+  }
+
+  /* A section opens under a heavy rule, like a new column in a gazette. */
+  .rule-heavy {
+    @apply border-t-[3px] border-rule;
   }
 
   .ref {
-    @apply ml-0.5 align-super text-[0.68rem] font-semibold text-accent no-underline hover:underline;
+    @apply ml-0.5 align-super font-mono text-[0.68rem] font-medium text-accent no-underline hover:underline;
   }
 
   /* A citation in the assistant's answer: a small numbered pill linking to the section. */
   .cite {
-    @apply inline-flex h-[1.15rem] min-w-[1.15rem] items-center justify-center rounded-full bg-accent-soft px-1
-      text-[0.68rem] leading-none font-semibold text-accent no-underline hover:bg-teal-700 hover:text-white;
+    @apply inline-flex h-[1.15rem] min-w-[1.15rem] items-center justify-center rounded-sm bg-accent-soft px-1
+      font-mono text-[0.68rem] leading-none font-medium text-accent no-underline hover:bg-teal-700 hover:text-white;
   }
 
   .field-label {
@@ -152,7 +172,7 @@ body {
   }
 
   .skeleton {
-    @apply animate-pulse rounded-lg bg-sunken;
+    @apply animate-pulse rounded-sm bg-sunken;
   }
 
   .prose-civic {

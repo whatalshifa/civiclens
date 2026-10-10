@@ -30,7 +30,7 @@ export default async function OldToNewPage({ searchParams }: PageProps<"/laws/ol
         </Link>{" "}
         / Old to new sections
       </nav>
-      <h1 className="mt-3 text-3xl font-bold tracking-tight text-balance sm:text-4xl">
+      <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
         Find the new number for an old section
       </h1>
       <p className="mt-4 max-w-3xl text-muted">
@@ -75,7 +75,7 @@ export default async function OldToNewPage({ searchParams }: PageProps<"/laws/ol
             Result
           </h2>
           {result.matches.length === 0 ? (
-            <p className="rounded-xl bg-sunken p-4 text-sm">
+            <p className="rounded-sm bg-sunken p-4 text-sm">
               {result.numbers.length === 0
                 ? "Type a section number, like IPC 420 or CrPC 154."
                 : `We don't have ${result.numbers.join(", ")} in the tables below yet. Check the official correspondence tables linked at the bottom of this page.`}
@@ -92,7 +92,7 @@ export default async function OldToNewPage({ searchParams }: PageProps<"/laws/ol
         </section>
       )}
 
-      <p className="mt-8 max-w-3xl rounded-xl bg-accent-soft px-4 py-3 text-sm">
+      <p className="mt-8 max-w-3xl rounded-sm bg-accent-soft px-4 py-3 text-sm">
         An offence committed before 1 July 2024 is still charged under the old law. Check the official text before
         relying on a number.
       </p>
@@ -110,7 +110,7 @@ export default async function OldToNewPage({ searchParams }: PageProps<"/laws/ol
             . {code.sections.length} common sections.
           </p>
           <div
-            className="mt-4 overflow-x-auto rounded-xl border border-line"
+            className="mt-4 overflow-x-auto rounded-sm border border-line"
             tabIndex={0}
             role="region"
             aria-label={`${code.short_name} to ${code.new_act_short_name} table`}

@@ -34,7 +34,7 @@ export default async function ActPage({ params }: PageProps<"/laws/[act]">) {
         </Link>{" "}
         / {act.short_name}
       </nav>
-      <h1 className="mt-3 text-3xl font-bold tracking-tight text-balance sm:text-4xl">{act.title}</h1>
+      <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">{act.title}</h1>
       <p className="mt-1 text-sm text-muted">{act.citation}</p>
       <p className="prose-civic mt-4 max-w-3xl">{act.summary}</p>
       <div className="mt-5 flex flex-wrap gap-3">
@@ -65,7 +65,7 @@ export default async function ActPage({ params }: PageProps<"/laws/[act]">) {
         </aside>
 
         <div className="space-y-4">
-          <p className="rounded-xl bg-accent-soft px-4 py-3 text-sm">
+          <p className="rounded-sm bg-accent-soft px-4 py-3 text-sm">
             <strong>These are plain-language summaries written by CivicLens, not the law itself.</strong> They are
             simplified and may leave out conditions and exceptions. Read the official text before relying on them.
           </p>
@@ -106,7 +106,7 @@ function Contents({ act }: { act: Act }) {
     <ol className="mt-2 space-y-1 text-sm">
       {act.sections.map((s) => (
         <li key={s.anchor}>
-          <a href={`#${s.anchor}`} className="flex gap-2 rounded-lg px-2 py-1.5 hover:bg-sunken">
+          <a href={`#${s.anchor}`} className="flex gap-2 rounded-sm px-2 py-1.5 hover:bg-sunken">
             <span className="w-12 shrink-0 font-mono text-xs leading-5 text-muted">{s.number}</span>
             <span>{s.title}</span>
           </a>
