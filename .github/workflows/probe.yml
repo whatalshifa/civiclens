@@ -7,76 +7,37 @@ jobs:
     env:
       UA: "Mozilla/5.0 (X11; Linux x86_64) CivicLens data pipeline (https://github.com/whatalshifa/civiclens)"
     steps:
-      - name: Member keys (one member, contact fields dropped)
+      - name: Question totals for one member
         continue-on-error: true
         run: |
-          curl -s -m 60 -A "$UA" "https://sansad.in/api_ls/member?loksabha=18&page=1&size=2" -o m.json
-          python3 - <<'PY'
-          import json
-          d = json.load(open("m.json"))
-          m = d["membersDtoList"][0]
-          print(sorted(m.keys()))
-          print({k: v for k, v in m.items() if any(s in k.lower() for s in ("no", "code", "id", "sno", "name"))})
-          PY
-      - name: Sessions
+          curl -s -m 60 -A "$UA" "https://sansad.in/api_ls/question/member/qetFilteredQuestionsAns?loksabhaNo=18&memberCode=5814&page=1&size=2&locale=en" -o q.json
+          python3 -c "import json; d=json.load(open('q.json')); print({k:v for k,v in d[0].items() if k!='listOfQuestions'}); print([(q['member'],q['type'],q['date'],q['sessionNo']) for q in d[0]['listOfQuestions']])"
+          curl -s -m 60 -A "$UA" "https://sansad.in/api_ls/question/qetFilteredQuestionsAns?loksabhaNo=18&page=1&size=1&locale=en" | python3 -c "import json,sys; d=json.load(sys.stdin); print({k:v for k,v in d[0].items() if k!='listOfQuestions'})"
+      - name: Attendance per session, member 5814, and how many members per session
         continue-on-error: true
         run: |
-          curl -s -m 60 -A "$UA" "https://sansad.in/api_ls/business/AllLoksabhaAndSessionDates" | head -c 1500; echo
-      - name: Attendance endpoints
-        continue-on-error: true
-        run: |
-          MPSNO=$(python3 -c "import json; m=json.load(open('m.json'))['membersDtoList'][0]; print(m.get('mpsno') or m.get('mpSno') or m.get('mpCode') or '')")
-          echo "mpsno=$MPSNO"
-          for u in \
-            "member/getMemberAttendanceByMpsno?loksabha=18&mpsno=$MPSNO&locale=en" \
-            "member/getMemberAttendanceByMpsno?mpsno=$MPSNO" \
-            "member/getMemberAttendanceMemberWise?loksabha=18&session=5&locale=en" \
-            "member/getMemberAttendanceMemberWise?loksabha=18&session=5&mpsno=$MPSNO&locale=en" \
-            "member/getMemberAttendanceMonthWise?loksabha=18&session=5&locale=en" \
-            "member/attendance/session-dates?loksabha=18&session=5" \
-            "member/statistical-data?fieldName=attendance&loksabha=18&locale=en" \
-            "member/statistical-data?fieldName=questions&loksabha=18&locale=en" \
-            ; do
-            echo "== $u"; curl -s -m 60 -A "$UA" "https://sansad.in/api_ls/$u" -w "\n[%{http_code}]" | head -c 1200; echo
+          for s in 1 2 3 4 5 6 7 8 9; do
+            curl -s -m 60 -A "$UA" "https://sansad.in/api_ls/member/getMemberAttendanceMemberWise?loksabha=18&session=$s&locale=en" -o a.json
+            n=$(curl -s -m 60 -A "$UA" "https://sansad.in/api_ls/member/attendance/session-dates?loksabha=18&session=$s" | python3 -c "import json,sys; print(len(json.load(sys.stdin)))" 2>/dev/null)
+            python3 -c "import json; d=json.load(open('a.json')); me=[x for x in d if x['mpsno']==5814]; z=sum(1 for x in d if x['signedDaysCount']==0); print('session $s days=$n members',len(d),'zero',z,'me',me, 'keys', sorted(d[0].keys()) if d else None)" 2>&1 | head -c 600; echo
           done
-      - name: Question endpoints for one member
+      - name: MPLADS combos
         continue-on-error: true
         run: |
-          MPSNO=$(python3 -c "import json; m=json.load(open('m.json'))['membersDtoList'][0]; print(m.get('mpsno') or m.get('mpSno') or m.get('mpCode') or '')")
-          for u in \
-            "question/member/qetFilteredQuestionsAns?loksabhaNo=18&mpsno=$MPSNO&page=1&size=3&locale=en" \
-            "question/member/qetFilteredQuestionsAns?loksabhaNo=18&mpCode=$MPSNO&page=1&size=3&locale=en" \
-            "question/member/qetFilteredQuestionsAns?loksabhaNo=18&memberCode=$MPSNO&page=1&size=3&locale=en" \
-            "question/qetAllQuestionsForMember?loksabhaNo=18&mpsno=$MPSNO&locale=en" \
-            "question/qetAllQuestionsForMember?mpsno=$MPSNO" \
-            "question/getMembers?lkNo=18" \
-            ; do
-            echo "== $u"; curl -s -m 60 -A "$UA" "https://sansad.in/api_ls/$u" -w "\n[%{http_code}]" | head -c 1200; echo
-          done
-      - name: Find the question parameters in the app bundle
-        continue-on-error: true
-        run: |
-          curl -s -m 60 -A "$UA" https://sansad.in/ls/questions/questions-and-answers -o p.html
-          for js in $(grep -oE 'src="/ls/_next/[^"]+\.js"' p.html | sed 's/src="//;s/"$//'); do
-            curl -s -m 60 -A "$UA" "https://sansad.in$js" -o b.js
-            grep -oE '.{0,300}(getFilterSearchData|getAllQuestions)\.API_URL.{0,400}' b.js | head -5
-          done
-      - name: MPLADS tiles and rest endpoints
-        continue-on-error: true
-        run: |
-          curl -s -m 60 -A "$UA" -X POST -H "Content-Type: application/json" -d '{"uname":"0,0,0,2"}' https://mplads.mospi.gov.in/rest/PreLoginDashboardData/getTilesData -w "\n[%{http_code}]" | head -c 1500; echo
+          P(){ echo "== $1 $2"; curl -s -m 60 -A "$UA" -X POST -H "Content-Type: application/json" -d "$2" "https://mplads.mospi.gov.in/rest/PreLoginDashboardData/$1" -w "\n[%{http_code}]" | head -c 900; echo; }
+          P getStateData '{"uname":"0,0,0,2"}'
+          P getStateData '{"uname":"7"}'
+          P getMpNamesData '{"uname":"0,0,0,2"}'
+          P getMpAndConstCombo '{"uname":"0,0,0,2"}'
+          P getMpAndConstCombo '{"uname":"7"}'
+          P getConstituencyData '{"uname":"0,0,0,2"}'
+          P getTilesData '{"uname":"0,0,0,7"}'
           curl -s -m 60 -A "$UA" https://mplads.mospi.gov.in/libs/simplegrid/preLoginDashboard.js -o p.js
           python3 - <<'PY'
           import re
           s = open("p.js", encoding="utf-8", errors="ignore").read()
-          s2 = re.sub(r"\\u([0-9a-fA-F]{4})", lambda m: chr(int(m.group(1), 16)), s)
-          s2 = re.sub(r"\\x([0-9a-fA-F]{2})", lambda m: chr(int(m.group(1), 16)), s2)
-          found = set(re.findall(r"rest/[A-Za-z0-9_/]+", s2))
-          strings = re.findall(r"'([^']{3,80})'|\"([^\"]{3,80})\"", s2)
-          for a, b in strings:
-              t = a or b
-              for c in (t, t[::-1]):
-                  if "rest" in c or "Dashboard" in c or "get" in c[:3]:
-                      found.add(c)
-          print(sorted(found)[:120])
+          s = re.sub(r"\\u([0-9a-fA-F]{4})", lambda m: chr(int(m.group(1), 16)), s)
+          s = re.sub(r"\\x([0-9a-fA-F]{2})", lambda m: chr(int(m.group(1), 16)), s)
+          for m in re.finditer(r"uname", s):
+              print("...", s[max(0, m.start()-250): m.end()+150].replace("\n", " "))
           PY
