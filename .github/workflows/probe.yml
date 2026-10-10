@@ -5,44 +5,42 @@ jobs:
   probe:
     runs-on: ubuntu-latest
     env:
-      UA: "CivicLens data pipeline (https://github.com/whatalshifa/civiclens)"
+      UA: "Mozilla/5.0 (X11; Linux x86_64) CivicLens data pipeline (https://github.com/whatalshifa/civiclens)"
     steps:
-      - name: Sansad members (public fields only)
+      - name: Sansad app bundles, looking for API paths
         continue-on-error: true
         run: |
-          python3 - <<'PY'
-          import json, urllib.request, os
-          rows = []
-          page = 1
-          while True:
-              url = f"https://sansad.in/api_ls/member?loksabha=18&page={page}&size=100"
-              req = urllib.request.Request(url, headers={"User-Agent": os.environ["UA"]})
-              data = json.load(urllib.request.urlopen(req, timeout=60))
-              for m in data["membersDtoList"]:
-                  rows.append((m["stateName"], m["constName"], m["status"], m["initial"], m["mpFirstLastName"], m["partyFname"], m.get("categoryCode")))
-              if page >= data["metaDatasDto"]["totalPages"]:
-                  break
-              page += 1
-          print("TOTAL", len(rows), "keys:", sorted(data["membersDtoList"][0].keys()))
-          for r in sorted(rows):
-              print("|".join(str(x).strip() for x in r))
-          PY
-      - name: Wikidata 18th Lok Sabha terms
+          curl -s -m 60 -A "$UA" https://sansad.in/ls/members -o ls.html -w "HTTP %{http_code}\n"; wc -c ls.html
+          grep -oE '(src|href)="[^"]+\.js"' ls.html | sort -u | head -20
+          for js in $(grep -oE 'src="[^"]+\.js"' ls.html | sed 's/src="//;s/"$//' | head -15); do
+            case "$js" in http*) url="$js";; /*) url="https://sansad.in$js";; *) url="https://sansad.in/ls/$js";; esac
+            curl -s -m 60 -A "$UA" "$url" -o b.js; echo "== $url $(wc -c < b.js)"
+            grep -oE '"/?api_[a-z]+/[A-Za-z0-9_/.-]+' b.js | sort -u | head -80
+          done
+      - name: Sansad candidate endpoints
         continue-on-error: true
         run: |
-          cat > q.rq <<'Q'
-          SELECT ?districtLabel ?personLabel ?electedLabel ?start ?end WHERE {
-            ?person p:P39 ?st . ?st pq:P2937 wd:Q123052644 .
-            OPTIONAL { ?st pq:P768 ?district }
-            OPTIONAL { ?st pq:P2715 ?elected }
-            OPTIONAL { ?st pq:P580 ?start }
-            OPTIONAL { ?st pq:P582 ?end }
-            SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
-          }
-          Q
-          curl -s -m 120 -G https://query.wikidata.org/sparql --data-urlencode query@q.rq -H "Accept: text/csv" -A "$UA" -o wd.csv
-          wc -l wd.csv; cut -d, -f3 wd.csv | sort | uniq -c | sort -rn | head -20; grep -v "2024 Indian general election" wd.csv | head -40
-      - name: ECI results again
+          for u in \
+            "https://sansad.in/api_ls/member/memberDetails?mpsno=5265&loksabha=18" \
+            "https://sansad.in/api_ls/question/qetFilteredQuestionsAns?loksabhaNo=18&mpCode=5265&page=1&size=5" \
+            "https://sansad.in/api_ls/attendance/getMemberAttendance?loksabha=18&mpsno=5265" \
+            "https://sansad.in/api_ls/member/getMemberAttendance?loksabha=18&mpsno=5265" \
+            ; do echo "== $u"; curl -s -m 60 -A "$UA" "$u" -w "\nHTTP %{http_code}\n" | head -c 1500; echo; done
+      - name: MPLADS eSAKSHI dashboard
         continue-on-error: true
         run: |
-          for i in 1 2 3; do curl -s -m 60 -A "$UA" -w "HTTP %{http_code}\n" https://results.eci.gov.in/PcResultGenJune2024/index.htm -o eci.html && break; sleep 5; done; wc -c eci.html; grep -o 'href="[^"]*"' eci.html | sort -u | head -30
+          curl -s -m 60 -A "$UA" https://mplads.mospi.gov.in/digigov/dashboard.html -o d.html -w "HTTP %{http_code}\n"; wc -c d.html
+          grep -oE '(src|href)="[^"]+"' d.html | sort -u | head -40
+          grep -oE "https?://[^\"' )]+" d.html | sort -u | head -40
+          for js in $(grep -oE 'src="[^"]+\.js[^"]*"' d.html | sed 's/src="//;s/"$//' | grep -v -E 'jquery|bootstrap|chart|cdn' | head -10); do
+            case "$js" in http*) url="$js";; /*) url="https://mplads.mospi.gov.in$js";; *) url="https://mplads.mospi.gov.in/digigov/$js";; esac
+            curl -s -m 60 -A "$UA" "$url" -o m.js; echo "== $url $(wc -c < m.js)"
+            grep -oE "(https?://[^\"' ]+|/[A-Za-z0-9_]+/[A-Za-z0-9_/.-]*(api|Api|API|json|Json|get|Get)[A-Za-z0-9_/.-]*)" m.js | sort -u | head -60
+          done
+      - name: Affidavits and MyNeta terms
+        continue-on-error: true
+        run: |
+          for u in https://affidavit.eci.gov.in/ https://myneta.info/ https://myneta.info/LokSabha2024/ https://adrindia.org/content/terms-use https://adrindia.org/ ; do
+            curl -s -L -m 60 -A "$UA" "$u" -o p.html -w "== $u HTTP %{http_code} %{size_download}\n"
+            grep -ioE '.{0,120}(terms|licen[cs]e|copyright|creative commons|reproduc)[^<]{0,160}' p.html | head -8
+          done
