@@ -1,29 +1,20 @@
-# Temporary: checks which data sources the pipeline can reach from GitHub Actions. Deleted after.
+# Temporary: runs the new record step from GitHub Actions, since the sandbox can't reach the sites. Deleted after.
 name: probe
 on: push
 jobs:
   probe:
     runs-on: ubuntu-latest
-    env:
-      UA: "Mozilla/5.0 (X11; Linux x86_64) CivicLens data pipeline (https://github.com/whatalshifa/civiclens)"
+    timeout-minutes: 60
     steps:
-      - name: house value in loksaba.js
-        continue-on-error: true
+      - uses: actions/checkout@v5
+        with:
+          ref: mp-record
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - working-directory: backend
         run: |
-          curl -s -m 60 -A "$UA" https://mplads.mospi.gov.in/libs/simplegrid/loksaba.js -o l.js
-          grep -oE '.{0,200}sethouse.{0,200}' l.js | head -5
-          curl -s -m 60 -A "$UA" https://mplads.mospi.gov.in/digigov/dashboard.html | grep -iE 'tenure|house|option' | head -30
-      - name: State to constituency to MP
-        continue-on-error: true
-        run: |
-          P(){ echo "== $1 $2"; curl -s -m 60 -A "$UA" -X POST -H "Content-Type: application/json" -d "$2" "https://mplads.mospi.gov.in/rest/PreLoginDashboardData/$1" -w " [%{http_code}]" | head -c 700; echo; }
-          P getStateData '{}'
-          curl -s -m 60 -A "$UA" -X POST -H "Content-Type: application/json" -d '{"id":"33"}' https://mplads.mospi.gov.in/rest/PreLoginDashboardData/getConstituencyData -o c.json; head -c 700 c.json; echo
-          C=$(python3 -c "import json; print(json.load(open('c.json'))[0]['ID'])" 2>/dev/null || echo 0)
-          echo "const=$C"
-          for h in 1 2 L LS; do for t in 7 2; do
-            P getMpAndConstCombo "{\"const_combo\":\"$C,$h,$t\"}"
-            P getMpNamesData "{\"state_combo\":\"33,$h,$t\"}"
-          done; done
-          P getTenureData '{"uname":"1"}'
-          P getTenureData '{"uname":"2"}'
+          pip install -q -r requirements.txt
+          python -m pipeline record --report report.md
+          echo "=== CSV"; cat app/data/generated/lok-sabha-record.csv
+          echo "=== SOURCES"; cat app/data/generated/sources-lok-sabha-record.yaml
