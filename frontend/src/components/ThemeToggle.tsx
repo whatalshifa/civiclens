@@ -26,7 +26,7 @@ function readTheme(): Theme {
   }
 }
 
-export function ThemeToggle() {
+export function ThemeToggle({ className = "icon-btn" }: { className?: string }) {
   const [theme, setTheme] = useState<Theme | null>(null);
 
   useEffect(() => {
@@ -56,7 +56,7 @@ export function ThemeToggle() {
       onClick={cycle}
       title={LABEL[current]}
       aria-label={`${LABEL[current]}. Click to change.`}
-      className="icon-btn"
+      className={className}
     >
       {current === "light" && <Sun aria-hidden className="h-5 w-5" strokeWidth={1.75} />}
       {current === "dark" && <Moon aria-hidden className="h-5 w-5" strokeWidth={1.75} />}

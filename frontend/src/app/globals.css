@@ -20,6 +20,10 @@
   --accent-soft: #e4f1ee;
   --focus: #0f766e;
   --mark: #fdf0b8;
+  /* The service frame: a solid dark-teal bar with a bright rule under it, then a pale navigation bar. */
+  --header: #0b3a36;
+  --header-stripe: #14a394;
+  --servicebar: #eef5f3;
   color-scheme: light;
 }
 
@@ -36,6 +40,9 @@
   --accent-soft: #10302d;
   --focus: #5ad1c0;
   --mark: #4a3f10;
+  --header: #08221f;
+  --header-stripe: #2bb3a3;
+  --servicebar: #111b1a;
   color-scheme: dark;
 }
 
@@ -50,6 +57,9 @@
   --color-input: var(--input-border);
   --color-accent: var(--accent);
   --color-accent-soft: var(--accent-soft);
+  --color-header: var(--header);
+  --color-header-stripe: var(--header-stripe);
+  --color-servicebar: var(--servicebar);
   /* Public Sans for everything; JetBrains Mono only for PIN codes and section numbers. */
   --font-sans: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
@@ -100,13 +110,13 @@ body {
 /* One radius scale: 8px for controls, 12px for cards, full only for small badges. */
 @layer components {
   .page-title {
-    @apply text-[1.75rem] leading-tight font-semibold tracking-[-0.015em] text-balance sm:text-[2.125rem];
+    @apply text-[1.875rem] leading-tight font-bold tracking-[-0.015em] text-balance sm:text-[2.5rem];
   }
   .lede {
     @apply mt-3 max-w-[65ch] text-[1.0625rem] leading-relaxed text-muted sm:text-lg;
   }
   .section-title {
-    @apply text-[1.375rem] leading-snug font-semibold tracking-[-0.01em] sm:text-2xl;
+    @apply text-[1.375rem] leading-snug font-bold tracking-[-0.01em] sm:text-2xl;
   }
 
   .card {
@@ -125,13 +135,13 @@ body {
   }
 
   .btn {
-    @apply inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-transparent px-4 text-[0.9375rem]
+    @apply inline-flex h-10 items-center justify-center gap-2 rounded-[4px] border border-transparent px-4 text-[0.9375rem]
       font-semibold whitespace-nowrap transition-colors select-none
       disabled:cursor-not-allowed disabled:opacity-60;
   }
   /* White on teal-800 is 7.4:1, readable in both themes. */
   .btn-primary {
-    @apply bg-teal-800 text-white hover:bg-teal-900;
+    @apply bg-teal-800 text-white shadow-[0_2px_0_#042f2e] hover:bg-teal-900 active:translate-y-px active:shadow-none;
   }
   .btn-secondary {
     @apply border-line bg-surface text-foreground hover:border-muted hover:bg-sunken;
@@ -162,7 +172,7 @@ body {
   }
 
   .input {
-    @apply block h-11 w-full rounded-lg border border-input bg-surface px-3.5 text-base text-foreground outline-none
+    @apply block h-11 w-full rounded-[4px] border-2 border-input bg-surface px-3.5 text-base text-foreground outline-none
       transition placeholder:text-muted/80 focus:border-teal-700 focus:ring-3 focus:ring-teal-600/25
       focus-visible:outline-none dark:focus:border-teal-400;
   }
