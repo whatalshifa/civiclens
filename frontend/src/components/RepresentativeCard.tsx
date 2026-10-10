@@ -1,3 +1,4 @@
+import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 
 import { ParliamentRecord } from "@/components/ParliamentRecord";
@@ -41,17 +42,17 @@ export function RepresentativeCard({ seat, notes, yours = true }: { seat: Seat; 
     </>
   );
   return (
-    <article className="card flex flex-col p-5 sm:p-6" aria-labelledby={`${seat.id}-name`}>
+    <article className="card flex flex-col p-5 sm:p-7" aria-labelledby={`${seat.id}-name`}>
       <p className="eyebrow">
         {yours ? `Your ${house.short}` : house.role} · {house.body}
       </p>
       {rep ? (
         <>
-          <h2 id={`${seat.id}-name`} className="mt-2 text-3xl font-extrabold tracking-tight">
+          <h2 id={`${seat.id}-name`} className="mt-1.5 text-2xl font-semibold tracking-[-0.01em]">
             {rep.name}
             <Ref n={notes.cite(rep.source)} source={rep.source} />
           </h2>
-          <dl className="mt-4 grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
+          <dl className="mt-5 grid grid-cols-[7.5rem_minmax(0,1fr)] gap-x-4 gap-y-2.5 text-[0.9375rem] sm:grid-cols-[9rem_minmax(0,1fr)]">
             <dt className="text-muted">Party</dt>
             <dd>{rep.party}</dd>
             <dt className="text-muted">Seat</dt>
@@ -81,7 +82,7 @@ export function RepresentativeCard({ seat, notes, yours = true }: { seat: Seat; 
         </>
       ) : (
         <>
-          <h2 id={`${seat.id}-name`} className="mt-2 text-2xl font-bold tracking-tight">
+          <h2 id={`${seat.id}-name`} className="mt-1.5 text-2xl font-semibold tracking-[-0.01em]">
             {seat.name}
           </h2>
           <p className="mt-3 text-sm text-muted">
@@ -92,7 +93,7 @@ export function RepresentativeCard({ seat, notes, yours = true }: { seat: Seat; 
         </>
       )}
       {seat.partial && (
-        <p className="mt-4 rounded-sm bg-sunken px-3 py-2 text-sm">
+        <p className="note mt-5">
           Only part of this PIN code is in {seat.name}. Check your voter ID card or the{" "}
           <a href="https://electoralsearch.eci.gov.in/" className="link" target="_blank" rel="noopener noreferrer">
             Electoral Search
@@ -101,14 +102,19 @@ export function RepresentativeCard({ seat, notes, yours = true }: { seat: Seat; 
         </p>
       )}
       <p className="mt-5 text-sm text-muted">{ROLE[seat.house]}</p>
-      <div className="mt-auto pt-5">
-        <p className="eyebrow !text-muted">Check their record yourself</p>
-        <ul className="mt-2 flex flex-wrap gap-2">
+      <div className="mt-auto pt-6">
+        <h3 className="border-t border-line pt-5 text-sm font-semibold">Check their record yourself</h3>
+        <ul className="mt-2.5 space-y-1.5 text-sm">
           {LOOK_UP[seat.house].map((link) => (
             <li key={link.href}>
-              <a href={link.href} className="chip text-xs" target="_blank" rel="noopener noreferrer">
+              <a
+                href={link.href}
+                className="inline-flex items-start gap-1 text-accent hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 {link.label}
-                <span aria-hidden>↗</span>
+                <ArrowUpRight aria-hidden className="mt-0.5 h-4 w-4 shrink-0" />
               </a>
             </li>
           ))}
@@ -134,11 +140,11 @@ function FactRow({ fact, notes }: { fact: Fact; notes: SourceNotes }) {
 export function MissingCard({ house, state }: { house: House; state: string }) {
   const names = HOUSE_NAMES[house];
   return (
-    <article className="card flex flex-col border-dashed p-5 sm:p-6">
+    <article className="card flex flex-col border-dashed p-5 sm:p-7">
       <p className="eyebrow">
         Your {names.short} · {names.body}
       </p>
-      <h2 className="mt-2 text-xl font-semibold">Not in CivicLens yet</h2>
+      <h2 className="mt-1.5 text-xl font-semibold">Not in CivicLens yet</h2>
       <p className="mt-3 text-sm text-muted">
         We haven&apos;t added the {names.body} seats for this part of {state} yet. Your voter ID card names your{" "}
         {house === "vidhan_sabha" ? "assembly" : "parliamentary"} constituency, and the Election Commission&apos;s{" "}

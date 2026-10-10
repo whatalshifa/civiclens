@@ -30,18 +30,18 @@ export default async function OldToNewPage({ searchParams }: PageProps<"/laws/ol
         </Link>{" "}
         / Old to new sections
       </nav>
-      <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
+      <h1 className="mt-2 page-title">
         Find the new number for an old section
       </h1>
-      <p className="mt-4 max-w-3xl text-muted">
+      <p className="lede">
         On 1 July 2024 three new laws replaced the old criminal codes: the Bharatiya Nyaya Sanhita (BNS) replaced the
         Indian Penal Code (IPC), the Bharatiya Nagarik Suraksha Sanhita (BNSS) replaced the Code of Criminal Procedure
         (CrPC), and the Bharatiya Sakshya Adhiniyam (BSA) replaced the Indian Evidence Act. Most sections got new
         numbers.
       </p>
 
-      <form action="/laws/old-to-new" method="get" role="search" className="mt-6 flex max-w-xl flex-wrap gap-2">
-        <label htmlFor="old-section" className="sr-only">
+      <form action="/laws/old-to-new" method="get" role="search" className="mt-8 flex max-w-xl flex-wrap gap-x-2">
+        <label htmlFor="old-section" className="field-label basis-full">
           Old section
         </label>
         <input
@@ -53,7 +53,7 @@ export default async function OldToNewPage({ searchParams }: PageProps<"/laws/ol
           maxLength={200}
           autoComplete="off"
         />
-        <button type="submit" className="btn btn-primary">
+        <button type="submit" className="btn btn-primary h-11">
           Find
         </button>
       </form>
@@ -75,7 +75,7 @@ export default async function OldToNewPage({ searchParams }: PageProps<"/laws/ol
             Result
           </h2>
           {result.matches.length === 0 ? (
-            <p className="rounded-sm bg-sunken p-4 text-sm">
+            <p className="note">
               {result.numbers.length === 0
                 ? "Type a section number, like IPC 420 or CrPC 154."
                 : `We don't have ${result.numbers.join(", ")} in the tables below yet. Check the official correspondence tables linked at the bottom of this page.`}
@@ -92,14 +92,14 @@ export default async function OldToNewPage({ searchParams }: PageProps<"/laws/ol
         </section>
       )}
 
-      <p className="mt-8 max-w-3xl rounded-sm bg-accent-soft px-4 py-3 text-sm">
+      <p className="note-accent mt-8 max-w-3xl">
         An offence committed before 1 July 2024 is still charged under the old law. Check the official text before
         relying on a number.
       </p>
 
       {codes.map((code) => (
-        <section key={code.code} className="mt-10" aria-labelledby={`table-${code.code}`}>
-          <h2 id={`table-${code.code}`} className="text-xl font-semibold">
+        <section key={code.code} className="mt-14" aria-labelledby={`table-${code.code}`}>
+          <h2 id={`table-${code.code}`} className="section-title">
             {code.short_name} to {code.new_act_short_name}
           </h2>
           <p className="mt-1 text-sm text-muted">
@@ -110,7 +110,7 @@ export default async function OldToNewPage({ searchParams }: PageProps<"/laws/ol
             . {code.sections.length} common sections.
           </p>
           <div
-            className="mt-4 overflow-x-auto rounded-sm border border-line"
+            className="mt-4 overflow-x-auto rounded-xl border border-line"
             tabIndex={0}
             role="region"
             aria-label={`${code.short_name} to ${code.new_act_short_name} table`}
@@ -118,13 +118,13 @@ export default async function OldToNewPage({ searchParams }: PageProps<"/laws/ol
             <table className="w-full min-w-[32rem] text-left text-sm">
               <thead className="bg-sunken">
                 <tr>
-                  <th scope="col" className="px-4 py-2 font-semibold">
+                  <th scope="col" className="px-4 py-2.5 font-semibold">
                     {code.short_name}
                   </th>
-                  <th scope="col" className="px-4 py-2 font-semibold">
+                  <th scope="col" className="px-4 py-2.5 font-semibold">
                     {code.new_act_short_name}
                   </th>
-                  <th scope="col" className="px-4 py-2 font-semibold">
+                  <th scope="col" className="px-4 py-2.5 font-semibold">
                     What it covers
                   </th>
                 </tr>
@@ -132,8 +132,8 @@ export default async function OldToNewPage({ searchParams }: PageProps<"/laws/ol
               <tbody>
                 {code.sections.map((s) => (
                   <tr key={s.number} className="border-t border-line">
-                    <td className="px-4 py-2 font-mono whitespace-nowrap">{s.number}</td>
-                    <td className="px-4 py-2 font-mono whitespace-nowrap">
+                    <td className="px-4 py-2.5 font-mono text-[0.8125rem] whitespace-nowrap">{s.number}</td>
+                    <td className="px-4 py-2.5 font-mono text-[0.8125rem] whitespace-nowrap">
                       {s.new_number === null ? (
                         "None"
                       ) : s.anchor ? (
@@ -144,7 +144,7 @@ export default async function OldToNewPage({ searchParams }: PageProps<"/laws/ol
                         s.new_number
                       )}
                     </td>
-                    <td className="px-4 py-2 text-muted">{s.note ?? s.title}</td>
+                    <td className="px-4 py-2.5 text-muted">{s.note ?? s.title}</td>
                   </tr>
                 ))}
               </tbody>

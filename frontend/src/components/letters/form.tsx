@@ -7,7 +7,7 @@ import { useId } from "react";
 export function Fieldset({ legend, children }: { legend: string; children: React.ReactNode }) {
   return (
     <fieldset className="space-y-4">
-      <legend className="mb-3 text-base font-semibold">{legend}</legend>
+      <legend className="mb-4 text-lg font-semibold">{legend}</legend>
       {children}
     </fieldset>
   );
@@ -58,7 +58,7 @@ export function Choice<T extends string>({
         {options.map((option) => (
           <label
             key={option.value}
-            className="flex min-h-11 cursor-pointer items-center gap-3 rounded-sm border border-line bg-surface px-3 py-2 text-sm has-[:checked]:border-teal-600/60 has-[:checked]:bg-accent-soft"
+            className="flex min-h-11 cursor-pointer items-center gap-3 rounded-lg border border-line bg-surface px-3 py-2 text-[0.9375rem] has-[:checked]:border-teal-600/60 has-[:checked]:bg-accent-soft"
           >
             <input
               type="radio"
@@ -88,7 +88,7 @@ export function Check({
   detail?: string;
 }) {
   return (
-    <label className="flex items-start gap-3 rounded-sm border border-line bg-surface p-3 text-sm">
+    <label className="flex items-start gap-3 rounded-lg border border-line bg-surface p-3 text-[0.9375rem]">
       <input
         type="checkbox"
         className="mt-0.5 h-4 w-4 accent-teal-700"

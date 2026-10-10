@@ -31,13 +31,12 @@ export default async function FindPage({ searchParams }: PageProps<"/find">) {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <p className="eyebrow">Find your representatives</p>
-      <h1 className="mt-2 text-4xl font-extrabold tracking-tight">
+      <h1 className="page-title">
         {seats.length + places.length > 0 ? <>Matches for &ldquo;{query.name}&rdquo;</> : <>Nothing matches &ldquo;{query.name}&rdquo;</>}
       </h1>
 
       {seats.length + places.length === 0 && (
-        <p className="mt-3 text-muted">
+        <p className="lede">
           Try the constituency name as it&apos;s written on your voter ID card, or{" "}
           <Link href="/seats" className="link">
             browse every Lok Sabha seat by state
@@ -54,15 +53,16 @@ export default async function FindPage({ searchParams }: PageProps<"/find">) {
       <SeatList title={`${HOUSE_NAMES.vidhan_sabha.body} seats (your MLA)`} seats={vidhanSabha} />
 
       {places.length > 0 && (
-        <section className="mt-8" aria-labelledby="places-heading">
+        <section className="mt-10" aria-labelledby="places-heading">
           <h2 id="places-heading" className="text-lg font-semibold">
             Places
           </h2>
-          <ul className="mt-2">
+          <ul className="mt-3 border-t border-line">
             {places.map((p) => (
               <li key={p.pin} className="border-b border-line">
-                <Link href={`/pin/${p.pin}`} className="block py-2.5 hover:bg-sunken">
-                  <span className="font-medium">{p.area}</span> <span className="font-mono text-sm">{p.pin}</span>
+                <Link href={`/pin/${p.pin}`} className="group block py-3">
+                  <span className="font-medium group-hover:text-accent group-hover:underline">{p.area}</span>{" "}
+                  <span className="font-mono text-sm text-muted">{p.pin}</span>
                   <span className="block text-sm text-muted">
                     {p.district} district, {p.state}
                   </span>
@@ -87,13 +87,13 @@ export default async function FindPage({ searchParams }: PageProps<"/find">) {
 function SeatList({ title, seats }: { title: string; seats: PlaceSearch["seats"] }) {
   if (seats.length === 0) return null;
   return (
-    <section className="mt-8">
+    <section className="mt-10">
       <h2 className="text-lg font-semibold">{title}</h2>
-      <ul className="mt-2">
+      <ul className="mt-3 border-t border-line">
         {seats.map((s) => (
           <li key={s.id} className="border-b border-line">
-            <Link href={`/seats/${s.id}`} className="block py-2.5 hover:bg-sunken">
-              <span className="font-medium">{s.name}</span>
+            <Link href={`/seats/${s.id}`} className="group block py-3">
+              <span className="font-medium group-hover:text-accent group-hover:underline">{s.name}</span>
               <span className="block text-sm text-muted">{s.state}</span>
             </Link>
           </li>

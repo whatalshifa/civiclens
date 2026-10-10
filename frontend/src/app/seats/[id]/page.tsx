@@ -63,11 +63,11 @@ export default async function SeatPageView({ params }: PageProps<"/seats/[id]">)
           </>
         )}
       </p>
-      <h1 className="mt-2 text-4xl font-extrabold tracking-tight sm:text-5xl">
+      <h1 className="mt-2 page-title">
         {seat.name}
         <Ref n={seatRef} source={page.source} />
       </h1>
-      <p className="mt-2 text-muted">
+      <p className="lede">
         {seat.state}
         {seat.reserved_for && (
           <>. Reserved for {seat.reserved_for === "SC" ? "Scheduled Castes" : "Scheduled Tribes"}</>
@@ -75,10 +75,10 @@ export default async function SeatPageView({ params }: PageProps<"/seats/[id]">)
         .
       </p>
 
-      <div className="mt-8 grid gap-5 md:grid-cols-2">
+      <div className="mt-10 grid items-start gap-6 lg:grid-cols-2">
         <RepresentativeCard seat={seat} notes={notes} yours={false} />
 
-        <section className="card p-5 sm:p-6" aria-labelledby="pins-heading">
+        <section className="card p-5 sm:p-7" aria-labelledby="pins-heading">
           <h2 id="pins-heading" className="text-lg font-semibold">
             PIN codes in this seat
             {page.pins_sources.map((s, i) => (
@@ -90,12 +90,12 @@ export default async function SeatPageView({ params }: PageProps<"/seats/[id]">)
               <p className="mt-1 text-sm text-muted">
                 PIN codes are postal areas, not electoral ones, so some are only partly in this seat.
               </p>
-              <ul className="mt-4 flex flex-wrap gap-2">
+              <ul className="mt-4 border-t border-line">
                 {page.pins.map((p) => (
-                  <li key={p.pin}>
-                    <Link href={`/pin/${p.pin}`} className="chip">
-                      <span className="font-mono">{p.pin}</span>
-                      <span className="text-muted">{p.area}</span>
+                  <li key={p.pin} className="border-b border-line">
+                    <Link href={`/pin/${p.pin}`} className="flex gap-3 py-2.5 hover:text-accent">
+                      <span className="font-mono text-sm leading-6 text-accent">{p.pin}</span>
+                      <span>{p.area}</span>
                     </Link>
                   </li>
                 ))}
@@ -114,7 +114,7 @@ export default async function SeatPageView({ params }: PageProps<"/seats/[id]">)
         </section>
       </div>
 
-      <aside className="mt-8 rounded-none bg-sunken p-5 text-sm">
+      <aside className="mt-8 max-w-3xl text-sm">
         <p className="font-semibold">Spotted a mistake?</p>
         <p className="mt-1 text-muted">
           Seats and members are checked against the Lok Sabha&apos;s own list every week.{" "}
@@ -132,8 +132,8 @@ export default async function SeatPageView({ params }: PageProps<"/seats/[id]">)
 
       <SourceList sources={notes.all} />
 
-      <div className="mt-12 max-w-md">
-        <p className="mb-2 text-sm font-semibold">Look up a PIN code</p>
+      <div className="mt-16 max-w-md">
+        <h2 className="mb-2 text-base font-semibold">Look up a PIN code</h2>
         <PinForm size="sm" />
       </div>
     </div>

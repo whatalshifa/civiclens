@@ -29,25 +29,24 @@ export default async function AboutPage() {
   const sources = await api<Source[]>("/api/sources").catch(() => []);
   return (
     <div className="max-w-3xl">
-      <p className="eyebrow">About</p>
-      <h1 className="mt-2 text-4xl font-extrabold tracking-tight sm:text-5xl">How CivicLens works</h1>
-      <p className="prose-civic mt-4 text-muted">
+      <h1 className="page-title">How CivicLens works</h1>
+      <p className="lede">
         CivicLens helps people in India find out who represents them and what the law says about their rights. It is an
         independent student project, not a government website, and it doesn&apos;t give legal advice.
       </p>
 
-      <h2 className="mt-10 text-xl font-semibold">How we stay nonpartisan</h2>
-      <ul className="mt-4 space-y-3">
+      <h2 className="section-title mt-14">How we stay nonpartisan</h2>
+      <dl className="mt-5 border-t border-line">
         {RULES.map(([rule, detail]) => (
-          <li key={rule} className="card p-4">
-            <p className="font-semibold">{rule}</p>
-            <p className="mt-1 text-sm text-muted">{detail}</p>
-          </li>
+          <div key={rule} className="grid gap-1 border-b border-line py-4 sm:grid-cols-[16rem_minmax(0,1fr)] sm:gap-6">
+            <dt className="font-semibold">{rule}</dt>
+            <dd className="text-muted">{detail}</dd>
+          </div>
         ))}
-      </ul>
+      </dl>
 
-      <h2 className="mt-10 text-xl font-semibold">What&apos;s here now</h2>
-      <ul className="prose-civic mt-3 list-disc space-y-1 pl-5 text-muted">
+      <h2 className="section-title mt-14">What&apos;s here now</h2>
+      <ul className="prose-civic mt-4 list-disc space-y-2 pl-5 text-muted marker:text-muted">
         <li>
           Every Lok Sabha seat and its sitting MP, from the Lok Sabha&apos;s own member list. A scheduled job checks
           that list every week and proposes any change for a person to review before it goes live.
@@ -70,22 +69,22 @@ export default async function AboutPage() {
           ), and an RTI application drafter.
         </li>
       </ul>
-      <h2 className="mt-8 text-xl font-semibold">What&apos;s coming</h2>
-      <ul className="prose-civic mt-3 list-disc space-y-1 pl-5 text-muted">
+      <h2 className="section-title mt-12">What&apos;s coming</h2>
+      <ul className="prose-civic mt-4 list-disc space-y-2 pl-5 text-muted marker:text-muted">
         <li>Every PIN code in India, and every state assembly seat and MLA.</li>
         <li>Representatives&apos; records: attendance, questions asked and declared affidavits.</li>
       </ul>
 
-      <h2 id="sources" className="mt-10 text-xl font-semibold">
+      <h2 id="sources" className="section-title mt-14">
         Where our data comes from
       </h2>
-      <ul className="mt-4 space-y-3 text-sm">
+      <ul className="mt-5 space-y-4 text-[0.9375rem]">
         {sources.map((s) => (
           <li key={s.id}>
             <a href={s.url} className="link" target="_blank" rel="noopener noreferrer">
               {s.title}
             </a>
-            <p className="text-muted">
+            <p className="mt-0.5 text-sm text-muted">
               {s.publisher}
               {s.published_on && <> · published {formatDate(s.published_on)}</>}
             </p>

@@ -30,23 +30,23 @@ export function Ref({ n, source }: { n: number; source: Source }) {
 
 export function SourceList({ sources, heading = "Sources" }: { sources: Source[]; heading?: string }) {
   return (
-    <section aria-labelledby="sources-heading" className="mt-12 border-t border-rule pt-3">
-      <h2 id="sources-heading" className="eyebrow !font-mono !text-muted">
+    <section aria-labelledby="sources-heading" className="mt-16 border-t border-line pt-8">
+      <h2 id="sources-heading" className="text-lg font-semibold">
         {heading}
       </h2>
-      <ol className="mt-3 space-y-2.5 text-[0.8rem] leading-snug">
+      <ol className="mt-4 max-w-3xl space-y-3 text-sm leading-snug">
         {sources.map((s, i) => (
           <li key={s.id} id={`source-${i + 1}`} className="flex gap-3">
-            <span className="w-7 shrink-0 text-right font-mono text-accent">[{i + 1}]</span>
+            <span className="w-6 shrink-0 text-right text-muted tabular-nums">{i + 1}.</span>
             <div>
               <a href={s.url} className="link" target="_blank" rel="noopener noreferrer">
                 {s.title}
               </a>
-              <p className="text-muted">
+              <p className="mt-0.5 text-[0.8125rem] text-muted">
                 {s.publisher}
                 {s.published_on && <> · published {formatDate(s.published_on)}</>}
               </p>
-              {s.note && <p className="text-muted">{s.note}</p>}
+              {s.note && <p className="text-[0.8125rem] text-muted">{s.note}</p>}
             </div>
           </li>
         ))}
