@@ -20,6 +20,10 @@ const contentSecurityPolicy = [
 const nextConfig: NextConfig = {
   // Produces a small self-contained server, used by the Docker image.
   output: "standalone",
+  // The old About page is now part of the landing page.
+  async redirects() {
+    return [{ source: "/about", destination: "/", permanent: true }];
+  },
   async headers() {
     return [
       {

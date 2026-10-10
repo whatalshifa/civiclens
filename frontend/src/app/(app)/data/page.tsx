@@ -64,11 +64,11 @@ export default async function DataPage() {
             The numbers are for information, not a ranking: compare an MP with the average for context, as the pages do.
           </li>
           <li>
-            Spotted a mistake? See{" "}
-            <Link href="/about" className="link">
-              About
-            </Link>{" "}
-            for how to report it.
+            Spotted a mistake?{" "}
+            <Link href="/#neutral" className="link">
+              Corrections happen in the open
+            </Link>
+            : report it on GitHub and we&apos;ll check it against the official record.
           </li>
         </ul>
       </section>

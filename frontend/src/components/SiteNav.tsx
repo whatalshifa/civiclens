@@ -7,7 +7,7 @@ import { useEffect, useId, useState } from "react";
 
 /** Each item and the paths that count as being in its section, for the active state. */
 const NAV: { href: string; label: string; match: string[] }[] = [
-  { href: "/", label: "Find your MP and MLA", match: ["/pin", "/find"] },
+  { href: "/services", label: "Find your MP and MLA", match: ["/services", "/pin", "/find"] },
   { href: "/seats", label: "Seats and MPs", match: ["/seats"] },
   { href: "/laws", label: "Law library", match: ["/laws"] },
   { href: "/assistant", label: "Rights assistant", match: ["/assistant", "/accuracy"] },
@@ -16,7 +16,6 @@ const NAV: { href: string; label: string; match: string[] }[] = [
 ];
 
 function isActive(item: (typeof NAV)[number], path: string) {
-  if (item.href === "/" && path === "/") return true;
   return item.match.some((m) => path === m || path.startsWith(`${m}/`));
 }
 
