@@ -1,8 +1,9 @@
 import { expect, test } from "@playwright/test";
 
 test("an everyday question finds the right section and jumps to it", async ({ page }) => {
-  await page.goto("/");
-  await page.getByLabel("What do you need to know?").fill("police won't register my FIR");
+  // The home page is the representatives lookup; the law search lives on the law library page.
+  await page.goto("/laws");
+  await page.getByLabel("Search the laws").fill("police won't register my FIR");
   await page.getByRole("button", { name: "Search" }).click();
 
   await expect(page).toHaveURL(/\/laws\/search\?q=/);

@@ -22,7 +22,34 @@ const RULES = [
     "Dated facts.",
     "Offices and positions change, so each one says when it was true and when the record was published.",
   ],
+  [
+    "Free, and no sign-up.",
+    "No account and no tracking cookies. CivicLens doesn't ask who you are or who you vote for.",
+  ],
   ["Corrections in the open.", "Anyone can report a mistake on GitHub, and every change to the data is public there."],
+];
+
+const USES: [string, string, string][] = [
+  [
+    "Find your MP and MLA",
+    "/",
+    "Type a PIN code or the name of your constituency, district or area to see who represents you, with numbered sources for every fact.",
+  ],
+  [
+    "Read the law in plain words",
+    "/laws",
+    "Describe your problem in everyday language, like “police won't register my FIR”, and see the sections that apply, each linked to the official text.",
+  ],
+  [
+    "Ask the rights assistant",
+    "/assistant",
+    "Describe a situation in your own words. The assistant searches the law, reads the sections that apply and answers with every one cited; you can watch each step it takes.",
+  ],
+  [
+    "Draft a letter",
+    "/letters",
+    "RTI applications, first appeals, consumer and police complaints, ready to send in English or Hindi. Nothing you type leaves your browser.",
+  ],
 ];
 
 export default async function AboutPage() {
@@ -34,6 +61,20 @@ export default async function AboutPage() {
         CivicLens helps people in India find out who represents them and what the law says about their rights. It is an
         independent student project, not a government website, and it doesn&apos;t give legal advice.
       </p>
+
+      <h2 className="section-title mt-14">What you can do here</h2>
+      <dl className="mt-5 border-t border-line">
+        {USES.map(([title, href, detail]) => (
+          <div key={title} className="grid gap-1 border-b border-line py-4 sm:grid-cols-[16rem_minmax(0,1fr)] sm:gap-6">
+            <dt className="font-semibold">
+              <Link href={href} className="link">
+                {title}
+              </Link>
+            </dt>
+            <dd className="text-muted">{detail}</dd>
+          </div>
+        ))}
+      </dl>
 
       <h2 className="section-title mt-14">How we stay nonpartisan</h2>
       <dl className="mt-5 border-t border-line">

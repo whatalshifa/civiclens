@@ -1,20 +1,18 @@
 "use client";
 
-import { Menu, X } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useId, useRef, useState } from "react";
-
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { useEffect, useId, useState } from "react";
 
 /** Each item and the paths that count as being in its section, for the active state. */
 const NAV: { href: string; label: string; match: string[] }[] = [
-  { href: "/", label: "Representatives", match: ["/pin", "/find"] },
-  { href: "/seats", label: "Seats", match: ["/seats"] },
-  { href: "/laws", label: "Laws", match: ["/laws"] },
-  { href: "/assistant", label: "Ask", match: ["/assistant", "/accuracy"] },
-  { href: "/letters", label: "Letters", match: ["/letters", "/rti"] },
-  { href: "/about", label: "About", match: ["/about", "/data"] },
+  { href: "/", label: "Find your MP and MLA", match: ["/pin", "/find"] },
+  { href: "/seats", label: "Seats and MPs", match: ["/seats"] },
+  { href: "/laws", label: "Law library", match: ["/laws"] },
+  { href: "/assistant", label: "Rights assistant", match: ["/assistant", "/accuracy"] },
+  { href: "/letters", label: "Letters and RTI", match: ["/letters", "/rti"] },
+  { href: "/data", label: "Open data", match: ["/data"] },
 ];
 
 function isActive(item: (typeof NAV)[number], path: string) {
@@ -23,90 +21,47 @@ function isActive(item: (typeof NAV)[number], path: string) {
 }
 
 /**
- * The main navigation. Wide screens show every item in the header; phones get a menu button that
- * opens a panel listing every item, so nothing is hidden.
+ * The service navigation bar under the dark header, after GOV.UK's service navigation: one row of
+ * plain links on wide screens, the current section underlined. On a phone it folds into a "Menu"
+ * button that opens the same links as a list in the page flow (not an overlay), so nothing is hidden.
  */
 export function SiteNav() {
   const path = usePathname();
   const [open, setOpen] = useState(false);
-  const panelId = useId();
-  const button = useRef<HTMLButtonElement>(null);
-  const panel = useRef<HTMLDivElement>(null);
+  const listId = useId();
 
-  useEffect(() => {
-    if (!open) return;
-    panel.current?.querySelector<HTMLElement>("a")?.focus();
-    function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") {
-        setOpen(false);
-        button.current?.focus();
-      }
-    }
-    function onClick(e: MouseEvent) {
-      const target = e.target as Node;
-      if (!panel.current?.contains(target) && !button.current?.contains(target)) setOpen(false);
-    }
-    document.addEventListener("keydown", onKey);
-    document.addEventListener("click", onClick);
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.removeEventListener("click", onClick);
-    };
-  }, [open]);
+  // Close the phone menu after moving to another page.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => setOpen(false), [path]);
 
   return (
-    <nav aria-label="Main" className="flex items-center gap-1 self-stretch">
-      <ul className="hidden items-stretch gap-1 self-stretch md:flex">
-        {NAV.map((item) => {
-          const active = isActive(item, path);
-          return (
-            <li key={item.href} className="flex">
-              <Link
-                href={item.href}
-                aria-current={active ? "page" : undefined}
-                className={`-mb-px flex items-center border-b-[3px] px-3 text-[0.9375rem] font-medium transition-colors ${
-                  active
-                    ? "border-accent text-foreground"
-                    : "border-transparent text-muted hover:border-line hover:text-foreground"
-                }`}
-              >
-                {item.label}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-      <div className="ml-1 flex items-center">
-        <ThemeToggle />
-      </div>
-      <button
-        ref={button}
-        type="button"
-        className="btn btn-ghost h-10 gap-1.5 px-3 text-foreground md:hidden"
-        aria-expanded={open}
-        aria-controls={panelId}
-        onClick={() => setOpen((o) => !o)}
-      >
-        {open ? <X aria-hidden className="h-5 w-5" /> : <Menu aria-hidden className="h-5 w-5" />}
-        Menu
-      </button>
-      <div
-        ref={panel}
-        id={panelId}
-        hidden={!open}
-        className="absolute inset-x-0 top-full border-b border-line bg-background shadow-[0_8px_16px_-12px_rgb(0_0_0/0.25)] md:hidden"
-      >
-        <ul className="mx-auto max-w-6xl px-4 py-2">
+    <nav aria-label="Main" className="border-b border-line bg-servicebar print:hidden">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+        <button
+          type="button"
+          className="flex h-12 items-center gap-1 text-[0.9375rem] font-bold text-accent underline underline-offset-4 md:hidden"
+          aria-expanded={open}
+          aria-controls={listId}
+          onClick={() => setOpen((o) => !o)}
+        >
+          Menu
+          {open ? <ChevronUp aria-hidden className="h-4 w-4" /> : <ChevronDown aria-hidden className="h-4 w-4" />}
+        </button>
+        <ul
+          id={listId}
+          className={`${open ? "block" : "hidden"} pb-2 md:flex md:flex-wrap md:gap-x-7 md:pb-0`}
+        >
           {NAV.map((item) => {
             const active = isActive(item, path);
             return (
-              <li key={item.href} className="border-b border-line last:border-b-0">
+              <li key={item.href} className="md:flex">
                 <Link
                   href={item.href}
                   aria-current={active ? "page" : undefined}
-                  onClick={() => setOpen(false)}
-                  className={`-mx-4 flex h-12 items-center border-l-4 px-4 text-base font-medium ${
-                    active ? "border-accent text-foreground" : "border-transparent text-foreground hover:bg-sunken"
+                  className={`flex min-h-11 items-center border-l-4 pl-3 text-[0.9375rem] md:-mb-px md:h-[3.25rem] md:border-b-4 md:border-l-0 md:pl-0 ${
+                    active
+                      ? "border-accent font-bold text-foreground"
+                      : "border-transparent font-medium text-accent underline-offset-4 hover:underline md:hover:border-transparent"
                   }`}
                 >
                   {item.label}
