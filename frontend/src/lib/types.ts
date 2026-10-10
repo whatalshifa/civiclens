@@ -209,3 +209,15 @@ export type OldLookup = {
   matches: OldSection[];
   sources: Source[];
 };
+
+export type ModeStats = {
+  mode: "ai" | "demo";
+  runs: number;
+  answered: number;
+  failed: number;
+  citations: number;
+  dropped: number;
+  first_run: string | null;
+};
+
+export type Accuracy = { modes: ModeStats[] };

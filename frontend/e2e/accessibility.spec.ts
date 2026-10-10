@@ -14,6 +14,7 @@ const PAGES = [
   "/laws/bns-2023",
   "/laws/old-to-new?q=IPC%20420",
   "/about",
+  "/accuracy",
   "/assistant?sample=arrest",
   "/rti?authority=Municipal%20Corporation&info=Copies%20of%20the%20road%20repair%20contract",
   "/rti/appeal",

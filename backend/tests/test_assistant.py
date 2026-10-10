@@ -186,7 +186,7 @@ def test_the_loop_runs_tools_and_checks_the_answer(session):
 
     run = session.scalars(select(AssistantRun).order_by(AssistantRun.id.desc())).first()
     assert (run.mode, run.outcome, run.rounds, run.tool_calls) == ("ai", "answered", 2, 2)
-    assert (run.input_tokens, run.output_tokens, run.dropped_citations) == (200, 40, 1)
+    assert (run.input_tokens, run.output_tokens, run.citations, run.dropped_citations) == (200, 40, 1, 1)
 
 
 def test_tool_errors_go_back_to_claude_marked_as_errors(session):

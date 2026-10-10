@@ -179,15 +179,15 @@ def run(
 
     usage = Usage()
     outcome = "answered"
-    dropped = 0
+    checked: CheckedAnswer | None = None
     yield {"type": "start", "mode": mode, "question": sample.question if sample else question}
     try:
         if mode == "demo":
-            dropped = yield from _replay(session, settings, sample, usage)
+            checked = yield from _replay(session, settings, sample, usage)
         elif mode == "ai":
             if client is None:
                 client = anthropic.Anthropic(api_key=settings.anthropic_api_key, max_retries=2)
-            dropped = yield from _live(session, settings, client, question, usage)
+            checked = yield from _live(session, settings, client, question, usage)
         else:
             yield from _switched_off(session, question, usage)
             outcome = "off"
@@ -211,7 +211,8 @@ def run(
                 tool_calls=usage.tool_calls,
                 input_tokens=usage.input_tokens,
                 output_tokens=usage.output_tokens,
-                dropped_citations=dropped,
+                citations=len(checked.citations) if checked else 0,
+                dropped_citations=len(checked.dropped) if checked else 0,
             )
         )
         session.commit()
@@ -228,7 +229,7 @@ def _replay(session: Session, settings: Settings, sample: Sample, usage: Usage) 
     time.sleep(settings.demo_step_delay)
     event, checked = answer_events(trace, sample.answer, "demo")
     yield event
-    return len(checked.dropped)
+    return checked
 
 
 def _switched_off(session: Session, question: str, usage: Usage) -> Iterator[dict]:
@@ -271,7 +272,7 @@ def _live(
             if checked.dropped:
                 log.warning("Dropped citations the assistant hadn't read: %s", checked.dropped)
             yield event
-            return len(checked.dropped)
+            return checked
 
         # Send Claude's turn back unchanged (thinking blocks included), then every result at once.
         messages.append({"role": "assistant", "content": response.content})

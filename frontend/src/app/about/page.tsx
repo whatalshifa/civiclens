@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { api } from "@/lib/api";
 import { formatDate } from "@/lib/format";
@@ -56,11 +57,17 @@ export default async function AboutPage() {
           post offices are, which is close but not official, so pages say when a PIN code spans two seats.
         </li>
         <li>
-          Plain-language summaries of key sections of the Constitution and five Acts. The summaries are ours: they
+          Plain-language summaries of key sections of the Constitution and seven Acts, including the new criminal laws
+          (BNS, BNSS and BSA), with a lookup from old IPC and CrPC numbers to new ones. The summaries are ours: they
           simplify, so always check the official text before relying on one.
         </li>
         <li>
-          A rights assistant that looks up the law and cites every section it uses, and an RTI application drafter.
+          A rights assistant that looks up the law and cites every section it uses, with every citation checked before
+          you see it (
+          <Link href="/accuracy" className="link">
+            the count is public
+          </Link>
+          ), and an RTI application drafter.
         </li>
       </ul>
       <h2 className="mt-8 text-xl font-semibold">What&apos;s coming</h2>
