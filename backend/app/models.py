@@ -247,5 +247,7 @@ class AssistantRun(Base):
     tool_calls: Mapped[int] = mapped_column(Integer, default=0)
     input_tokens: Mapped[int] = mapped_column(Integer, default=0)
     output_tokens: Mapped[int] = mapped_column(Integer, default=0)
+    # Sections the answer cited that the assistant had read, so were checked and kept.
+    citations: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
     # Citations the AI wrote but hadn't read, which were taken out before showing the answer.
     dropped_citations: Mapped[int] = mapped_column(Integer, default=0)
