@@ -16,6 +16,10 @@ const PAGES = [
   "/about",
   "/assistant?sample=arrest",
   "/rti?authority=Municipal%20Corporation&info=Copies%20of%20the%20road%20repair%20contract",
+  "/rti/appeal",
+  "/letters",
+  "/letters/consumer",
+  "/letters/police",
 ];
 
 for (const theme of ["light", "dark"] as const) {
