@@ -28,7 +28,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
             Know who represents you, and what the law says.
           </h1>
           <p className="mt-5 max-w-xl text-lg text-muted">
-            Enter your PIN code to see your MP and MLA. Read the laws that protect you, from RTI to arrest rights,
+            Search your constituency or PIN code to see your MP and MLA. Read the laws that protect you, from RTI to arrest rights,
             explained in plain words. Each fact links to the official record it came from.
           </p>
         </div>
@@ -40,7 +40,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
           </div>
           {pin === "invalid" && (
             <p className="-mt-2 mb-3 text-sm text-rose-700 dark:text-rose-300">
-              That didn&apos;t look like a PIN code. It&apos;s six digits, like 110001.
+              Type a six-digit PIN code, like 110001, or a name, like Baramati.
             </p>
           )}
           {coverage && coverage.examples.length > 0 && (
@@ -59,9 +59,9 @@ export default async function Home({ searchParams }: PageProps<"/">) {
             </div>
           )}
           <p className="mt-4 text-sm text-muted">
-            Don&apos;t know your PIN code&apos;s seat?{" "}
+            Every Lok Sabha seat can be found by name; PIN codes cover a sample of areas so far.{" "}
             <Link href="/seats" className="link">
-              Browse every Lok Sabha seat
+              Browse all seats by state
             </Link>
           </p>
         </div>

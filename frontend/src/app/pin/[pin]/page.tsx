@@ -109,12 +109,12 @@ async function NotCovered({ pin }: { pin: string }) {
         <Link href="/seats" className="link">
           every Lok Sabha seat and its MP
         </Link>
-        {coverage && <>, but only {coverage.pincodes.toLocaleString("en-IN")} PIN codes so far</>}. Your voter ID card
-        names your constituency, and the Election Commission&apos;s{" "}
+        {coverage && <>, but only {coverage.pincodes.toLocaleString("en-IN")} PIN codes so far</>}. Search for your
+        constituency by name below instead. Your voter ID card names it, and the Election Commission&apos;s{" "}
         <a href="https://electoralsearch.eci.gov.in/" className="link" target="_blank" rel="noopener noreferrer">
           Electoral Search
         </a>{" "}
-        shows it too; then find your seat in the list.
+        shows it too.
       </p>
       {coverage && coverage.examples.length > 0 && (
         <div className="mt-6">
