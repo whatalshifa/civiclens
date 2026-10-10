@@ -24,8 +24,12 @@ words. Strictly nonpartisan: every fact links to the official record it came fro
 - **Ask the rights assistant.** Describe your situation and an AI agent searches the law, reads the
   sections that apply and answers in plain words, showing each step as it happens. Every citation is
   checked against the sections it actually read before you see it.
-- **Draft an RTI application.** A short form writes a ready-to-send application under the RTI Act,
-  in English or Hindi, entirely in your browser.
+- **Draft the letter to send.** Short forms write ready-to-send letters in English or Hindi, entirely
+  in your browser: an RTI application with your state's fee and portal, a first appeal (filled in from
+  the application, with a calendar reminder for the day the reply is due), a consumer complaint, and a
+  complaint to the SP when the police won't register an FIR.
+- **Free help, every time.** Answers, law pages and letters point to Tele-Law, free legal aid and the
+  right helpline, because CivicLens gives information, not legal advice.
 - **Read laws simply.** Each section has a plain-language summary, clearly labelled as a summary, with
   a link to the official text.
 - **Nonpartisan by design.** Same fields for everyone, ordered by place, never by party. No ratings,
@@ -82,6 +86,8 @@ Tests: `cd backend && pytest` (needs Postgres; see `tests/conftest.py`) and
 - Phase 3: a data pipeline. All 543 Lok Sabha seats and MPs from the Lok Sabha's list, refreshed
   weekly by GitHub Actions through reviewed pull requests, and a PIN-code-to-seat mapper that places
   India Post's offices on constituency maps.
+- After launch: state-aware RTI fees and portals, the RTI reply tracker and first appeal, consumer and
+  police complaint letters, and free-help pointers.
 - Deployed on Vercel (website), Render (API) and Neon (Postgres), all on free tiers.
 - Next: every PIN code, and state assembly seats.
 

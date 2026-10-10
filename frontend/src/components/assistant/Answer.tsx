@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
+import { ACT_HELP, FreeHelp } from "@/components/FreeHelp";
 import type { AnswerEvent, Citation } from "@/lib/types";
 
 /**
@@ -55,6 +56,8 @@ export function Answer({ answer }: { answer: AnswerEvent }) {
           it checked.
         </p>
       )}
+
+      <FreeHelp topics={[...new Set(answer.citations.flatMap((c) => ACT_HELP[c.act_id] ?? []))]} className="mt-8" />
     </div>
   );
 }
