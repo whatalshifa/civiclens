@@ -18,18 +18,18 @@ export default async function SeatsPage() {
 
   return (
     <div>
-      <p className="eyebrow">Lok Sabha</p>
-      <h1 className="mt-2 text-4xl font-extrabold tracking-tight sm:text-6xl">Every seat and its MP</h1>
-      <p className="mt-3 max-w-2xl text-muted">
+      <h1 className="page-title">Every seat and its MP</h1>
+      <p className="lede">
         All {total} Lok Sabha constituencies, by state and then name. {vacant > 0 && <>{vacant} are vacant. </>}
         Members come from the Lok Sabha&apos;s own list, checked every week; open a seat to see the source.
       </p>
 
-      <nav aria-label="States" className="mt-6">
-        <ul className="flex flex-wrap gap-2">
+      <nav aria-label="States" className="mt-10 border-y border-line py-6">
+        <h2 className="text-sm font-semibold">Jump to a state</h2>
+        <ul className="mt-3 columns-2 gap-x-6 text-[0.9375rem] sm:columns-3 lg:columns-4">
           {states.map((s) => (
-            <li key={s.state}>
-              <a href={`#${slugify(s.state)}`} className="chip text-xs">
+            <li key={s.state} className="break-inside-avoid py-1">
+              <a href={`#${slugify(s.state)}`} className="text-accent hover:underline">
                 {s.state}
               </a>
             </li>
@@ -37,17 +37,20 @@ export default async function SeatsPage() {
         </ul>
       </nav>
 
-      <div className="mt-10 space-y-10">
+      <div className="mt-12 space-y-14">
         {states.map((s) => (
           <section key={s.state} aria-labelledby={slugify(s.state)} className="scroll-mt-20">
-            <h2 id={slugify(s.state)} className="rule-heavy flex items-baseline justify-between pt-2 text-2xl font-extrabold">
-              {s.state} <span className="font-mono text-sm font-normal text-muted">{s.seats.length} seats</span>
+            <h2 id={slugify(s.state)} className="flex items-baseline justify-between gap-4 text-xl font-semibold">
+              {s.state}{" "}
+              <span className="text-sm font-normal text-muted tabular-nums">
+                {s.seats.length} {s.seats.length === 1 ? "seat" : "seats"}
+              </span>
             </h2>
-            <ul className="mt-3 grid gap-x-6 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="mt-3 grid gap-x-8 border-t border-line sm:grid-cols-2 lg:grid-cols-3">
               {s.seats.map((seat) => (
                 <li key={seat.id} className="border-b border-line">
-                  <Link href={`/seats/${seat.id}`} className="block py-2.5 hover:bg-sunken">
-                    <span className="font-medium">{seat.name}</span>
+                  <Link href={`/seats/${seat.id}`} className="group block py-2.5">
+                    <span className="font-medium group-hover:text-accent group-hover:underline">{seat.name}</span>
                     {seat.reserved_for && <span className="text-xs text-muted"> ({seat.reserved_for})</span>}
                     <span className="block text-sm text-muted">
                       {seat.member ? `${seat.member} · ${seat.party}` : "Vacant"}

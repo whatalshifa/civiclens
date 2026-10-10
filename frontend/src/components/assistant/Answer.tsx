@@ -13,14 +13,14 @@ export function Answer({ answer }: { answer: AnswerEvent }) {
   const blocks = answer.text.split(/\n\s*\n/).filter((b) => b.trim());
   return (
     <div>
-      <div className="answer space-y-4 text-[1.0625rem] leading-relaxed">
+      <div className="answer max-w-[70ch] space-y-4 text-[1.0625rem] leading-relaxed">
         {blocks.map((block, i) => (
           <Block key={i} text={block} citations={answer.citations} />
         ))}
       </div>
 
       {answer.rti_link && (
-        <div className="mt-6 flex flex-col gap-3 rounded-sm border border-teal-600/30 bg-accent-soft p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-6 flex flex-col gap-3 rounded-xl border border-teal-600/30 bg-accent-soft p-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm">
             <span className="font-semibold">Your RTI application is ready to fill in.</span> Add your name and address,
             then print or download it.
@@ -33,13 +33,13 @@ export function Answer({ answer }: { answer: AnswerEvent }) {
 
       {answer.citations.length > 0 && (
         <section className="mt-8" aria-labelledby="sections-used">
-          <h3 id="sections-used" className="text-sm font-semibold">
+          <h3 id="sections-used" className="text-base font-semibold">
             Sections this answer is based on
           </h3>
           <ol className="mt-3 space-y-2">
             {answer.citations.map((c, i) => (
               <li key={c.key} id={`cite-${i + 1}`} className="flex gap-3 text-sm">
-                <span className="w-6 shrink-0 text-right font-semibold text-muted tabular-nums">{i + 1}.</span>
+                <span className="w-6 shrink-0 text-right text-muted tabular-nums">{i + 1}.</span>
                 <Link href={sectionHref(c)} className="link">
                   {c.act_short_name}, {c.unit} {c.number}: {c.title}
                 </Link>

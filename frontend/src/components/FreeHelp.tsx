@@ -56,14 +56,14 @@ export const ACT_HELP: Record<string, HelpTopic[]> = {
 export function FreeHelp({ topics = [], className = "" }: { topics?: HelpTopic[]; className?: string }) {
   const shown: Line[] = [LINES.legal, LINES.aid, ...topics.filter((t) => t !== "legal").map((t) => LINES[t])];
   return (
-    <section aria-labelledby="free-help" className={`card p-5 sm:p-6 print:hidden ${className}`}>
+    <section aria-labelledby="free-help" className={`rounded-xl bg-sunken p-6 sm:p-8 print:hidden ${className}`}>
       <h2 id="free-help" className="text-lg font-semibold">
         Get free help from a real person
       </h2>
-      <p className="mt-1 text-sm text-muted">
+      <p className="mt-1 text-[0.9375rem] text-muted">
         CivicLens explains the law and drafts letters. It is not legal advice. These services are free.
       </p>
-      <ul className="mt-4 grid gap-4 sm:grid-cols-2">
+      <ul className="mt-5 grid gap-x-8 gap-y-5 sm:grid-cols-2">
         {shown.map((line) => (
           <li key={line.name} className="text-sm">
             <p className="font-semibold">
@@ -71,7 +71,7 @@ export function FreeHelp({ topics = [], className = "" }: { topics?: HelpTopic[]
               {line.number && (
                 <>
                   {": "}
-                  <a href={`tel:${line.number}`} className="link">
+                  <a href={`tel:${line.number}`} className="link tabular-nums">
                     {line.number}
                   </a>
                 </>

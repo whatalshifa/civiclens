@@ -23,21 +23,21 @@ export default function ConsumerPage() {
           </Link>{" "}
           / Consumer complaint
         </nav>
-        <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">Draft a consumer complaint</h1>
-        <p className="mt-4 text-muted">
+        <h1 className="mt-2 page-title">Draft a consumer complaint</h1>
+        <p className="lede">
           Write to the seller or service provider first, and give them a fair time to put it right. If they don&apos;t,
           this letter is your proof that you tried, when you take the case to the Consumer Commission.
         </p>
       </div>
 
-      <div className="mt-10">
+      <div className="mt-12">
         <ConsumerDrafter today={todayInIndia()} />
       </div>
 
-      <section className="mt-16 grid gap-6 lg:grid-cols-2 print:hidden" aria-label="Sending it and what happens next">
-        <div className="card p-5 sm:p-6">
-          <h2 className="text-lg font-semibold">Sending it</h2>
-          <ul className="mt-4 list-disc space-y-3 pl-5 text-sm text-muted marker:text-muted">
+      <section className="mt-20 grid gap-10 border-t border-line pt-12 lg:grid-cols-2 lg:gap-16 print:hidden" aria-label="Sending it and what happens next">
+        <div>
+          <h2 className="text-xl font-semibold">Sending it</h2>
+          <ul className="mt-4 list-disc space-y-3 pl-5 text-[0.9375rem] text-muted marker:text-muted">
             <li>Send it by registered post or email, and keep the receipt or the sent email.</li>
             <li>Keep copies of the bill, warranty card, photos, chats and complaint numbers.</li>
             <li>
@@ -46,9 +46,9 @@ export default function ConsumerPage() {
             </li>
           </ul>
         </div>
-        <div className="card p-5 sm:p-6">
-          <h2 className="text-lg font-semibold">If they don&apos;t put it right</h2>
-          <ul className="mt-4 list-disc space-y-3 pl-5 text-sm text-muted marker:text-muted">
+        <div>
+          <h2 className="text-xl font-semibold">If they don&apos;t put it right</h2>
+          <ul className="mt-4 list-disc space-y-3 pl-5 text-[0.9375rem] text-muted marker:text-muted">
             <li>
               File a complaint with the District Consumer Commission, online through{" "}
               <a href="https://edaakhil.nic.in" className="link" target="_blank" rel="noopener noreferrer">
@@ -78,7 +78,7 @@ export default function ConsumerPage() {
         </div>
       </section>
 
-      <FreeHelp topics={["consumer"]} className="mt-6" />
+      <FreeHelp topics={["consumer"]} className="mt-12" />
     </div>
   );
 }

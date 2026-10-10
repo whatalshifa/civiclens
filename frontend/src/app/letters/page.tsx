@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 import { FreeHelp } from "@/components/FreeHelp";
@@ -40,25 +41,27 @@ export default function LettersPage() {
   return (
     <div>
       <div className="max-w-3xl">
-        <p className="eyebrow">Letters</p>
-        <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">Letters you can send</h1>
-        <p className="mt-4 text-muted">
+        <h1 className="page-title">Letters you can send</h1>
+        <p className="lede">
           Fill in a short form and the letter is written as you type, in English or Hindi, citing the law it relies on.
           Everything you type stays in your browser.
         </p>
       </div>
-      <ul className="mt-10 grid gap-4 sm:grid-cols-2">
+      <ul className="mt-12 grid gap-5 sm:grid-cols-2">
         {LETTERS.map((l) => (
           <li key={l.href}>
-            <Link href={l.href} className="card block h-full p-5 transition-colors hover:bg-sunken sm:p-6">
-              <h2 className="text-lg font-semibold">{l.title}</h2>
-              <p className="mt-2 text-sm text-muted">{l.what}</p>
-              <p className="mt-3 text-xs text-muted">{l.law}</p>
+            <Link href={l.href} className="card-link group flex h-full flex-col p-6">
+              <h2 className="inline-flex items-center gap-1.5 text-lg font-semibold group-hover:text-accent">
+                {l.title}
+                <ArrowRight aria-hidden className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </h2>
+              <p className="mt-2 mb-4 text-[0.9375rem] text-muted">{l.what}</p>
+              <p className="mt-auto text-[0.8125rem] text-muted">{l.law}</p>
             </Link>
           </li>
         ))}
       </ul>
-      <FreeHelp className="mt-10" />
+      <FreeHelp className="mt-16" />
     </div>
   );
 }

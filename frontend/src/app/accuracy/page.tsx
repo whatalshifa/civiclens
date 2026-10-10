@@ -27,21 +27,20 @@ export default async function AccuracyPage() {
 
   return (
     <div className="max-w-3xl">
-      <p className="eyebrow">Accuracy</p>
-      <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
+      <h1 className="page-title">
         How accurate is the rights assistant?
       </h1>
-      <p className="mt-4 text-muted">
+      <p className="lede">
         AI assistants can cite laws that don&apos;t say what they claim, or don&apos;t exist. CivicLens checks every
         citation before you see it, and publishes the count here.
       </p>
 
-      <section aria-labelledby="live-heading" className="mt-10">
-        <h2 id="live-heading" className="text-xl font-semibold">
+      <section aria-labelledby="live-heading" className="mt-14">
+        <h2 id="live-heading" className="section-title">
           Live answers
         </h2>
         {live.runs === 0 ? (
-          <p className="mt-3 rounded-sm bg-sunken p-4 text-sm">
+          <p className="note mt-4">
             None yet. The AI is switched off on this site for now, so the assistant answers only its prepared sample
             questions. These numbers will start counting when it is switched on.
           </p>
@@ -50,8 +49,8 @@ export default async function AccuracyPage() {
         )}
       </section>
 
-      <section aria-labelledby="demo-heading" className="mt-10">
-        <h2 id="demo-heading" className="text-xl font-semibold">
+      <section aria-labelledby="demo-heading" className="mt-14">
+        <h2 id="demo-heading" className="section-title">
           Sample answers (demo)
         </h2>
         <p className="mt-1 text-sm text-muted">
@@ -62,11 +61,11 @@ export default async function AccuracyPage() {
         <Stats stats={demo} />
       </section>
 
-      <section aria-labelledby="how-heading" className="mt-12">
-        <h2 id="how-heading" className="text-xl font-semibold">
+      <section aria-labelledby="how-heading" className="mt-14">
+        <h2 id="how-heading" className="section-title">
           How the check works
         </h2>
-        <ol className="mt-4 list-decimal space-y-3 pl-5 text-sm text-muted marker:font-semibold marker:text-foreground">
+        <ol className="mt-4 list-decimal space-y-3 pl-5 text-muted marker:font-semibold marker:text-foreground">
           {STEPS.map((step) => (
             <li key={step} className="pl-1">
               {step}
@@ -95,11 +94,11 @@ function Stats({ stats }: { stats: ModeStats }) {
   ];
   return (
     <div className="mt-4">
-      <dl className="grid grid-cols-3 gap-3">
+      <dl className="card grid grid-cols-3 divide-x divide-line">
         {items.map((item) => (
-          <div key={item.label} className="card p-4">
-            <dt className="text-xs text-muted">{item.label}</dt>
-            <dd className="mt-1 text-2xl font-bold tabular-nums">{item.value}</dd>
+          <div key={item.label} className="p-4 sm:p-5">
+            <dt className="text-[0.8125rem] text-muted">{item.label}</dt>
+            <dd className="mt-1 text-2xl font-semibold tabular-nums">{item.value}</dd>
           </div>
         ))}
       </dl>

@@ -4,34 +4,36 @@
    "System" (the default) copies the device setting; the switch in the header can pin light or dark. */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* A public gazette: black ink on newsprint, with heavy rules between sections. The one colour is
-   a deep teal, chosen because it isn't the colour of any major Indian party; party names are always
-   plain text, never coloured. */
+/* Plain and trustworthy, in the manner of the GOV.UK and US web design systems: dark text on white,
+   hairline dividers instead of boxes, and one accent colour. The accent is a deep teal, chosen because
+   it isn't the colour of any major Indian party; party names are always plain text, never coloured. */
 :root {
-  --background: #f5f5f0;
-  --foreground: #111816;
+  --background: #ffffff;
+  --foreground: #0e1716;
   --surface: #ffffff;
-  --sunken: #ebece6;
-  --muted: #535d5a;
-  --border: #d5d8d1;
-  --rule: #111816;
+  --sunken: #f2f4f3;
+  --muted: #4f5b58;
+  --border: #d8dddb;
+  --strong: #0e1716;
+  --input-border: #6b7774;
   --accent: #0f6b63;
-  --accent-soft: #e1efec;
+  --accent-soft: #e4f1ee;
   --focus: #0f766e;
   --mark: #fdf0b8;
   color-scheme: light;
 }
 
 .dark {
-  --background: #0b1110;
-  --foreground: #e7ecea;
+  --background: #0c1211;
+  --foreground: #e6ebe9;
   --surface: #121a19;
-  --sunken: #19231f;
-  --muted: #9aa8a4;
-  --border: #26332f;
-  --rule: #e7ecea;
+  --sunken: #17211f;
+  --muted: #9eaca8;
+  --border: #283532;
+  --strong: #e6ebe9;
+  --input-border: #5f6f6b;
   --accent: #5ad1c0;
-  --accent-soft: #0f2a29;
+  --accent-soft: #10302d;
   --focus: #5ad1c0;
   --mark: #4a3f10;
   color-scheme: dark;
@@ -44,12 +46,12 @@
   --color-sunken: var(--sunken);
   --color-muted: var(--muted);
   --color-line: var(--border);
+  --color-strong: var(--strong);
+  --color-input: var(--input-border);
   --color-accent: var(--accent);
   --color-accent-soft: var(--accent-soft);
-  --color-rule: var(--rule);
-  /* Public Sans for reading, Archivo pressed narrow for headlines, JetBrains Mono for numbers. */
+  /* Public Sans for everything; JetBrains Mono only for PIN codes and section numbers. */
   --font-sans: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-archivo), var(--font-public-sans), ui-sans-serif, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 }
 
@@ -57,26 +59,26 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-public-sans), system-ui, sans-serif;
+  line-height: 1.6;
   text-rendering: optimizeLegibility;
 }
 
 @layer base {
-  :where(a, button, summary, select, input, [tabindex]):focus-visible {
-    outline: 2px solid var(--focus);
+  :where(a, button, summary, select, input, textarea, [tabindex]):focus-visible {
+    outline: 3px solid var(--focus);
     outline-offset: 2px;
+  }
+  h1,
+  h2,
+  h3 {
+    line-height: 1.2;
+    text-wrap: balance;
   }
   mark {
     background: var(--mark);
     color: var(--foreground);
-    border-radius: 0.1rem;
+    border-radius: 0.125rem;
     padding: 0 0.1rem;
-  }
-  /* Headlines: narrow and heavy, like a newspaper's. */
-  h1,
-  h2,
-  h3 {
-    font-family: var(--font-display);
-    font-stretch: 80%;
   }
   /* Leave room for the sticky header when jumping to a section. */
   [id] {
@@ -95,88 +97,120 @@ body {
   }
 }
 
+/* One radius scale: 8px for controls, 12px for cards, full only for small badges. */
 @layer components {
+  .page-title {
+    @apply text-[1.75rem] leading-tight font-semibold tracking-[-0.015em] text-balance sm:text-[2.125rem];
+  }
+  .lede {
+    @apply mt-3 max-w-[65ch] text-[1.0625rem] leading-relaxed text-muted sm:text-lg;
+  }
+  .section-title {
+    @apply text-[1.375rem] leading-snug font-semibold tracking-[-0.01em] sm:text-2xl;
+  }
+
   .card {
-    @apply rounded-none border border-line border-t-[3px] border-t-rule bg-surface;
+    @apply rounded-xl border border-line bg-surface;
+  }
+  /* A whole card that is a link: the border darkens on hover, nothing moves. */
+  .card-link {
+    @apply block rounded-xl border border-line bg-surface transition-colors hover:border-accent;
+  }
+
+  .note {
+    @apply rounded-lg bg-sunken px-4 py-3 text-sm;
+  }
+  .note-accent {
+    @apply rounded-lg border-l-4 border-accent bg-accent-soft px-4 py-3 text-sm;
   }
 
   .btn {
-    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-sm border border-transparent px-4 py-2 text-sm
+    @apply inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-transparent px-4 text-[0.9375rem]
       font-semibold whitespace-nowrap transition-colors select-none
       disabled:cursor-not-allowed disabled:opacity-60;
   }
   /* White on teal-800 is 7.4:1, readable in both themes. */
   .btn-primary {
-    @apply bg-teal-800 text-white shadow-sm hover:bg-teal-900;
+    @apply bg-teal-800 text-white hover:bg-teal-900;
   }
   .btn-secondary {
-    @apply border-line bg-surface text-foreground hover:bg-sunken;
+    @apply border-line bg-surface text-foreground hover:border-muted hover:bg-sunken;
   }
   .btn-ghost {
     @apply text-muted hover:bg-sunken hover:text-foreground;
   }
   .btn-sm {
-    @apply min-h-8 rounded-sm px-3 py-1;
+    @apply h-8 px-3 text-sm;
+  }
+  .btn-lg {
+    @apply h-12 px-6 text-base;
   }
 
   .icon-btn {
-    @apply inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-sm text-muted transition-colors
+    @apply inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-muted transition-colors
       hover:bg-sunken hover:text-foreground;
   }
 
+  /* Small filter links, such as "search within one law". */
   .chip {
-    @apply inline-flex min-h-9 items-center gap-1.5 rounded-sm border border-line bg-surface px-3 py-1 text-sm
-      text-foreground transition-colors hover:border-teal-600/50 hover:bg-accent-soft;
+    @apply inline-flex h-8 items-center gap-1.5 rounded-lg border border-line bg-surface px-3 text-sm
+      text-foreground transition-colors hover:border-accent hover:text-accent;
   }
 
   .badge {
-    @apply inline-flex items-center gap-1 rounded-sm px-2 py-0.5 text-xs font-semibold whitespace-nowrap;
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium whitespace-nowrap;
   }
 
   .input {
-    @apply block min-h-12 w-full rounded-sm border border-line bg-surface px-4 py-2 text-foreground outline-none
-      transition placeholder:text-muted/80 focus:border-teal-600 focus:ring-4 focus:ring-teal-600/15
-      focus-visible:outline-none;
+    @apply block h-11 w-full rounded-lg border border-input bg-surface px-3.5 text-base text-foreground outline-none
+      transition placeholder:text-muted/80 focus:border-teal-700 focus:ring-3 focus:ring-teal-600/25
+      focus-visible:outline-none dark:focus:border-teal-400;
+  }
+  textarea.input {
+    @apply h-auto;
   }
 
   .link {
-    @apply font-medium text-accent underline-offset-4 hover:underline;
+    @apply font-medium text-accent underline decoration-accent/40 underline-offset-[3px] hover:decoration-2
+      hover:decoration-accent;
+  }
+  /* A link that reads like body text until hovered: lists of seats, acts and places. */
+  .row-link {
+    @apply transition-colors hover:text-accent;
   }
 
-  /* Labels set like the form numbers and section marks of an official document. */
+  /* Used sparingly, above a page title or a card's heading. */
   .eyebrow {
-    @apply font-mono text-[0.7rem] font-medium tracking-[0.12em] text-accent uppercase;
+    @apply text-sm font-medium text-accent;
   }
-
-  /* A section opens under a heavy rule, like a new column in a gazette. */
-  .rule-heavy {
-    @apply border-t-[3px] border-rule;
+  .label {
+    @apply text-sm font-semibold text-foreground;
   }
 
   .ref {
-    @apply ml-0.5 align-super font-mono text-[0.68rem] font-medium text-accent no-underline hover:underline;
+    @apply ml-0.5 align-super text-[0.7rem] font-medium text-accent tabular-nums no-underline hover:underline;
   }
 
-  /* A citation in the assistant's answer: a small numbered pill linking to the section. */
+  /* A citation in the assistant's answer: a small number linking to the section. */
   .cite {
-    @apply inline-flex h-[1.15rem] min-w-[1.15rem] items-center justify-center rounded-sm bg-accent-soft px-1
-      font-mono text-[0.68rem] leading-none font-medium text-accent no-underline hover:bg-teal-700 hover:text-white;
+    @apply inline-flex h-[1.15rem] min-w-[1.15rem] items-center justify-center rounded bg-accent-soft px-1
+      text-[0.7rem] leading-none font-semibold text-accent tabular-nums no-underline hover:bg-teal-700 hover:text-white;
   }
 
   .field-label {
-    @apply mb-1.5 block text-sm font-semibold;
+    @apply mb-1.5 block text-[0.9375rem] font-semibold;
   }
 
   .field-hint {
-    @apply mt-1 text-xs text-muted;
+    @apply mt-1.5 text-sm text-muted;
   }
 
   .skeleton {
-    @apply animate-pulse rounded-sm bg-sunken;
+    @apply animate-pulse rounded-lg bg-sunken;
   }
 
   .prose-civic {
-    @apply text-[1.02rem] leading-7 text-pretty;
+    @apply max-w-[70ch] text-base leading-relaxed text-pretty;
   }
 }
 
@@ -208,8 +242,11 @@ body {
 }
 
 /* The section someone jumped to gets a soft highlight, so they can see where they landed. */
+.law-section {
+  @apply -mx-4 px-4 sm:-mx-6 sm:px-6;
+}
 .law-section:target {
-  @apply border-teal-600/60 ring-4 ring-teal-600/10;
+  @apply rounded-xl border-transparent bg-accent-soft;
 }
 
 @media print {

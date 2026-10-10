@@ -1,5 +1,6 @@
 "use client";
 
+import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
@@ -144,9 +145,9 @@ export function Assistant({
         </div>
       </form>
 
-      <div className="mt-6">
-        <p className="text-sm font-semibold">{info.ai_enabled ? "Or try a sample question" : "Sample questions"}</p>
-        <ul className="mt-2 flex flex-col gap-2">
+      <div className="mt-8">
+        <p className="label">{info.ai_enabled ? "Or try a sample question" : "Sample questions"}</p>
+        <ul className="card mt-2 divide-y divide-line overflow-hidden">
           {info.samples.map((s) => (
             <li key={s.id}>
               <a
@@ -158,9 +159,10 @@ export function Assistant({
                   ask(s.question, s.id);
                 }}
                 aria-current={activeSample === s.id ? "true" : undefined}
-                className="card block px-4 py-3 text-sm transition-colors hover:bg-sunken aria-[current]:border-teal-600/60 aria-[current]:bg-accent-soft"
+                className="flex items-center justify-between gap-3 px-4 py-3 text-[0.9375rem] transition-colors hover:bg-sunken aria-[current]:bg-accent-soft aria-[current]:font-medium"
               >
                 {s.question}
+                <ChevronRight aria-hidden className="h-4 w-4 shrink-0 text-muted" />
               </a>
             </li>
           ))}
@@ -189,14 +191,7 @@ export function Result({ run, headingRef }: { run: Run; headingRef?: React.Ref<H
         <details className="group mt-6" open={run.running || !run.answer}>
           <summary className="cursor-pointer list-none text-sm font-semibold text-muted [&::-webkit-details-marker]:hidden">
             <span className="inline-flex items-center gap-1.5">
-              <svg
-                aria-hidden
-                viewBox="0 0 20 20"
-                className="h-4 w-4 transition-transform group-open:rotate-90"
-                fill="currentColor"
-              >
-                <path d="M7.5 4.5 13 10l-5.5 5.5-1-1L11 10 6.5 5.5l1-1Z" />
-              </svg>
+              <ChevronRight aria-hidden className="h-4 w-4 transition-transform group-open:rotate-90" />
               {run.running
                 ? "Searching and reading the law"
                 : `How this was answered: ${run.steps.length} step${run.steps.length === 1 ? "" : "s"}`}
@@ -216,7 +211,7 @@ export function Result({ run, headingRef }: { run: Run; headingRef?: React.Ref<H
         )}
 
         {run.off && (
-          <div className="mt-6 rounded-sm bg-sunken p-4 text-sm">
+          <div className="note mt-6">
             <p>{run.off}</p>
             <p className="mt-2">
               <Link href={`/laws/search?q=${encodeURIComponent(run.question.slice(0, 200))}`} className="link">
@@ -229,7 +224,7 @@ export function Result({ run, headingRef }: { run: Run; headingRef?: React.Ref<H
         {run.error && (
           <p
             role="alert"
-            className="mt-6 rounded-sm border border-rose-300/60 bg-rose-50 p-4 text-sm text-rose-900 dark:border-rose-500/30 dark:bg-rose-950/40 dark:text-rose-100"
+            className="mt-6 rounded-lg border border-rose-300/60 bg-rose-50 p-4 text-sm text-rose-900 dark:border-rose-500/30 dark:bg-rose-950/40 dark:text-rose-100"
           >
             {run.error}
           </p>

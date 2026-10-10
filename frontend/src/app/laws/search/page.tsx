@@ -60,14 +60,14 @@ export default async function SearchPage({ searchParams }: PageProps<"/laws/sear
       )}
 
       {results && (
-        <section className="mt-8" aria-labelledby="results-heading">
-          <h1 id="results-heading" className="text-lg font-semibold" aria-live="polite">
+        <section className="mt-10" aria-labelledby="results-heading">
+          <h1 id="results-heading" className="text-2xl font-semibold tracking-[-0.01em]" aria-live="polite">
             {results.total === 0
               ? `Nothing found for “${q}”`
               : `${results.total} ${results.total === 1 ? "section" : "sections"} match “${q}”`}
           </h1>
           {results.total > results.results.length && (
-            <p className="text-sm text-muted">Showing the {results.results.length} closest matches.</p>
+            <p className="mt-1 text-sm text-muted">Showing the {results.results.length} closest matches.</p>
           )}
 
           {results.total === 0 ? (
@@ -82,20 +82,17 @@ export default async function SearchPage({ searchParams }: PageProps<"/laws/sear
               </p>
             </div>
           ) : (
-            <ol className="mt-5 space-y-4">
+            <ol className="mt-6 border-t border-line">
               {results.results.map((hit) => (
-                <li key={`${hit.act_id}-${hit.number}`}>
-                  <Link
-                    href={`/laws/${hit.act_id}#${hit.anchor}`}
-                    className="card block p-5 transition-colors hover:bg-sunken"
-                  >
-                    <p className="text-xs font-semibold text-muted">
+                <li key={`${hit.act_id}-${hit.number}`} className="border-b border-line">
+                  <Link href={`/laws/${hit.act_id}#${hit.anchor}`} className="group block py-5">
+                    <p className="text-xs font-medium text-accent">
                       {hit.act_short_name} · {hit.unit} {hit.number}
                     </p>
-                    <h2 className="mt-1 font-semibold">
+                    <h2 className="mt-1 text-lg font-semibold group-hover:text-accent group-hover:underline">
                       <Highlight text={hit.title} />
                     </h2>
-                    <p className="mt-2 text-sm text-muted">
+                    <p className="mt-1.5 text-[0.9375rem] text-muted">
                       <Highlight text={hit.snippet} />
                     </p>
                   </Link>
@@ -106,11 +103,11 @@ export default async function SearchPage({ searchParams }: PageProps<"/laws/sear
 
           {!act && results.total > 0 && (
             <div className="mt-8">
-              <p className="text-sm font-semibold">Search within one law</p>
+              <h2 className="text-sm font-semibold">Search within one law</h2>
               <ul className="mt-2 flex flex-wrap gap-2">
                 {acts.map((a) => (
                   <li key={a.id}>
-                    <Link href={`/laws/search?q=${encodeURIComponent(q)}&act=${a.id}`} className="chip text-xs">
+                    <Link href={`/laws/search?q=${encodeURIComponent(q)}&act=${a.id}`} className="chip">
                       {a.short_name}
                     </Link>
                   </li>
@@ -121,7 +118,7 @@ export default async function SearchPage({ searchParams }: PageProps<"/laws/sear
         </section>
       )}
 
-      <p className="mt-10 rounded-sm bg-sunken p-4 text-sm text-muted">
+      <p className="note mt-12 text-muted">
         Search looks for your words in our plain-language summaries and the sections&apos; titles. It doesn&apos;t
         give legal advice. For help with a case, your District Legal Services Authority offers free legal aid to
         those who qualify.

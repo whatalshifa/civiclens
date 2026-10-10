@@ -52,17 +52,19 @@ export default async function PinPage({ params }: PageProps<"/pin/[pin]">) {
 
   return (
     <div>
-      <p className="eyebrow">PIN code {place.pin}</p>
-      <h1 className="mt-2 text-4xl font-extrabold tracking-tight sm:text-5xl">
+      <p className="eyebrow">
+        PIN code <span className="font-mono">{place.pin}</span>
+      </p>
+      <h1 className="mt-2 page-title">
         {place.area}
         <Ref n={placeRef} source={place.source} />
       </h1>
-      <p className="mt-2 text-muted">
+      <p className="lede">
         {place.district} district, {place.state}. These are the people elected from the seats this PIN code falls in
         <Ref n={seatsRef} source={place.seats_source} />.
       </p>
 
-      <div className="mt-8 grid gap-5 md:grid-cols-2">
+      <div className="mt-10 grid items-start gap-6 lg:grid-cols-2">
         {place.seats.map((seat) => (
           <RepresentativeCard key={seat.id} seat={seat} notes={notes} />
         ))}
@@ -71,7 +73,7 @@ export default async function PinPage({ params }: PageProps<"/pin/[pin]">) {
         ))}
       </div>
 
-      <aside className="mt-8 rounded-none bg-sunken p-5 text-sm">
+      <aside className="mt-8 max-w-3xl text-sm">
         <p className="font-semibold">How we show representatives</p>
         <p className="mt-1 text-muted">
           Every representative gets the same fields, in the same order, with no ratings, photos or party colours. Each
@@ -90,8 +92,8 @@ export default async function PinPage({ params }: PageProps<"/pin/[pin]">) {
 
       <SourceList sources={notes.all} />
 
-      <div className="mt-12 max-w-md">
-        <p className="mb-2 text-sm font-semibold">Look up another PIN code</p>
+      <div className="mt-16 max-w-md">
+        <h2 className="mb-2 text-base font-semibold">Look up another PIN code</h2>
         <PinForm size="sm" />
       </div>
     </div>
@@ -103,8 +105,8 @@ async function NotCovered({ pin }: { pin: string }) {
   return (
     <div className="mx-auto max-w-2xl">
       <p className="eyebrow">PIN code {pin}</p>
-      <h1 className="mt-2 text-4xl font-extrabold tracking-tight">We don&apos;t have this PIN code yet</h1>
-      <p className="mt-3 text-muted">
+      <h1 className="mt-2 page-title">We don&apos;t have this PIN code yet</h1>
+      <p className="lede">
         CivicLens has{" "}
         <Link href="/seats" className="link">
           every Lok Sabha seat and its MP
@@ -118,13 +120,13 @@ async function NotCovered({ pin }: { pin: string }) {
       </p>
       {coverage && coverage.examples.length > 0 && (
         <div className="mt-6">
-          <p className="text-sm font-semibold">Try one we have</p>
-          <ul className="mt-2 flex flex-wrap gap-2">
+          <h2 className="text-base font-semibold">Try one we have</h2>
+          <ul className="mt-2 grid gap-x-6 sm:grid-cols-2">
             {coverage.examples.map((p) => (
-              <li key={p.pin}>
-                <Link href={`/pin/${p.pin}`} className="chip">
-                  <span className="font-mono">{p.pin}</span>
-                  <span className="text-muted">{p.area}</span>
+              <li key={p.pin} className="border-b border-line">
+                <Link href={`/pin/${p.pin}`} className="flex gap-3 py-2.5 hover:text-accent">
+                  <span className="font-mono text-sm leading-6 text-accent">{p.pin}</span>
+                  <span>{p.area}</span>
                 </Link>
               </li>
             ))}

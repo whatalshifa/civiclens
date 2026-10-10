@@ -21,12 +21,12 @@ export function ParliamentRecord({ record, notes }: { record: MemberRecord; note
   const attended = record.days_signed !== null && record.sitting_days ? record.days_signed / record.sitting_days : null;
   const fund = record.fund_allocated !== null && record.fund_spent !== null ? record : null;
   return (
-    <section className="mt-5 border-t border-line pt-4" aria-label="Record in office">
-      <h3 className="eyebrow !text-muted">In Parliament</h3>
-      <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
+    <section className="mt-6 border-t border-line pt-5" aria-label="Record in office">
+      <h3 className="text-sm font-semibold">In Parliament</h3>
+      <dl className="mt-2 grid grid-cols-[7.5rem_minmax(0,1fr)] gap-x-4 gap-y-2 text-sm sm:grid-cols-[9rem_minmax(0,1fr)]">
         <dt className="text-muted">Questions asked</dt>
         <dd>
-          <span className="font-mono">{COUNT.format(record.questions)}</span>
+          <span className="font-medium tabular-nums">{COUNT.format(record.questions)}</span>
           {record.days_signed === null && record.questions === 0 && (
             <span className="text-muted"> (ministers answer questions rather than ask them)</span>
           )}
@@ -37,8 +37,8 @@ export function ParliamentRecord({ record, notes }: { record: MemberRecord; note
         <dd>
           {attended !== null ? (
             <>
-              Signed the register on <span className="font-mono">{record.days_signed}</span> of{" "}
-              <span className="font-mono">{record.sitting_days}</span> sitting days (
+              Signed the register on <span className="font-medium tabular-nums">{record.days_signed}</span> of{" "}
+              <span className="font-medium tabular-nums">{record.sitting_days}</span> sitting days (
               {formatPercent(100 * attended)})<Average>{formatPercent(record.attendance_average)}</Average>
             </>
           ) : (
@@ -48,17 +48,17 @@ export function ParliamentRecord({ record, notes }: { record: MemberRecord; note
         </dd>
       </dl>
 
-      <h3 className="eyebrow mt-4 !text-muted">MP fund (MPLADS)</h3>
+      <h3 className="mt-5 text-sm font-semibold">MP fund (MPLADS)</h3>
       {fund ? (
-        <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
+        <dl className="mt-2 grid grid-cols-[7.5rem_minmax(0,1fr)] gap-x-4 gap-y-2 text-sm sm:grid-cols-[9rem_minmax(0,1fr)]">
           <dt className="text-muted">Available</dt>
           <dd>
-            <span className="font-mono">{formatRupees(fund.fund_allocated!)}</span>
+            <span className="font-medium tabular-nums">{formatRupees(fund.fund_allocated!)}</span>
             <Ref n={notes.cite(record.fund_source)} source={record.fund_source} />
           </dd>
           <dt className="text-muted">Spent so far</dt>
           <dd>
-            <span className="font-mono">{formatRupees(fund.fund_spent!)}</span>
+            <span className="font-medium tabular-nums">{formatRupees(fund.fund_spent!)}</span>
             {fund.fund_allocated! > 0 && <> ({formatPercent((100 * fund.fund_spent!) / fund.fund_allocated!)})</>}
             <Average>{formatPercent(record.fund_spent_average)}</Average>
           </dd>

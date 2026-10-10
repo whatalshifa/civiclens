@@ -50,12 +50,12 @@ export function LetterPreview({
   return (
     <div className="lg:sticky lg:top-20 lg:self-start">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-3 print:hidden">
-        <h2 className="font-semibold">{title}</h2>
+        <h2 className="text-lg font-semibold">{title}</h2>
         {language && onLanguage && (
           <div
             role="radiogroup"
             aria-label="Language of the letter"
-            className="flex rounded-sm border border-line bg-surface p-0.5"
+            className="flex gap-0.5 rounded-lg border border-line bg-surface p-0.5"
           >
             {(["en", "hi"] as const).map((lang) => (
               <button
@@ -64,7 +64,7 @@ export function LetterPreview({
                 role="radio"
                 aria-checked={language === lang}
                 onClick={() => onLanguage(lang)}
-                className="btn btn-sm aria-checked:bg-teal-800 aria-checked:text-white"
+                className="btn btn-sm rounded-md text-muted aria-checked:bg-teal-800 aria-checked:text-white"
                 lang={lang}
               >
                 {lang === "en" ? "English" : "हिंदी"}

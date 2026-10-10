@@ -7,7 +7,7 @@ export function OldToNewMatch({ match }: { match: OldSection }) {
   const old = `${match.code_short_name} ${match.number}`;
   if (!match.new_number) {
     return (
-      <div className="card p-5">
+      <div className="card p-5 sm:p-6">
         <p className="text-lg font-semibold">{old} has no new section</p>
         {match.note && <p className="mt-2 text-sm text-muted">{match.note}</p>}
       </div>
@@ -15,7 +15,7 @@ export function OldToNewMatch({ match }: { match: OldSection }) {
   }
   const now = `${match.new_act_short_name} ${match.new_number}`;
   return (
-    <div className="card p-5">
+    <div className="card p-5 sm:p-6">
       <p className="text-lg font-semibold">
         {old} is now <span className="text-accent">{now}</span>
       </p>

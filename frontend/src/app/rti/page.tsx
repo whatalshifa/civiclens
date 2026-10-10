@@ -55,33 +55,32 @@ export default async function RtiPage({ searchParams }: PageProps<"/rti">) {
   return (
     <div>
       <div className="max-w-3xl print:hidden">
-        <p className="eyebrow">Right to Information</p>
-        <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">Draft an RTI application</h1>
-        <p className="mt-4 text-muted">
+        <h1 className="page-title">Draft an RTI application</h1>
+        <p className="lede">
           Any citizen can ask a government office for its records and information, and it must answer within 30 days.
           Fill in the form and your application is written as you type, in English or Hindi, ready to print and send.
         </p>
         {authority && (
-          <p className="mt-4 rounded-sm bg-accent-soft p-3 text-sm">
+          <p className="note-accent mt-5">
             The rights assistant filled in the office and the questions. Check them, then add your own details.
           </p>
         )}
         <noscript>
-          <p className="mt-4 rounded-sm bg-sunken p-3 text-sm">
+          <p className="note mt-5">
             The letter below updates as you type when JavaScript is on. Without it, you can copy the template and fill
             in the blanks by hand.
           </p>
         </noscript>
       </div>
 
-      <div className="mt-10">
+      <div className="mt-12">
         <RtiDrafter authority={authority} information={information} today={todayInIndia()} />
       </div>
 
-      <section className="mt-16 grid gap-6 lg:grid-cols-2 print:hidden" aria-label="Sending it and what happens next">
-        <div className="card p-5 sm:p-6">
-          <h2 className="text-lg font-semibold">Sending it</h2>
-          <ul className="mt-4 list-disc space-y-3 pl-5 text-sm text-muted marker:text-muted">
+      <section className="mt-20 grid gap-10 border-t border-line pt-12 lg:grid-cols-2 lg:gap-16 print:hidden" aria-label="Sending it and what happens next">
+        <div>
+          <h2 className="text-xl font-semibold">Sending it</h2>
+          <ul className="mt-4 list-disc space-y-3 pl-5 text-[0.9375rem] text-muted marker:text-muted">
             <li>
               <span className="text-foreground">Central government offices</span> (ministries, railways, banks owned by
               the government, central universities): you can file online at{" "}
@@ -110,8 +109,8 @@ export default async function RtiPage({ searchParams }: PageProps<"/rti">) {
           </ul>
         </div>
 
-        <div className="card p-5 sm:p-6">
-          <h2 className="text-lg font-semibold">What happens next</h2>
+        <div>
+          <h2 className="text-xl font-semibold">What happens next</h2>
           <ol className="mt-4 space-y-4">
             {NEXT_STEPS.map((step) => (
               <li key={step.when} className="grid grid-cols-[8.5rem_1fr] gap-3 text-sm">
@@ -148,7 +147,7 @@ export default async function RtiPage({ searchParams }: PageProps<"/rti">) {
         </div>
       </section>
 
-      <FreeHelp className="mt-6" />
+      <FreeHelp className="mt-12" />
     </div>
   );
 }

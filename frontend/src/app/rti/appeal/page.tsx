@@ -23,8 +23,8 @@ export default function AppealPage() {
           </Link>{" "}
           / First appeal
         </nav>
-        <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">Draft an RTI first appeal</h1>
-        <p className="mt-4 text-muted">
+        <h1 className="mt-2 page-title">Draft an RTI first appeal</h1>
+        <p className="lede">
           If the office didn&apos;t reply within 30 days, refused without a good reason, or gave you incomplete
           information, you can appeal to the officer senior to the Public Information Officer, in the same office. Do it
           within 30 days of the reply, or of the day the reply was due{" "}
@@ -35,14 +35,14 @@ export default function AppealPage() {
         </p>
       </div>
 
-      <div className="mt-10">
+      <div className="mt-12">
         <AppealDrafter today={todayInIndia()} />
       </div>
 
-      <section className="mt-16 grid gap-6 lg:grid-cols-2 print:hidden" aria-label="Sending it and what happens next">
-        <div className="card p-5 sm:p-6">
-          <h2 className="text-lg font-semibold">Sending it</h2>
-          <ul className="mt-4 list-disc space-y-3 pl-5 text-sm text-muted marker:text-muted">
+      <section className="mt-20 grid gap-10 border-t border-line pt-12 lg:grid-cols-2 lg:gap-16 print:hidden" aria-label="Sending it and what happens next">
+        <div>
+          <h2 className="text-xl font-semibold">Sending it</h2>
+          <ul className="mt-4 list-disc space-y-3 pl-5 text-[0.9375rem] text-muted marker:text-muted">
             <li>
               The PIO&apos;s reply should name the First Appellate Authority. If it doesn&apos;t, address it as above
               and send it to the same office.
@@ -60,8 +60,8 @@ export default function AppealPage() {
             </li>
           </ul>
         </div>
-        <div className="card p-5 sm:p-6">
-          <h2 className="text-lg font-semibold">What happens next</h2>
+        <div>
+          <h2 className="text-xl font-semibold">What happens next</h2>
           <ol className="mt-4 space-y-4 text-sm">
             <li className="grid grid-cols-[8.5rem_1fr] gap-3">
               <span className="font-semibold">Within 30 days</span>
@@ -87,7 +87,7 @@ export default function AppealPage() {
         </div>
       </section>
 
-      <FreeHelp className="mt-6" />
+      <FreeHelp className="mt-12" />
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Download } from "lucide-react";
 import Link from "next/link";
 
 import { api } from "@/lib/api";
@@ -16,39 +17,41 @@ export default async function DataPage() {
   const datasets = await api<Dataset[]>("/api/data");
   return (
     <div className="max-w-3xl">
-      <p className="eyebrow">Open data</p>
-      <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">Download the data</h1>
-      <p className="mt-4 text-muted">
+      <h1 className="page-title">Download the data</h1>
+      <p className="lede">
         Everything CivicLens shows, as spreadsheets you can open in Excel or Google Sheets. They are the same tables the
         pages read, refreshed every week. Every row links to the official source it came from.
       </p>
 
-      <ul className="mt-8 grid gap-4">
+      <ul className="mt-12 border-t border-line">
         {datasets.map((d) => (
-          <li key={d.id} className="card p-5 sm:p-6">
-            <h2 className="text-lg font-semibold">{d.title}</h2>
-            <p className="mt-2 text-sm text-muted">{d.description}</p>
-            <p className="mt-3 text-sm">
-              {number.format(d.rows)} rows. Columns:{" "}
-              <span className="break-words text-muted">{d.columns.join(", ")}</span>
-            </p>
+          <li key={d.id} className="grid gap-4 border-b border-line py-7 sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-8">
+            <div className="min-w-0">
+              <h2 className="text-lg font-semibold">{d.title}</h2>
+              <p className="mt-1.5 text-[0.9375rem] text-muted">{d.description}</p>
+              <p className="mt-3 text-sm text-muted">
+                <span className="font-medium text-foreground tabular-nums">{number.format(d.rows)}</span> rows. Columns:{" "}
+                <span className="break-words">{d.columns.join(", ")}</span>
+              </p>
+            </div>
             <a
               href={`/data/${d.id}.csv`}
-              className="btn btn-primary mt-4"
+              className="btn btn-secondary self-start"
               aria-label={`Download CSV: ${d.title}`}
               download
             >
+              <Download aria-hidden className="h-4 w-4" />
               Download CSV
             </a>
           </li>
         ))}
       </ul>
 
-      <section aria-labelledby="reuse-heading" className="mt-10">
-        <h2 id="reuse-heading" className="text-xl font-semibold">
+      <section aria-labelledby="reuse-heading" className="mt-14">
+        <h2 id="reuse-heading" className="section-title">
           Using the data
         </h2>
-        <ul className="mt-3 list-disc space-y-2 pl-5 text-sm">
+        <ul className="mt-4 list-disc space-y-2 pl-5 text-muted marker:text-muted">
           <li>
             You&apos;re welcome to reuse it. Please credit CivicLens and the official source named in each row, which is
             where the facts come from.
