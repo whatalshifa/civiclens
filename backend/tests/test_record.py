@@ -2,7 +2,7 @@
 
 from datetime import date
 
-from pipeline import mplads, record
+from pipeline import mplads, record, sansad
 from pipeline.sansad import Attendance, Member
 
 
@@ -92,3 +92,27 @@ def test_the_file_round_trips(tmp_path):
     assert record.read_rows(tmp_path / "lok-sabha-record.csv") == rows
     sources = (tmp_path / "sources-lok-sabha-record.yaml").read_text()
     assert sources.count("published_on: 2026-10-10") == 3
+
+
+def test_names_split_differently_still_match():
+    members = [mp("Lucknow", "Rajnath Singh", 1, "Uttar Pradesh")]
+    matched = record.match_fund(
+        record.sitting_seats(members), [fund_mp(10, "RAJ NATH SINGH", "Uttar Pradesh")]
+    )
+    assert matched["ls-lucknow"].id == 10
+
+
+def test_a_member_listed_twice_in_a_session_is_counted_once(monkeypatch):
+    pages = {
+        "session-dates?loksabha=18&session=1": ["01/07/2024", "02/07/2024"],
+        "session-dates?loksabha=18&session=2": [],
+        "MemberWise?loksabha=18&session=1": [
+            {"mpsno": 7, "signedDaysCount": 1},
+            {"mpsno": 7, "signedDaysCount": 2},
+            {"mpsno": 8, "signedDaysCount": 0},
+        ],
+    }
+    monkeypatch.setattr(sansad, "_get", lambda url: next(v for k, v in pages.items() if k in url))
+    attendance, sessions = sansad.fetch_attendance(pause=0)
+    assert sessions == 1
+    assert attendance == {7: Attendance(2, 2), 8: Attendance(0, 2)}

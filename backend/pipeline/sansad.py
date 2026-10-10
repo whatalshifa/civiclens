@@ -101,9 +101,14 @@ def fetch_attendance(loksabha: int = LOK_SABHA, pause: float = 1.0) -> tuple[dic
             break
         session += 1
         time.sleep(pause)
+        # A member can be listed twice in one session (after changing seats in the House); count
+        # them once, with the larger number of days signed.
+        this_session: dict[int, int] = {}
         for row in _get(ATTENDANCE_API.format(loksabha=loksabha, session=session)):
             mpsno = int(row["mpsno"])
-            signed[mpsno] = signed.get(mpsno, 0) + int(row["signedDaysCount"])
+            this_session[mpsno] = max(this_session.get(mpsno, 0), int(row["signedDaysCount"]))
+        for mpsno, days in this_session.items():
+            signed[mpsno] = signed.get(mpsno, 0) + min(days, len(dates))
             sat[mpsno] = sat.get(mpsno, 0) + len(dates)
         time.sleep(pause)
     return {m: Attendance(signed[m], sat[m]) for m in signed}, session

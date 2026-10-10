@@ -8,6 +8,7 @@ CivicLens never turns them into a score or a ranking.
 
 import csv
 import io
+import re
 import time
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict, dataclass, fields
@@ -90,13 +91,21 @@ def sitting_seats(members: list[Member]) -> list[tuple[str, Member]]:
     ]
 
 
+def _same(a: str, b: str) -> bool:
+    """Like same_person, but also matches names split differently: "Rajnath Singh" and "Raj Nath Singh"."""
+    return same_person(a, b) or _compact(a) == _compact(b)
+
+
+def _compact(name: str) -> str:
+    words = re.findall(r"[a-z]+", name.lower())
+    return "".join(w for w in words if w not in {"dr", "shri", "smt", "adv", "prof", "alias"})
+
+
 def match_fund(sitting: list[tuple[str, Member]], fund_mps: list[mplads.FundMp]) -> dict[str, mplads.FundMp]:
     """Pairs seats with dashboard MPs by name within each state. Only an unambiguous match counts."""
     matches = {}
     for seat, m in sitting:
-        found = [
-            f for f in fund_mps if key(f.state) == key(state_name(m.state)) and same_person(f.name, m.name)
-        ]
+        found = [f for f in fund_mps if key(f.state) == key(state_name(m.state)) and _same(f.name, m.name)]
         if len(found) == 1:
             matches[seat] = found[0]
     # A dashboard MP matched to two seats is ambiguous for both.
