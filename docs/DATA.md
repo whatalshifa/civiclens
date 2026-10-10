@@ -28,6 +28,10 @@ changes a hand-checked entry; it compares it with the official record and report
 - **7 Vidhan Sabha seats**, hand-checked. State assemblies are a later step.
 - **71 sections** of the Constitution and five Acts, summarised in plain words.
 
+Anyone can download all of it as CSV from the site's Open data page (`/data`, served by
+`GET /api/data/{id}.csv`). Each file is built from the database on request, so it always matches
+what the pages show, and every row names its source.
+
 ## The pipeline
 
 Run from `backend/` after `pip install -r requirements-pipeline.txt`.

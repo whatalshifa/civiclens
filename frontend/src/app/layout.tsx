@@ -101,6 +101,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <Link href="/accuracy" className="hover:text-foreground">
                 Accuracy
               </Link>
+              <Link href="/data" className="hover:text-foreground">
+                Open data
+              </Link>
               <a href="https://github.com/whatalshifa/civiclens" className="hover:text-foreground">
                 Source code
               </a>

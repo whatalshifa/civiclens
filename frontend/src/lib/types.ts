@@ -243,3 +243,11 @@ export type ModeStats = {
 };
 
 export type Accuracy = { modes: ModeStats[] };
+
+export type Dataset = {
+  id: string;
+  title: string;
+  description: string;
+  columns: string[];
+  rows: number;
+};
