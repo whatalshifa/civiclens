@@ -37,3 +37,14 @@ export function formatRupees(rupees: number): string {
 export function formatPercent(value: number): string {
   return `${Math.round(value)}%`;
 }
+
+/**
+ * What the find box was given: a PIN code, a place or seat name to search for, or nothing usable.
+ * A name needs at least two letters, which is also the shortest search the API accepts.
+ */
+export function readFindQuery(value: string): { pin: string } | { name: string } | null {
+  const pin = cleanPin(value);
+  if (pin) return { pin };
+  const name = value.trim().replace(/\s+/g, " ").slice(0, 60);
+  return (name.match(/\p{L}/gu) ?? []).length >= 2 ? { name } : null;
+}

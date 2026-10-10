@@ -3,11 +3,12 @@
 import { useRouter } from "next/navigation";
 import { useId, useState } from "react";
 
-import { cleanPin } from "@/lib/format";
+import { readFindQuery } from "@/lib/format";
 
 /**
- * Type a PIN code, go to its page. Without JavaScript the form still works: it submits to /find,
- * which redirects to the same page.
+ * Type a PIN code or the name of a constituency, district or area. A PIN code goes straight to its
+ * page; a name goes to /find, which lists the matching seats and places. Without JavaScript the form
+ * still works: it submits to /find, which sends a PIN code on to its page.
  */
 export function PinForm({ defaultValue = "", size = "lg" }: { defaultValue?: string; size?: "lg" | "sm" }) {
   const router = useRouter();
@@ -18,33 +19,32 @@ export function PinForm({ defaultValue = "", size = "lg" }: { defaultValue?: str
 
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const pin = cleanPin(value);
-    if (!pin) {
-      setError("A PIN code is six digits and doesn't start with 0, like 110001.");
+    const query = readFindQuery(value);
+    if (!query) {
+      setError("Type a six-digit PIN code, like 110001, or a name, like Baramati.");
       return;
     }
     setError(null);
     setPending(true);
-    router.push(`/pin/${pin}`);
+    router.push("pin" in query ? `/pin/${query.pin}` : `/find?q=${encodeURIComponent(query.name)}`);
   }
 
   return (
     <form action="/find" method="get" onSubmit={submit} noValidate>
       <label htmlFor={id} className={size === "lg" ? "mb-2 block text-sm font-semibold" : "sr-only"}>
-        Your PIN code
+        PIN code or constituency
       </label>
       <div className="flex gap-2">
         <input
           id={id}
-          name="pin"
-          className={`input font-mono tracking-[0.2em] placeholder:font-sans placeholder:tracking-normal ${size === "lg" ? "text-lg" : ""}`}
-          inputMode="numeric"
-          autoComplete="postal-code"
-          placeholder="e.g. 413102"
-          maxLength={8}
+          name="q"
+          className={`input ${size === "lg" ? "text-lg" : ""}`}
+          autoComplete="off"
+          placeholder="e.g. 413102 or Baramati"
+          maxLength={60}
           value={value}
           onChange={(e) => {
-            setValue(e.target.value.replace(/[^\d\s]/g, ""));
+            setValue(e.target.value);
             setError(null);
             setPending(false);
           }}

@@ -6,6 +6,7 @@ const PAGES = [
   "/pin/413102",
   "/pin/999999",
   "/seats",
+  "/find?q=Baramati",
   "/seats/ls-kollam",
   "/seats/ls-shillong",
   "/laws",

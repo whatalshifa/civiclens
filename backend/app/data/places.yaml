@@ -348,10 +348,14 @@ constituencies:
     state: Maharashtra
     source: delimitation-2008
     representative:
-      name: Ajit Anantrao Pawar
+      name: Sunetra Ajit Pawar
       party: Nationalist Congress Party
-      elected_in: Maharashtra Assembly Election 2024
-      source: eci-mh-2024
+      elected_in: Bye-election, April 2026
+      source: eci-bye-2026-04
+      facts:
+        - label: Why there was a bye-election
+          value: The previous MLA, Ajit Pawar, died in an aircraft accident at Baramati on 28 January 2026.
+          source: eci-bye-2026-04
 
   - id: ac-pb-dhuri
     house: vidhan_sabha

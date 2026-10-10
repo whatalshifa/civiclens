@@ -1,6 +1,6 @@
 # CivicLens
 
-**Know who represents you, and what the law says.** Enter a PIN code to see your MP and MLA, and
+**Know who represents you, and what the law says.** Search your constituency or PIN code to see your MP and MLA, and
 search the laws that protect you (from RTI to arrest rights) by describing your problem in everyday
 words. Strictly nonpartisan: every fact links to the official record it came from.
 
@@ -13,8 +13,10 @@ words. Strictly nonpartisan: every fact links to the official record it came fro
 
 ## What it does
 
-- **Find your representatives.** A PIN code leads to the Lok Sabha and Vidhan Sabha seats it falls
-  in and the people who hold them. Every fact carries a numbered source, like a footnote, and a date.
+- **Find your representatives.** Type the name of your constituency, district or area, or a PIN code,
+  to reach the Lok Sabha and Vidhan Sabha seats and the people who hold them. Every Lok Sabha seat can
+  be found by name; PIN codes cover a hand-checked sample so far. Every fact carries a numbered source,
+  like a footnote, and a date.
 - **Every Lok Sabha seat, kept current.** All 543 seats and their sitting MPs, from the Lok Sabha's
   own list. A weekly data pipeline checks it and opens a pull request when something changes, so a
   person reviews every update before it goes live.
@@ -23,7 +25,7 @@ words. Strictly nonpartisan: every fact links to the official record it came fro
   and spent, and works recommended, sanctioned and completed. Each number sits beside the average
   for context. There's never a score or a ranking.
 - **Search the law in plain words.** "Police won't register my FIR" finds BNSS section 173 (Zero FIR).
-  Postgres full-text search ranks 71 sections of the Constitution and five Acts, and highlights why
+  Postgres full-text search ranks 95 sections of the Constitution and seven Acts, and highlights why
   each one matched.
 - **Ask the rights assistant.** Describe your situation and an AI agent searches the law, reads the
   sections that apply and answers in plain words, showing each step as it happens. Every citation is
@@ -93,8 +95,9 @@ Tests: `cd backend && pytest` (needs Postgres; see `tests/conftest.py`) and
 - Phase 3: a data pipeline. All 543 Lok Sabha seats and MPs from the Lok Sabha's list, refreshed
   weekly by GitHub Actions through reviewed pull requests, and a PIN-code-to-seat mapper that places
   India Post's offices on constituency maps.
-- After launch: state-aware RTI fees and portals, the RTI reply tracker and first appeal, consumer and
-  police complaint letters, and free-help pointers.
+- After launch: search by constituency name, state-aware RTI fees and portals, the RTI reply tracker
+  and first appeal, consumer and police complaint letters, the BNS and BSA with an old-to-new section
+  lookup, MPs' records in office, an accuracy page, open data downloads, and free-help pointers.
 - Deployed on Vercel (website), Render (API) and Neon (Postgres), all on free tiers.
 - Next: every PIN code, and state assembly seats.
 
