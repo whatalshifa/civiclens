@@ -25,6 +25,28 @@ export type Representative = {
   elected_on: string | null;
   source: Source;
   facts: Fact[];
+  // Lok Sabha MPs only: questions, attendance and MPLADS fund, each with the average for all MPs
+  record: MemberRecord | null;
+};
+
+export type MemberRecord = {
+  as_of: string;
+  questions: number;
+  questions_average: number;
+  questions_source: Source;
+  // null when no attendance is recorded: ministers and the Speaker don't sign the register
+  days_signed: number | null;
+  sitting_days: number | null;
+  attendance_average: number; // percent
+  attendance_source: Source;
+  // null when the MP isn't matched on the MPLADS dashboard
+  fund_allocated: number | null; // rupees
+  fund_spent: number | null;
+  works_recommended: number | null;
+  works_sanctioned: number | null;
+  works_completed: number | null;
+  fund_spent_average: number; // percent of the allocation spent
+  fund_source: Source;
 };
 
 export type House = "lok_sabha" | "vidhan_sabha";

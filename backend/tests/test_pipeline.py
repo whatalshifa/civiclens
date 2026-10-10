@@ -30,6 +30,7 @@ def test_only_public_fields_are_kept_from_the_api():
         "mpFirstLastName": "Mani  A",
         "partyFname": "Dravida Munnetra Kazhagam",
         "status": "Sitting",
+        "mpsno": 5814,
         "personalPhone": "99999",
         "email": ["someone@example.com"],
         "permanentFaddr": "a home address",
@@ -43,6 +44,7 @@ def test_only_public_fields_are_kept_from_the_api():
         "name": "Mani A",
         "party": "Dravida Munnetra Kazhagam",
         "status": "Sitting",
+        "mpsno": 5814,
     }
 
 

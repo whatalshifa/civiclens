@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { citeRecord } from "@/components/ParliamentRecord";
 import { PinForm } from "@/components/PinForm";
 import { RepresentativeCard } from "@/components/RepresentativeCard";
 import { Ref, SourceList, SourceNotes } from "@/components/Sources";
@@ -45,6 +46,7 @@ export default async function SeatPageView({ params }: PageProps<"/seats/[id]">)
   if (seat.representative) {
     notes.cite(seat.representative.source);
     seat.representative.facts.forEach((fact) => notes.cite(fact.source));
+    citeRecord(notes, seat.representative.record);
   }
 
   return (

@@ -25,6 +25,26 @@ class FactOut(Out):
     source: SourceOut
 
 
+class RecordOut(Out):
+    """An MP's record in office, each number with the average for all MPs beside it."""
+
+    as_of: date
+    questions: int
+    questions_average: float
+    questions_source: SourceOut
+    days_signed: int | None  # None when no attendance is recorded (ministers, the Speaker)
+    sitting_days: int | None
+    attendance_average: float
+    attendance_source: SourceOut
+    fund_allocated: int | None  # None when the MP isn't matched on the MPLADS dashboard
+    fund_spent: int | None
+    works_recommended: int | None
+    works_sanctioned: int | None
+    works_completed: int | None
+    fund_spent_average: float
+    fund_source: SourceOut
+
+
 class RepresentativeOut(Out):
     id: str
     name: str
@@ -33,6 +53,7 @@ class RepresentativeOut(Out):
     elected_on: date | None
     source: SourceOut
     facts: list[FactOut]
+    record: RecordOut | None = None
 
 
 class SeatOut(Out):

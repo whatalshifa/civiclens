@@ -9,10 +9,12 @@ never optional, so the database itself refuses an unsourced fact.
 from datetime import date, datetime
 
 from sqlalchemy import (
+    BigInteger,
     CheckConstraint,
     Computed,
     Date,
     DateTime,
+    Float,
     ForeignKey,
     Index,
     Integer,
@@ -104,6 +106,7 @@ class Representative(Base):
     constituency: Mapped[Constituency] = relationship(back_populates="representative")
     source: Mapped[Source] = relationship()
     facts: Mapped[list["RepresentativeFact"]] = relationship(order_by="RepresentativeFact.position")
+    record: Mapped["MemberRecord | None"] = relationship()
 
 
 class RepresentativeFact(Base):
@@ -120,6 +123,44 @@ class RepresentativeFact(Base):
     source_id: Mapped[str] = mapped_column(ForeignKey("sources.id"))
 
     source: Mapped[Source] = relationship()
+
+
+class MemberRecord(Base):
+    """An MP's record in office: questions asked, attendance, and their MPLADS fund.
+
+    Each number is stored with the average for all MPs, worked out when the data is loaded, so
+    every page shows it in context. The numbers are never combined into a score or a ranking.
+    """
+
+    __tablename__ = "member_records"
+
+    representative_id: Mapped[str] = mapped_column(
+        ForeignKey("representatives.id", ondelete="CASCADE"), primary_key=True
+    )
+    as_of: Mapped[date] = mapped_column(Date)
+
+    questions: Mapped[int] = mapped_column(Integer)
+    questions_average: Mapped[float] = mapped_column(Float)
+    questions_source_id: Mapped[str] = mapped_column(ForeignKey("sources.id"))
+
+    # Both NULL when no attendance is recorded: ministers and the Speaker don't sign the register.
+    days_signed: Mapped[int | None] = mapped_column(Integer)
+    sitting_days: Mapped[int | None] = mapped_column(Integer)
+    attendance_average: Mapped[float] = mapped_column(Float)  # percent, over MPs who sign
+    attendance_source_id: Mapped[str] = mapped_column(ForeignKey("sources.id"))
+
+    # All NULL when the MP couldn't be matched on the MPLADS dashboard.
+    fund_allocated: Mapped[int | None] = mapped_column(BigInteger)  # rupees
+    fund_spent: Mapped[int | None] = mapped_column(BigInteger)
+    works_recommended: Mapped[int | None] = mapped_column(Integer)
+    works_sanctioned: Mapped[int | None] = mapped_column(Integer)
+    works_completed: Mapped[int | None] = mapped_column(Integer)
+    fund_spent_average: Mapped[float] = mapped_column(Float)  # percent of the allocation spent
+    fund_source_id: Mapped[str] = mapped_column(ForeignKey("sources.id"))
+
+    questions_source: Mapped[Source] = relationship(foreign_keys=[questions_source_id])
+    attendance_source: Mapped[Source] = relationship(foreign_keys=[attendance_source_id])
+    fund_source: Mapped[Source] = relationship(foreign_keys=[fund_source_id])
 
 
 class Act(Base):

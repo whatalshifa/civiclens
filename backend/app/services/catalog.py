@@ -25,6 +25,7 @@ from app.models import (
     Constituency,
     DataVersion,
     LawSection,
+    MemberRecord,
     OldCode,
     OldSection,
     Pincode,
@@ -179,11 +180,56 @@ class OldCodeIn(Strict):
         return self
 
 
+class RecordIn(Strict):
+    """One MP's row in the data pipeline's generated/lok-sabha-record.csv."""
+
+    seat: str
+    member: str
+    mpsno: int
+    questions: int = Field(ge=0)
+    days_signed: int = Field(ge=0)
+    sitting_days: int = Field(ge=0)
+    fund_id: str = ""
+    fund_allocated: int | None = Field(None, ge=0)
+    fund_spent: int | None = Field(None, ge=0)
+    works_recommended: int | None = Field(None, ge=0)
+    works_sanctioned: int | None = Field(None, ge=0)
+    works_completed: int | None = Field(None, ge=0)
+
+    @model_validator(mode="before")
+    @classmethod
+    def _blank_is_none(cls, data):
+        return {k: (None if v == "" and k != "fund_id" else v) for k, v in data.items()}
+
+    @model_validator(mode="after")
+    def _consistent(self):
+        if self.days_signed > self.sitting_days:
+            raise ValueError(f"{self.seat}: signed on more days than the House sat")
+        fund = (self.fund_allocated, self.fund_spent, self.works_recommended, self.works_sanctioned)
+        if self.fund_id and None in (*fund, self.works_completed):
+            raise ValueError(f"{self.seat}: fund figures are incomplete")
+        if not self.fund_id and any(v is not None for v in fund):
+            raise ValueError(f"{self.seat}: fund figures without a dashboard id")
+        return self
+
+    @property
+    def attendance(self) -> float | None:
+        """Percent of sitting days signed. None when nothing is recorded (ministers, the Speaker)."""
+        return 100 * self.days_signed / self.sitting_days if self.days_signed else None
+
+    @property
+    def spent_share(self) -> float | None:
+        if self.fund_allocated:
+            return 100 * (self.fund_spent or 0) / self.fund_allocated
+        return None
+
+
 class Catalog(BaseModel):
     sources: list[SourceIn]
     places: PlacesFile
     acts: list[ActIn]
     old_codes: list[OldCodeIn] = []
+    records: list[RecordIn] = []
 
 
 def _read_yaml(path: Path):
@@ -194,6 +240,11 @@ def _read_yaml(path: Path):
 GENERATED_SEAT_SOURCE = "lok-sabha-sitting-members"
 GENERATED_PIN_SOURCE = "india-post-pincodes"
 GENERATED_PIN_SEATS_SOURCE = "pin-seat-mapping"
+RECORD_SOURCES = {
+    "questions": "lok-sabha-questions",
+    "attendance": "lok-sabha-attendance",
+    "fund": "mplads-dashboard",
+}
 
 
 def _csv_rows(path: Path) -> list[dict]:
@@ -290,6 +341,7 @@ def read_catalog(data_dir: Path = DATA_DIR) -> Catalog:
             places=_merge_generated(_read_yaml(data_dir / "places.yaml"), data_dir),
             acts=[_read_yaml(p) for p in sorted((data_dir / "laws").glob("*.yaml"))],
             old_codes=_read_yaml(old_to_new) if old_to_new.exists() else [],
+            records=_csv_rows(data_dir / "generated" / "lok-sabha-record.csv"),
         )
     except (OSError, yaml.YAMLError, ValueError) as exc:
         raise CatalogError(str(exc)) from exc
@@ -347,7 +399,21 @@ def read_catalog(data_dir: Path = DATA_DIR) -> Catalog:
         olds = [old for old, _, _ in c.rows] + list(c.notes)
         _unique(olds, f"{c.short_name} sections")
 
+    if catalog.records:
+        for source_id in RECORD_SOURCES.values():
+            if need_source(source_id, "The MPs' records").published_on is None:
+                raise CatalogError(f"Source {source_id!r} needs a published_on date")
+    _unique([r.seat for r in catalog.records], "MPs' records")
+    for r in catalog.records:
+        if r.seat not in seats or seats[r.seat].house != "lok_sabha":
+            raise CatalogError(f"{r.member}'s record names seat {r.seat!r}, which isn't a Lok Sabha seat")
+
     return catalog
+
+
+def _average(values: list[float | None]) -> float:
+    known = [v for v in values if v is not None]
+    return round(sum(known) / len(known), 1) if known else 0.0
 
 
 def digest(data_dir: Path = DATA_DIR) -> str:
@@ -373,6 +439,7 @@ def load_catalog(session: Session, data_dir: Path = DATA_DIR, *, force: bool = F
     sources = {s.id: s for s in catalog.sources}
 
     for table in (
+        MemberRecord,
         OldSection,
         OldCode,
         LawSection,
@@ -422,6 +489,43 @@ def load_catalog(session: Session, data_dir: Path = DATA_DIR, *, force: bool = F
                     for i, f in enumerate(rep.facts)
                 ],
             )
+        )
+
+    # An MP's record belongs to whoever holds the seat now. A seat vacated since the record was
+    # fetched has no one to show it for.
+    with_people = {c.id for c in catalog.places.constituencies if c.representative}
+    records = [r for r in catalog.records if r.seat in with_people]
+    if records:
+        as_of = sources[RECORD_SOURCES["questions"]].published_on
+        # Ministers and the Speaker don't sign the register or ask questions, so every average is
+        # for the other MPs: comparing a backbencher with a minister's zero would mislead.
+        averages = dict(
+            questions_average=_average([r.questions for r in records if r.attendance is not None]),
+            attendance_average=_average([r.attendance for r in records]),
+            fund_spent_average=_average([r.spent_share for r in records if r.attendance is not None]),
+        )
+        session.flush()
+        session.execute(
+            insert(MemberRecord),
+            [
+                dict(
+                    representative_id=r.seat.replace("ls-", "mp-", 1),
+                    as_of=as_of,
+                    questions=r.questions,
+                    days_signed=r.days_signed if r.attendance is not None else None,
+                    sitting_days=r.sitting_days if r.attendance is not None else None,
+                    fund_allocated=r.fund_allocated,
+                    fund_spent=r.fund_spent,
+                    works_recommended=r.works_recommended,
+                    works_sanctioned=r.works_sanctioned,
+                    works_completed=r.works_completed,
+                    questions_source_id=RECORD_SOURCES["questions"],
+                    attendance_source_id=RECORD_SOURCES["attendance"],
+                    fund_source_id=RECORD_SOURCES["fund"],
+                    **averages,
+                )
+                for r in records
+            ],
         )
 
     # Bulk inserts: the generated file has about 19,000 PIN codes.

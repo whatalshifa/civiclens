@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
+import { citeRecord } from "@/components/ParliamentRecord";
 import { PinForm } from "@/components/PinForm";
 import { MissingCard, RepresentativeCard } from "@/components/RepresentativeCard";
 import { Ref, SourceList, SourceNotes } from "@/components/Sources";
@@ -46,6 +47,7 @@ export default async function PinPage({ params }: PageProps<"/pin/[pin]">) {
     if (!seat.representative) continue;
     notes.cite(seat.representative.source);
     seat.representative.facts.forEach((fact) => notes.cite(fact.source));
+    citeRecord(notes, seat.representative.record);
   }
 
   return (

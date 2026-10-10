@@ -22,6 +22,8 @@ changes a hand-checked entry; it compares it with the official record and report
   come from the pipeline. A member list says who sits now but not when they were elected, so those
   cards say "as listed on" the date the list was read instead of a result date. Vacant seats say why
   (a member died or resigned).
+- **Each sitting MP's record**: questions asked and days the attendance register was signed in
+  this Lok Sabha (sansad.in), and their MPLADS fund (the eSAKSHI dashboard), refreshed weekly.
 - **PIN codes**: a hand-checked sample of 25, plus whatever the PIN step below has mapped.
 - **7 Vidhan Sabha seats**, hand-checked. State assemblies are a later step.
 - **71 sections** of the Constitution and five Acts, summarised in plain words.
@@ -45,6 +47,20 @@ Nothing reaches the website until a person merges.
 The first run found two spellings where we deliberately differ from the official list (Kangana
 Ranaut's name, and a misspelt party name). `listed_as` in `places.yaml` records those, so they aren't
 reported every week.
+
+### MPs' records: `python -m pipeline record`
+
+For each sitting MP, counts the questions they asked (alone or with others) and the days they signed
+the attendance register in each session, from sansad.in's public API. A member listed twice in one
+session is counted once, and a member who joined in a by-election is only counted for their own
+sessions. It then lists the 18th Lok Sabha MPs on the MPLADS dashboard (mplads.mospi.gov.in) state by
+state, matches them to seats by name within the state, and reads each one's fund figures. Only a
+plain, unambiguous name match counts; anyone else gets no fund figures and is listed in the report,
+rather than risk showing someone else's numbers. It writes `generated/lok-sabha-record.csv` and
+`generated/sources-lok-sabha-record.yaml`, and the weekly workflow runs it after the member step.
+
+Ministers and the Speaker don't sign the attendance register, so they show "not recorded" rather
+than zero, and every average leaves them out. The averages are worked out when the data is loaded.
 
 ### PIN codes: `python -m pipeline pins DIRECTORY.csv BOUNDARIES.geojson`
 
@@ -82,4 +98,5 @@ the directory from India, then run it locally and open a pull request with the r
 - No party colours, symbols, photos, ratings or rankings anywhere.
 - Seats are ordered by place (a test checks the data file's order).
 - "Check their record yourself" links are the same for everyone in a house.
+- MPs' records are numbers beside an average, never a score, rank, colour or "good"/"bad" label.
 - Anyone can report a mistake through GitHub issues, and every data change is a public commit.

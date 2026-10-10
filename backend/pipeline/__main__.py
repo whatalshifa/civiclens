@@ -1,7 +1,8 @@
 """The data pipeline.
 
-`python -m pipeline members` refreshes the Lok Sabha members; `python -m pipeline pins` maps PIN
-codes to seats.
+`python -m pipeline members` refreshes the Lok Sabha members; `python -m pipeline record` fetches
+each MP's questions, attendance and MPLADS fund figures; `python -m pipeline pins` maps PIN codes
+to seats.
 """
 
 import argparse
@@ -24,6 +25,10 @@ def main(argv: list[str] | None = None) -> int:
     m.add_argument("--report", type=Path, help="Write a Markdown summary of the changes here")
     m.add_argument("--today", type=date.fromisoformat, default=date.today())
 
+    r = commands.add_parser("record", help="Fetch each MP's questions, attendance and MPLADS fund figures")
+    r.add_argument("--report", type=Path, help="Write a Markdown summary here")
+    r.add_argument("--today", type=date.fromisoformat, default=date.today())
+
     p = commands.add_parser("pins", help="Map PIN codes to Lok Sabha seats from India Post's directory")
     p.add_argument("directory", type=Path, help="India Post's PIN code directory (CSV, from data.gov.in)")
     p.add_argument("boundaries", type=Path, help="Lok Sabha constituency boundaries (GeoJSON)")
@@ -32,6 +37,8 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.command == "members":
         return run_members(args)
+    if args.command == "record":
+        return run_record(args)
     from pipeline import pins
 
     return pins.run(args)
@@ -53,6 +60,21 @@ def run_members(args) -> int:
         print(f"Wrote {len(generated)} seats to {members_step.SEATS_FILE}")
     else:
         print("No changes in the Lok Sabha's member list.")
+    summary = report.markdown(args.today)
+    if args.report:
+        args.report.write_text(summary, encoding="utf-8")
+    print(summary)
+    return 0
+
+
+def run_record(args) -> int:
+    from pipeline import record
+
+    people = fetch_members()
+    questions, attendance, sessions, fund_mps, funds = record.fetch(people)
+    rows, report = record.build(people, questions, attendance, sessions, fund_mps, funds)
+    record.write(rows, args.today, sessions)
+    print(f"Wrote {len(rows)} MPs' records to {record.RECORD_FILE}")
     summary = report.markdown(args.today)
     if args.report:
         args.report.write_text(summary, encoding="utf-8")

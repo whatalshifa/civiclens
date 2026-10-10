@@ -23,3 +23,17 @@ export function slugify(text: string): string {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
 }
+
+const INDIAN = new Intl.NumberFormat("en-IN", { maximumFractionDigits: 2 });
+
+/** Rupees the way Indian budgets write them: 14,70,00,000 -> "₹14.7 crore", 5,00,000 -> "₹5 lakh". */
+export function formatRupees(rupees: number): string {
+  if (rupees >= 1e7) return `₹${INDIAN.format(rupees / 1e7)} crore`;
+  if (rupees >= 1e5) return `₹${INDIAN.format(rupees / 1e5)} lakh`;
+  return `₹${INDIAN.format(rupees)}`;
+}
+
+/** 54.37 -> "54%". */
+export function formatPercent(value: number): string {
+  return `${Math.round(value)}%`;
+}

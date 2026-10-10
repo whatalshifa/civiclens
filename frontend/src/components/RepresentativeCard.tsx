@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { ParliamentRecord } from "@/components/ParliamentRecord";
 import { Ref, type SourceNotes } from "@/components/Sources";
 import { HOUSE_NAMES, formatDate } from "@/lib/format";
 import type { Fact, House, Seat } from "@/lib/types";
@@ -10,6 +11,8 @@ const LOOK_UP: Record<House, { label: string; href: string }[]> = {
     { label: "Lok Sabha member profile", href: "https://sansad.in/ls/members" },
     { label: "Attendance and questions (PRS)", href: "https://prsindia.org/mptrack" },
     { label: "Election affidavit (ECI)", href: "https://affidavit.eci.gov.in/" },
+    { label: "Cases, assets and education (MyNeta)", href: "https://myneta.info/LokSabha2024/" },
+    { label: "Fund works (MPLADS)", href: "https://mplads.mospi.gov.in/digigov/dashboard.html" },
   ],
   vidhan_sabha: [
     { label: "Election affidavit (ECI)", href: "https://affidavit.eci.gov.in/" },
@@ -74,6 +77,7 @@ export function RepresentativeCard({ seat, notes, yours = true }: { seat: Seat; 
               <FactRow key={fact.label} fact={fact} notes={notes} />
             ))}
           </dl>
+          {rep.record && <ParliamentRecord record={rep.record} notes={notes} />}
         </>
       ) : (
         <>
