@@ -4,6 +4,9 @@ on: push
 jobs:
   probe:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash {0}
     env:
       UA: "Mozilla/5.0 (X11; Linux x86_64) CivicLens data pipeline (https://github.com/whatalshifa/civiclens)"
     steps:
@@ -31,7 +34,7 @@ jobs:
             https://results.eci.gov.in/ \
             "https://www.eci.gov.in/statistical-reports" \
             ; do
-            curl -sL -m 40 -A "$UA" "$u" -o p.html -w "== %{http_code} %{size_download} %{url_effective} $u\n"
+            curl -sL -m 40 -A "$UA" "$u" -o p.html -w "== %{http_code} %{size_download} %{url_effective} $u\n" || echo "== curl failed ($?) $u"
             python3 - <<'PY'
           import re
           t = open("p.html", encoding="utf-8", errors="ignore").read()
