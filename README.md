@@ -4,6 +4,8 @@
 search the laws that protect you (from RTI to arrest rights) by describing your problem in everyday
 words. Strictly nonpartisan: every fact links to the official record it came from.
 
+**Live:** https://civiclens-ruby.vercel.app (the API sleeps when idle, so the first page can take up to a minute)
+
 [![CI](https://github.com/whatalshifa/civiclens/actions/workflows/ci.yml/badge.svg)](https://github.com/whatalshifa/civiclens/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-teal.svg)](LICENSE)
 
@@ -80,6 +82,7 @@ Tests: `cd backend && pytest` (needs Postgres; see `tests/conftest.py`) and
 - Phase 3: a data pipeline. All 543 Lok Sabha seats and MPs from the Lok Sabha's list, refreshed
   weekly by GitHub Actions through reviewed pull requests, and a PIN-code-to-seat mapper that places
   India Post's offices on constituency maps.
-- Next: deployment, then every PIN code and state assembly seats.
+- Deployed on Vercel (website), Render (API) and Neon (Postgres), all on free tiers.
+- Next: every PIN code, and state assembly seats.
 
 CivicLens is an independent project, not a government website, and doesn't give legal advice.
