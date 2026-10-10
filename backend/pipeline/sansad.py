@@ -9,6 +9,7 @@ import json
 import time
 import urllib.request
 from dataclasses import dataclass
+from typing import Any
 
 from pipeline.common import USER_AGENT
 
@@ -26,6 +27,7 @@ class Member:
     name: str
     party: str
     status: str  # "Sitting", "Died", "Resigned", ...
+    mpsno: int | None = None  # the Lok Sabha's own member number, used by its other pages
 
     @classmethod
     def from_api(cls, raw: dict) -> "Member":
@@ -38,6 +40,7 @@ class Member:
             name=" ".join(raw["mpFirstLastName"].split()),
             party=" ".join(raw["partyFname"].split()),
             status=(raw.get("status") or "").strip(),
+            mpsno=raw.get("mpsno"),
         )
 
     def public(self) -> dict:
@@ -61,7 +64,52 @@ def fetch_members(loksabha: int = LOK_SABHA, pause: float = 1.0) -> list[Member]
     return members
 
 
-def _get(url: str, attempts: int = 3) -> dict:
+QUESTIONS_API = (
+    "https://sansad.in/api_ls/question/member/qetFilteredQuestionsAns"
+    "?loksabhaNo={loksabha}&memberCode={mpsno}&page=1&size=1&locale=en"
+)
+SESSION_DATES_API = (
+    "https://sansad.in/api_ls/member/attendance/session-dates?loksabha={loksabha}&session={session}"
+)
+ATTENDANCE_API = "https://sansad.in/api_ls/member/getMemberAttendanceMemberWise?loksabha={loksabha}&session={session}&locale=en"
+
+
+def fetch_question_count(mpsno: int, loksabha: int = LOK_SABHA) -> int:
+    """How many questions this member has asked in this Lok Sabha, alone or with others."""
+    data = _get(QUESTIONS_API.format(loksabha=loksabha, mpsno=mpsno))
+    return int(data[0]["totalRecordSize"])
+
+
+@dataclass(frozen=True)
+class Attendance:
+    days_signed: int
+    sitting_days: int  # days the House sat in the sessions this member was listed for
+
+
+def fetch_attendance(loksabha: int = LOK_SABHA, pause: float = 1.0) -> tuple[dict[int, Attendance], int]:
+    """Days each member signed the attendance register, over every session so far.
+
+    Returns the members' attendance and how many sessions it covers. A member who joined in a
+    by-election is only counted for the sessions they were a member for.
+    """
+    signed: dict[int, int] = {}
+    sat: dict[int, int] = {}
+    session = 0
+    while True:
+        dates = _get(SESSION_DATES_API.format(loksabha=loksabha, session=session + 1))
+        if not dates:
+            break
+        session += 1
+        time.sleep(pause)
+        for row in _get(ATTENDANCE_API.format(loksabha=loksabha, session=session)):
+            mpsno = int(row["mpsno"])
+            signed[mpsno] = signed.get(mpsno, 0) + int(row["signedDaysCount"])
+            sat[mpsno] = sat.get(mpsno, 0) + len(dates)
+        time.sleep(pause)
+    return {m: Attendance(signed[m], sat[m]) for m in signed}, session
+
+
+def _get(url: str, attempts: int = 3) -> Any:
     for attempt in range(1, attempts + 1):
         try:
             request = urllib.request.Request(
