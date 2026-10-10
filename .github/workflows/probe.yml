@@ -7,27 +7,76 @@ jobs:
     env:
       UA: "Mozilla/5.0 (X11; Linux x86_64) CivicLens data pipeline (https://github.com/whatalshifa/civiclens)"
     steps:
-      - name: MPLADS dashboard scripts
+      - name: Member keys (one member, contact fields dropped)
         continue-on-error: true
         run: |
-          curl -s -m 60 -A "$UA" https://mplads.mospi.gov.in/libs/simplegrid/loksaba.js | head -c 6000; echo
-          echo "=== preLogin"
-          curl -s -m 60 -A "$UA" https://mplads.mospi.gov.in/libs/simplegrid/preLoginDashboard.js -o p.js
-          grep -nE "url|ajax|fetch|\.json|getJSON|\.zul|Servlet|/rest/|/api" p.js | head -60
-      - name: Sansad question and attendance API names in the app bundles
+          curl -s -m 60 -A "$UA" "https://sansad.in/api_ls/member?loksabha=18&page=1&size=2" -o m.json
+          python3 - <<'PY'
+          import json
+          d = json.load(open("m.json"))
+          m = d["membersDtoList"][0]
+          print(sorted(m.keys()))
+          print({k: v for k, v in m.items() if any(s in k.lower() for s in ("no", "code", "id", "sno", "name"))})
+          PY
+      - name: Sessions
         continue-on-error: true
         run: |
-          for page in https://sansad.in/ls/questions/questions-and-answers https://sansad.in/ls/members https://sansad.in/ls/members/attendance; do
-            curl -s -m 60 -A "$UA" "$page" -o p.html -w "== $page %{http_code}\n"
-            for js in $(grep -oE 'src="/ls/_next/[^"]+\.js"' p.html | sed 's/src="//;s/"$//'); do
-              curl -s -m 60 -A "$UA" "https://sansad.in$js" -o b.js
-              grep -oE '.{0,80}(api_ls|qetFiltered|ttendance)[^"`]{0,200}' b.js | head -20
-            done
-          done 2>&1 | sort -u | head -150
-      - name: Sansad questions with different member filters
+          curl -s -m 60 -A "$UA" "https://sansad.in/api_ls/business/AllLoksabhaAndSessionDates" | head -c 1500; echo
+      - name: Attendance endpoints
         continue-on-error: true
         run: |
-          for q in "mpCode=5265" "memberCode=5265" "mpsno=5265" "member=5265" "mpNo=5265"; do
-            u="https://sansad.in/api_ls/question/qetFilteredQuestionsAns?loksabhaNo=18&$q&page=1&size=3&locale=en"
-            echo "== $q"; curl -s -m 60 -A "$UA" "$u" | python3 -c "import json,sys; d=json.load(sys.stdin); print([ (x['member'], x['date']) for x in d[0]['listOfQuestions']][:3], {k:v for k,v in d[0].items() if k!='listOfQuestions'})" 2>&1 | head -c 800; echo
+          MPSNO=$(python3 -c "import json; m=json.load(open('m.json'))['membersDtoList'][0]; print(m.get('mpsno') or m.get('mpSno') or m.get('mpCode') or '')")
+          echo "mpsno=$MPSNO"
+          for u in \
+            "member/getMemberAttendanceByMpsno?loksabha=18&mpsno=$MPSNO&locale=en" \
+            "member/getMemberAttendanceByMpsno?mpsno=$MPSNO" \
+            "member/getMemberAttendanceMemberWise?loksabha=18&session=5&locale=en" \
+            "member/getMemberAttendanceMemberWise?loksabha=18&session=5&mpsno=$MPSNO&locale=en" \
+            "member/getMemberAttendanceMonthWise?loksabha=18&session=5&locale=en" \
+            "member/attendance/session-dates?loksabha=18&session=5" \
+            "member/statistical-data?fieldName=attendance&loksabha=18&locale=en" \
+            "member/statistical-data?fieldName=questions&loksabha=18&locale=en" \
+            ; do
+            echo "== $u"; curl -s -m 60 -A "$UA" "https://sansad.in/api_ls/$u" -w "\n[%{http_code}]" | head -c 1200; echo
           done
+      - name: Question endpoints for one member
+        continue-on-error: true
+        run: |
+          MPSNO=$(python3 -c "import json; m=json.load(open('m.json'))['membersDtoList'][0]; print(m.get('mpsno') or m.get('mpSno') or m.get('mpCode') or '')")
+          for u in \
+            "question/member/qetFilteredQuestionsAns?loksabhaNo=18&mpsno=$MPSNO&page=1&size=3&locale=en" \
+            "question/member/qetFilteredQuestionsAns?loksabhaNo=18&mpCode=$MPSNO&page=1&size=3&locale=en" \
+            "question/member/qetFilteredQuestionsAns?loksabhaNo=18&memberCode=$MPSNO&page=1&size=3&locale=en" \
+            "question/qetAllQuestionsForMember?loksabhaNo=18&mpsno=$MPSNO&locale=en" \
+            "question/qetAllQuestionsForMember?mpsno=$MPSNO" \
+            "question/getMembers?lkNo=18" \
+            ; do
+            echo "== $u"; curl -s -m 60 -A "$UA" "https://sansad.in/api_ls/$u" -w "\n[%{http_code}]" | head -c 1200; echo
+          done
+      - name: Find the question parameters in the app bundle
+        continue-on-error: true
+        run: |
+          curl -s -m 60 -A "$UA" https://sansad.in/ls/questions/questions-and-answers -o p.html
+          for js in $(grep -oE 'src="/ls/_next/[^"]+\.js"' p.html | sed 's/src="//;s/"$//'); do
+            curl -s -m 60 -A "$UA" "https://sansad.in$js" -o b.js
+            grep -oE '.{0,300}(getFilterSearchData|getAllQuestions)\.API_URL.{0,400}' b.js | head -5
+          done
+      - name: MPLADS tiles and rest endpoints
+        continue-on-error: true
+        run: |
+          curl -s -m 60 -A "$UA" -X POST -H "Content-Type: application/json" -d '{"uname":"0,0,0,2"}' https://mplads.mospi.gov.in/rest/PreLoginDashboardData/getTilesData -w "\n[%{http_code}]" | head -c 1500; echo
+          curl -s -m 60 -A "$UA" https://mplads.mospi.gov.in/libs/simplegrid/preLoginDashboard.js -o p.js
+          python3 - <<'PY'
+          import re
+          s = open("p.js", encoding="utf-8", errors="ignore").read()
+          s2 = re.sub(r"\\u([0-9a-fA-F]{4})", lambda m: chr(int(m.group(1), 16)), s)
+          s2 = re.sub(r"\\x([0-9a-fA-F]{2})", lambda m: chr(int(m.group(1), 16)), s2)
+          found = set(re.findall(r"rest/[A-Za-z0-9_/]+", s2))
+          strings = re.findall(r"'([^']{3,80})'|\"([^\"]{3,80})\"", s2)
+          for a, b in strings:
+              t = a or b
+              for c in (t, t[::-1]):
+                  if "rest" in c or "Dashboard" in c or "get" in c[:3]:
+                      found.add(c)
+          print(sorted(found)[:120])
+          PY
