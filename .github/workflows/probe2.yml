@@ -1,0 +1,42 @@
+# Temporary: checks which state assembly websites publish member lists the pipeline can read. Deleted after.
+name: probe2
+on: push
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    env:
+      UA: "Mozilla/5.0 (X11; Linux x86_64) CivicLens data pipeline (https://github.com/whatalshifa/civiclens)"
+    steps:
+      - name: Assembly member pages
+        continue-on-error: true
+        run: |
+          for u in \
+            https://www.niyamasabha.nic.in/index.php/members \
+            https://www.niyamasabha.org/codes/members.htm \
+            https://www.assembly.tn.gov.in/ \
+            https://mls.org.in/ \
+            https://delhiassembly.delhi.gov.in/members \
+            https://kla.kar.nic.in/assembly/member/memberlist.htm \
+            https://uplegisassembly.gov.in/Members/Members_Eng.aspx \
+            https://www.wbassembly.gov.in/MLA_list.aspx \
+            https://www.telanganalegislature.org.in/web/tslegislature/mlas \
+            https://aplegislature.org/web/legislative-assembly/members \
+            https://gujaratassembly.gov.in/members.htm \
+            https://rajassembly.nic.in/MembersPage.aspx \
+            https://mpvidhansabha.nic.in/ \
+            https://vidhansabha.bih.nic.in/ \
+            https://odishaassembly.nic.in/members.aspx \
+            https://punjabassembly.nic.in/ \
+            https://haryanaassembly.gov.in/ \
+            https://results.eci.gov.in/ \
+            "https://www.eci.gov.in/statistical-reports" \
+            ; do
+            curl -sL -m 40 -A "$UA" "$u" -o p.html -w "== %{http_code} %{size_download} %{url_effective} $u\n"
+            python3 - <<'PY'
+          import re
+          t = open("p.html", encoding="utf-8", errors="ignore").read()
+          links = sorted(set(re.findall(r'href="([^"]*(?:[Mm]ember|MLA|mla)[^"]*)"', t)))[:12]
+          print("  links:", links)
+          print("  text:", re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", t))[:300])
+          PY
+          done
