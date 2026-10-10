@@ -1,0 +1,61 @@
+id: bsa-2023
+title: The Bharatiya Sakshya Adhiniyam, 2023
+short_name: BSA
+year: 2023
+citation: Act No. 47 of 2023
+keywords: evidence act iea proof court witness
+unit: Section
+source: india-code
+summary: >-
+  The law on evidence: what can be used to prove a fact in court, and who has to prove it.
+  It replaced the Indian Evidence Act, 1872 on 1 July 2024, and treats electronic records
+  much like paper ones.
+sections:
+  - number: "23"
+    title: Confessions to the police
+    keywords: confession police custody forced statement magistrate iea 25 26 27
+    summary: >-
+      A confession made to a police officer can't be proved against the person who made it,
+      and nor can one made in police custody, unless it was made in the immediate presence of
+      a Magistrate. But if what the accused says leads police to discover a fact, such as
+      where something was hidden, that part can be proved. This was sections 25 to 27 of the
+      Evidence Act.
+
+  - number: "61"
+    title: Electronic records count as evidence
+    keywords: electronic digital evidence whatsapp email screenshot video recording phone
+    summary: >-
+      Evidence can't be refused just because it is an electronic or digital record. Subject
+      to section 63, such records have the same legal effect as paper documents.
+
+  - number: "63"
+    title: Certificate for electronic records
+    keywords: certificate electronic record printout screenshot pen drive cd 65b
+    summary: >-
+      To use a copy of an electronic record, such as a printout, screenshot or copy on a pen
+      drive, as evidence, it must come with a certificate in the form set out in the Schedule,
+      signed by the person in charge of the device and by an expert. This was section 65B of
+      the Evidence Act.
+
+  - number: "104"
+    title: Who has to prove a fact
+    keywords: burden of proof prove claim
+    summary: >-
+      Whoever asks a court to decide a legal right on the basis of facts they claim must prove
+      those facts. This was section 101 of the Evidence Act.
+
+  - number: "117"
+    title: Presumption when a married woman dies by suicide
+    keywords: suicide wife marriage seven years cruelty abetment presumption 113a
+    summary: >-
+      If a woman died by suicide within seven years of marriage and her husband or his
+      relatives had treated her with cruelty, the court may presume they abetted it. This was
+      section 113A of the Evidence Act.
+
+  - number: "118"
+    title: Presumption in a dowry death
+    keywords: dowry death presumption cruelty harassment 113b
+    summary: >-
+      If it is shown that, soon before her death, a woman was treated with cruelty or harassed
+      for dowry by someone, the court must presume that person caused the dowry death. This was
+      section 113B of the Evidence Act.

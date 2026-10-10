@@ -148,3 +148,34 @@ class SearchOut(BaseModel):
     query: str
     total: int
     results: list[SearchHit]
+
+
+class OldSectionOut(BaseModel):
+    code: str  # "ipc"
+    code_short_name: str  # "IPC"
+    number: str  # "420"
+    new_act_id: str
+    new_act_short_name: str  # "BNS"
+    new_number: str | None  # "318(4)"; None when the old section wasn't carried over
+    title: str
+    note: str | None
+    # Where the new section is in the law library, when it's one of the sections we summarise.
+    anchor: str | None
+
+
+class OldCodeOut(BaseModel):
+    code: str
+    name: str
+    short_name: str
+    new_act_id: str
+    new_act_short_name: str
+    new_act_title: str
+    source: SourceOut
+    sections: list[OldSectionOut]
+
+
+class OldLookupOut(BaseModel):
+    query: str
+    numbers: list[str]  # the section numbers read from the question
+    matches: list[OldSectionOut]
+    sources: list[SourceOut]

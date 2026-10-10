@@ -177,6 +177,43 @@ class LawSection(Base):
     act: Mapped[Act] = relationship(back_populates="sections")
 
 
+class OldCode(Base):
+    """A criminal law the BNS, BNSS or BSA replaced (IPC, CrPC, Evidence Act), for the old-to-new lookup."""
+
+    __tablename__ = "old_codes"
+
+    code: Mapped[str] = mapped_column(String(10), primary_key=True)  # "ipc"
+    name: Mapped[str] = mapped_column(Text)  # "Indian Penal Code, 1860"
+    short_name: Mapped[str] = mapped_column(Text)  # "IPC"
+    aliases: Mapped[str] = mapped_column(Text)  # what people call it, "|" separated: "ipc|indian penal code"
+    new_act_id: Mapped[str] = mapped_column(ForeignKey("acts.id", ondelete="CASCADE"))
+    source_id: Mapped[str] = mapped_column(ForeignKey("sources.id"))
+    position: Mapped[int] = mapped_column(Integer)
+
+    new_act: Mapped[Act] = relationship()
+    source: Mapped[Source] = relationship()
+    sections: Mapped[list["OldSection"]] = relationship(
+        back_populates="old_code", order_by="OldSection.position"
+    )
+
+
+class OldSection(Base):
+    """One old section and the section that replaced it, as the official correspondence table gives it."""
+
+    __tablename__ = "old_sections"
+    __table_args__ = (UniqueConstraint("code", "number"),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    code: Mapped[str] = mapped_column(ForeignKey("old_codes.code", ondelete="CASCADE"))
+    number: Mapped[str] = mapped_column(String(20))  # "420", "154(3)"
+    new_number: Mapped[str | None] = mapped_column(String(20))  # "318(4)"; NULL when not carried over
+    title: Mapped[str] = mapped_column(Text)
+    note: Mapped[str | None] = mapped_column(Text)
+    position: Mapped[int] = mapped_column(Integer)
+
+    old_code: Mapped[OldCode] = relationship(back_populates="sections")
+
+
 class DataVersion(Base):
     """A fingerprint of the data files last loaded, so a restart skips reloading unchanged data."""
 

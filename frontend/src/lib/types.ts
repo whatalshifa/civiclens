@@ -179,3 +179,33 @@ export type AssistantEvent =
 
 export type StepEvent = Extract<AssistantEvent, { type: "step" }>;
 export type AnswerEvent = Extract<AssistantEvent, { type: "answer" }>;
+
+export type OldSection = {
+  code: string;
+  code_short_name: string;
+  number: string;
+  new_act_id: string;
+  new_act_short_name: string;
+  new_number: string | null;
+  title: string;
+  note: string | null;
+  anchor: string | null;
+};
+
+export type OldCode = {
+  code: string;
+  name: string;
+  short_name: string;
+  new_act_id: string;
+  new_act_short_name: string;
+  new_act_title: string;
+  source: Source;
+  sections: OldSection[];
+};
+
+export type OldLookup = {
+  query: string;
+  numbers: string[];
+  matches: OldSection[];
+  sources: Source[];
+};

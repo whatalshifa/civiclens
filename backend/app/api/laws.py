@@ -8,8 +8,19 @@ from sqlalchemy.orm import selectinload
 
 from app.api.guard import require_proxy
 from app.db import SessionDep
-from app.models import Act, LawSection, Source
-from app.schemas import ActBrief, ActOut, SearchHit, SearchOut, SectionOut, SourceOut
+from app.models import Act, LawSection, OldCode, OldSection, Source
+from app.schemas import (
+    ActBrief,
+    ActOut,
+    OldCodeOut,
+    OldLookupOut,
+    OldSectionOut,
+    SearchHit,
+    SearchOut,
+    SectionOut,
+    SourceOut,
+)
+from app.services import old_to_new
 from app.services.search import anchor, search_laws
 
 router = APIRouter(prefix="/api", tags=["laws"], dependencies=[Depends(require_proxy)])
@@ -47,6 +58,55 @@ def search(
             )
             for r in rows
         ],
+    )
+
+
+def _old_section(row: OldSection, code: OldCode, anchors: dict) -> OldSectionOut:
+    return OldSectionOut(
+        code=code.code,
+        code_short_name=code.short_name,
+        number=row.number,
+        new_act_id=code.new_act_id,
+        new_act_short_name=code.new_act.short_name,
+        new_number=row.new_number,
+        title=row.title,
+        note=row.note,
+        anchor=old_to_new.section_anchor(anchors, code.new_act, row.new_number),
+    )
+
+
+@router.get("/laws/old-to-new", response_model=list[OldCodeOut])
+def old_to_new_tables(session: SessionDep) -> list[OldCodeOut]:
+    """Every old IPC, CrPC and Evidence Act section we have, beside its new number."""
+    anchors = old_to_new.library_anchors(session)
+    return [
+        OldCodeOut(
+            code=c.code,
+            name=c.name,
+            short_name=c.short_name,
+            new_act_id=c.new_act_id,
+            new_act_short_name=c.new_act.short_name,
+            new_act_title=c.new_act.title,
+            source=SourceOut.model_validate(c.source),
+            sections=[_old_section(r, c, anchors) for r in c.sections],
+        )
+        for c in old_to_new.all_codes(session)
+    ]
+
+
+@router.get("/laws/old-to-new/lookup", response_model=OldLookupOut)
+def old_to_new_lookup(
+    session: SessionDep, q: Annotated[str, Query(min_length=1, max_length=200)]
+) -> OldLookupOut:
+    """'IPC 420' -> BNS 318(4). Also 'CrPC 154', '65B evidence', and backwards: 'BNS 318'."""
+    matches = old_to_new.lookup(session, q)
+    anchors = old_to_new.library_anchors(session) if matches else {}
+    sources = {m.code.source.id: m.code.source for m in matches}
+    return OldLookupOut(
+        query=q,
+        numbers=old_to_new.section_numbers(q),
+        matches=[_old_section(m.row, m.code, anchors) for m in matches],
+        sources=[SourceOut.model_validate(s) for s in sources.values()],
     )
 
 

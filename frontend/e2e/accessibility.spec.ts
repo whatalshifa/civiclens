@@ -11,6 +11,8 @@ const PAGES = [
   "/laws",
   "/laws/rti-act-2005",
   "/laws/search?q=arrest",
+  "/laws/bns-2023",
+  "/laws/old-to-new?q=IPC%20420",
   "/about",
   "/assistant?sample=arrest",
   "/rti?authority=Municipal%20Corporation&info=Copies%20of%20the%20road%20repair%20contract",

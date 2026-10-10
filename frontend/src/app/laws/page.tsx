@@ -23,6 +23,12 @@ export default async function LawsPage() {
       <div className="mt-6 max-w-2xl">
         <LawSearchForm />
       </div>
+      <p className="mt-4 text-sm">
+        Have an old IPC or CrPC number, like “IPC 420”?{" "}
+        <Link href="/laws/old-to-new" className="link font-medium">
+          Find its new BNS or BNSS section
+        </Link>
+      </p>
       <ul className="mt-10 grid gap-4 md:grid-cols-2">
         {acts.map((act) => (
           <li key={act.id}>
