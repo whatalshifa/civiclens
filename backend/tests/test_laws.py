@@ -31,6 +31,10 @@ def test_an_act_has_its_sections_with_stable_anchors(client):
         ("can they arrest a woman at night", "bnss-2023", "43(5)"),
         ("my in-laws want to throw me out of the house", "dv-act-2005", "17"),
         ("right to privacy", "constitution", "21"),
+        ("someone snatched my chain on the street", "bns-2023", "304"),
+        ("online fraud cheating took my money", "bns-2023", "318"),
+        ("is a whatsapp screenshot valid as evidence", "bsa-2023", "61"),
+        ("ipc 498a", "bns-2023", "85"),
     ],
 )
 def test_everyday_questions_find_the_right_section_first(client, question, act, number):

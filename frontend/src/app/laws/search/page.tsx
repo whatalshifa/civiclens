@@ -3,8 +3,9 @@ import Link from "next/link";
 
 import { Highlight } from "@/components/Highlight";
 import { LawSearchForm } from "@/components/LawSearchForm";
+import { OldToNewMatch } from "@/components/OldToNew";
 import { api } from "@/lib/api";
-import type { ActBrief, SearchResults } from "@/lib/types";
+import type { ActBrief, OldLookup, SearchResults } from "@/lib/types";
 
 export async function generateMetadata({ searchParams }: PageProps<"/laws/search">): Promise<Metadata> {
   const { q } = await searchParams;
@@ -19,7 +20,11 @@ export default async function SearchPage({ searchParams }: PageProps<"/laws/sear
   const acts = await api<ActBrief[]>("/api/laws");
   const query = new URLSearchParams({ q });
   if (act) query.set("act", act);
-  const results = q ? await api<SearchResults>(`/api/laws/search?${query}`) : null;
+  // "IPC 420" is usually someone looking for the new number, so answer that first.
+  const [results, old] = await Promise.all([
+    q ? api<SearchResults>(`/api/laws/search?${query}`) : null,
+    q && /\d/.test(q) ? api<OldLookup>(`/api/laws/old-to-new/lookup?${new URLSearchParams({ q })}`) : null,
+  ]);
   const actName = acts.find((a) => a.id === act)?.short_name;
 
   return (
@@ -34,6 +39,24 @@ export default async function SearchPage({ searchParams }: PageProps<"/laws/sear
             Search all laws
           </Link>
         </div>
+      )}
+
+      {old && old.matches.length > 0 && (
+        <section className="mt-8" aria-labelledby="old-heading">
+          <h2 id="old-heading" className="text-sm font-semibold text-muted">
+            The old criminal laws were replaced on 1 July 2024
+          </h2>
+          <ul className="mt-3 grid gap-3">
+            {old.matches.slice(0, 3).map((m) => (
+              <li key={`${m.code}-${m.number}`}>
+                <OldToNewMatch match={m} />
+              </li>
+            ))}
+          </ul>
+          <Link href={`/laws/old-to-new?q=${encodeURIComponent(q)}`} className="link mt-2 inline-block text-sm">
+            See the full old-to-new tables
+          </Link>
+        </section>
       )}
 
       {results && (

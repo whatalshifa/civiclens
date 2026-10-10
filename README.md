@@ -27,7 +27,8 @@ words. Strictly nonpartisan: every fact links to the official record it came fro
 - **Draft an RTI application.** A short form writes a ready-to-send application under the RTI Act,
   in English or Hindi, entirely in your browser.
 - **Read laws simply.** Each section has a plain-language summary, clearly labelled as a summary, with
-  a link to the official text.
+  a link to the official text. The library covers the new criminal laws (BNS, BNSS, BSA), and an
+  old-to-new lookup turns "IPC 420" into "BNS 318(4)" from the official correspondence tables.
 - **Nonpartisan by design.** Same fields for everyone, ordered by place, never by party. No ratings,
   photos or party colours. The rules are enforced in the data checks and tests.
 - **Works for everyone.** Server-rendered pages that work without JavaScript, on phones, in dark mode,

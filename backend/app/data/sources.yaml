@@ -96,3 +96,21 @@
   title: Members of the 18th Lok Sabha
   publisher: Lok Sabha Secretariat
   url: https://sansad.in/ls/members
+
+- id: correspondence-ipc-bns
+  title: Correspondence table and comparison summary of the Bharatiya Nyaya Sanhita, 2023 and the Indian Penal Code, 1860
+  publisher: Central Academy for Police Training, Bhopal (copy hosted by the Kerala Prisons Department)
+  url: https://www.keralaprisons.gov.in/userfiles/act-and-rules/comparison_summary_BNS_to_IPC.pdf
+  note: Prepared by Anil Kishore Yadav, IPS, Director, CAPT Bhopal. Lists each IPC section beside its BNS section.
+
+- id: correspondence-crpc-bnss
+  title: Correspondence table and comparison summary of the Bharatiya Nagarik Suraksha Sanhita, 2023 and the Code of Criminal Procedure, 1973
+  publisher: Central Academy for Police Training, Bhopal (copy hosted by the Kerala Prisons Department)
+  url: https://keralaprisons.gov.in/userfiles/act-and-rules/comparison_summary_BNSS_to_CrPC.pdf
+  note: Prepared by Anil Kishore Yadav, IPS, Director, CAPT Bhopal. Lists each CrPC section beside its BNSS section.
+
+- id: correspondence-iea-bsa
+  title: Correspondence table and comparison summary of the Bharatiya Sakshya Adhiniyam, 2023 and the Indian Evidence Act, 1872
+  publisher: Central Academy for Police Training, Bhopal (copy hosted by the Kerala Prisons Department)
+  url: https://keralaprisons.gov.in/userfiles/act-and-rules/comparison_summary_BSA_to_IEA.pdf
+  note: Prepared by Anil Kishore Yadav, IPS, Director, CAPT Bhopal. Lists each Evidence Act section beside its BSA section.

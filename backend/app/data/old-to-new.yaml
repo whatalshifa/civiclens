@@ -1,0 +1,126 @@
+# Old criminal-law section numbers and their new ones, from the correspondence tables in the
+# sources named below. Each row is [old section, new section, the new section's heading].
+# A new section of "-" means the old one was not carried over (say why in a note).
+- code: ipc
+  name: Indian Penal Code, 1860
+  short_name: IPC
+  aliases: [ipc, indian penal code, penal code, i.p.c]
+  new_act: bns-2023
+  source: correspondence-ipc-bns
+  rows:
+    - ["34", "3(5)", "Acts done by several persons with a common intention"]
+    - ["120B", "61(2)", "Punishment for criminal conspiracy"]
+    - ["141", "189(1)", "Unlawful assembly"]
+    - ["147", "191(2)", "Punishment for rioting"]
+    - ["153A", "196", "Promoting enmity between different groups"]
+    - ["279", "281", "Rash driving or riding on a public way"]
+    - ["295A", "299", "Deliberate and malicious acts intended to outrage religious feelings"]
+    - ["302", "103(1)", "Punishment for murder"]
+    - ["304", "105", "Punishment for culpable homicide not amounting to murder"]
+    - ["304A", "106(1)", "Causing death by negligence"]
+    - ["304B", "80", "Dowry death"]
+    - ["306", "108", "Abetment of suicide"]
+    - ["307", "109", "Attempt to murder"]
+    - ["323", "115(2)", "Punishment for voluntarily causing hurt"]
+    - ["324", "118(1)", "Voluntarily causing hurt by dangerous weapons or means"]
+    - ["325", "117(2)", "Punishment for voluntarily causing grievous hurt"]
+    - ["326", "118(2)", "Voluntarily causing grievous hurt by dangerous weapons or means"]
+    - ["341", "126(2)", "Punishment for wrongful restraint"]
+    - ["342", "127(2)", "Punishment for wrongful confinement"]
+    - ["354", "74", "Assault or criminal force on a woman with intent to outrage her modesty"]
+    - ["354A", "75", "Sexual harassment"]
+    - ["354D", "78", "Stalking"]
+    - ["363", "137(2)", "Punishment for kidnapping"]
+    - ["376", "64", "Punishment for rape"]
+    - ["379", "303(2)", "Punishment for theft"]
+    - ["380", "305", "Theft in a dwelling house, means of transport or place of worship"]
+    - ["384", "308(2)", "Punishment for extortion"]
+    - ["392", "309(4)", "Punishment for robbery"]
+    - ["406", "316(2)", "Punishment for criminal breach of trust"]
+    - ["411", "317(2)", "Dishonestly receiving stolen property"]
+    - ["420", "318(4)", "Cheating and dishonestly inducing delivery of property"]
+    - ["447", "329(3)", "Punishment for criminal trespass"]
+    - ["448", "329(4)", "Punishment for house-trespass"]
+    - ["467", "338", "Forgery of valuable security, will, etc."]
+    - ["468", "336(3)", "Forgery for the purpose of cheating"]
+    - ["471", "340(2)", "Using as genuine a forged document or electronic record"]
+    - ["489A", "178", "Counterfeiting coins, government stamps, currency notes or bank notes"]
+    - ["498A", "85", "Cruelty by a husband or his relatives (cruelty is defined in section 86)"]
+    - ["500", "356(2)", "Punishment for defamation"]
+    - ["506", "351(2)", "Punishment for criminal intimidation (351(3) for threats to kill or cause grievous hurt)"]
+    - ["509", "79", "Word, gesture or act intended to insult the modesty of a woman"]
+  notes:
+    "377": >-
+      Not carried into the BNS. The Supreme Court had already held in 2018 that it could not
+      apply to consensual acts between adults.
+
+- code: crpc
+  name: Code of Criminal Procedure, 1973
+  short_name: CrPC
+  aliases: [crpc, cr.p.c, cr p c, code of criminal procedure, criminal procedure code, criminal procedure]
+  new_act: bnss-2023
+  source: correspondence-crpc-bnss
+  rows:
+    - ["41", "35", "When police may arrest without a warrant"]
+    - ["41A", "35", "Notice to appear before the police (now part of section 35)"]
+    - ["41B", "36", "Procedure of arrest and duties of the officer making it"]
+    - ["41D", "38", "Right of an arrested person to meet a lawyer during questioning"]
+    - ["46", "49", "No unnecessary restraint"]
+    - ["50", "47", "Arrested person to be told the grounds of arrest and of the right to bail"]
+    - ["50A", "48", "Duty to tell a relative or friend about the arrest"]
+    - ["54", "53", "Medical examination of an arrested person"]
+    - ["57", "58", "No detention for more than 24 hours without a Magistrate"]
+    - ["107", "126", "Security for keeping the peace"]
+    - ["125", "144", "Maintenance of wives, children and parents"]
+    - ["144", "163", "Orders in urgent cases of nuisance or apprehended danger"]
+    - ["154", "173", "Information in cognizable cases (FIR)"]
+    - ["154(3)", "173(4)", "Sending the complaint to the Superintendent of Police when the FIR is refused"]
+    - ["156(3)", "175(3)", "Magistrate ordering the police to investigate"]
+    - ["160", "179", "Police calling witnesses to attend"]
+    - ["161", "180", "Police questioning witnesses"]
+    - ["164", "183", "Recording of confessions and statements by a Magistrate"]
+    - ["167", "187", "Procedure when investigation can't be completed in 24 hours"]
+    - ["173", "193", "Police report when the investigation is complete (charge sheet)"]
+    - ["200", "223", "Examination of the complainant by a Magistrate"]
+    - ["313", "351", "Court's power to question the accused"]
+    - ["320", "359", "Compounding of offences"]
+    - ["357A", "396", "Victim compensation scheme"]
+    - ["436", "478", "Bail in bailable offences"]
+    - ["436A", "479", "Maximum time an undertrial can be held"]
+    - ["437", "480", "Bail in non-bailable offences"]
+    - ["438", "482", "Anticipatory bail"]
+    - ["439", "483", "Special powers of the High Court or Sessions Court on bail"]
+    - ["482", "528", "Inherent powers of the High Court"]
+
+- code: iea
+  name: Indian Evidence Act, 1872
+  short_name: Evidence Act
+  aliases: [iea, evidence act, indian evidence act, evidence]
+  new_act: bsa-2023
+  source: correspondence-iea-bsa
+  rows:
+    - ["3", "2", "Definitions"]
+    - ["17", "15", "Admission defined"]
+    - ["24", "22(1)", "Confession caused by inducement, threat or promise"]
+    - ["25", "23(1)", "Confession to a police officer"]
+    - ["26", "23(2)", "Confession in police custody not to be proved against the accused"]
+    - ["27", "23(2)", "How much of information from the accused may be proved (the proviso to section 23(2))"]
+    - ["32", "26", "Statements by a person who is dead or cannot be found (including dying declarations)"]
+    - ["45", "39(1)", "Opinions of experts"]
+    - ["60", "55", "Oral evidence to be direct"]
+    - ["61", "56", "Proof of contents of documents"]
+    - ["62", "57", "Primary evidence"]
+    - ["63", "58", "Secondary evidence"]
+    - ["65A", "62", "Evidence relating to electronic records"]
+    - ["65B", "63", "Admissibility of electronic records (certificate)"]
+    - ["101", "104", "Burden of proof"]
+    - ["105", "108", "Burden of proving that the accused's case falls within an exception"]
+    - ["113A", "117", "Presumption of abetment of suicide by a married woman"]
+    - ["113B", "118", "Presumption as to dowry death"]
+    - ["114", "119", "Court may presume certain facts"]
+    - ["114A", "120", "Presumption of absence of consent in certain rape cases"]
+    - ["118", "124", "Who may testify"]
+    - ["119", "125", "Witness unable to communicate verbally"]
+    - ["132", "137", "Witness not excused from answering because the answer may incriminate"]
+    - ["145", "148", "Cross-examination on previous written statements"]
+    - ["154", "157", "Questions by a party to their own witness"]

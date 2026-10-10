@@ -1,0 +1,166 @@
+id: bns-2023
+title: The Bharatiya Nyaya Sanhita, 2023
+short_name: BNS
+year: 2023
+citation: Act No. 45 of 2023
+keywords: ipc indian penal code crime offence punishment criminal
+unit: Section
+source: india-code
+summary: >-
+  The main criminal law: it says what is a crime and how it is punished. It replaced the
+  Indian Penal Code (IPC) on 1 July 2024, keeping most old offences under new numbers and
+  adding a few, such as snatching. To find an IPC section's new number, use the old-to-new
+  lookup.
+sections:
+  - number: "4"
+    title: Punishments, including community service
+    keywords: punishment sentence jail fine community service prison
+    summary: >-
+      Lists the punishments courts can give: death, imprisonment for life, imprisonment
+      (rigorous or simple), forfeiture of property, fine and, new in the BNS, community
+      service. Community service is allowed only for some minor offences, such as a first
+      petty theft where the property is returned.
+
+  - number: "74"
+    title: Assault on a woman to outrage her modesty
+    keywords: molestation woman touch assault modesty ipc 354
+    summary: >-
+      Assaulting or using force on a woman, intending to outrage her modesty or knowing it is
+      likely to, is a crime punishable with one to five years in prison and a fine. This was
+      section 354 of the IPC.
+
+  - number: "75"
+    title: Sexual harassment
+    keywords: sexual harassment remarks touch advances favours pornography woman ipc 354a
+    summary: >-
+      Unwelcome physical contact and advances, demanding or requesting sexual favours,
+      showing pornography to a woman against her will, or making sexually coloured remarks.
+      The first three can be punished with up to three years in prison; remarks with up to
+      one year. This was section 354A of the IPC.
+
+  - number: "78"
+    title: Stalking
+    keywords: stalking following messages calls online monitoring woman ipc 354d
+    summary: >-
+      Following a woman, or contacting or trying to contact her again and again although she
+      has clearly shown she isn't interested, or watching her use of the internet, email or
+      other electronic communication. Up to three years in prison for a first conviction and
+      up to five for a later one. This was section 354D of the IPC.
+
+  - number: "79"
+    title: Insulting the modesty of a woman
+    keywords: eve teasing comment gesture insult woman words ipc 509
+    summary: >-
+      Saying a word, making a sound or gesture, or showing an object, intending to insult a
+      woman's modesty or intrude on her privacy. Up to three years in prison and a fine. This
+      was section 509 of the IPC.
+
+  - number: "80"
+    title: Dowry death
+    keywords: dowry death burns marriage seven years harassment ipc 304b
+    summary: >-
+      When a woman dies of burns or injuries, or otherwise not in normal circumstances,
+      within seven years of marriage, and soon before her death her husband or his relatives
+      treated her with cruelty or harassed her for dowry, they are taken to have caused her
+      death. At least seven years in prison, up to life. This was section 304B of the IPC.
+
+  - number: "85"
+    title: Cruelty by a husband or his relatives
+    keywords: cruelty husband in-laws dowry harassment wife 498a
+    summary: >-
+      A husband or his relative who treats a woman with cruelty can be punished with up to
+      three years in prison and a fine. Section 86 says cruelty means conduct likely to drive
+      her to suicide or seriously harm her body or mind, or harassing her or her family to
+      meet demands for property or money. This was section 498A of the IPC.
+
+  - number: "106"
+    title: Causing death by negligence, and hit and run
+    keywords: accident death negligence doctor hit and run driving ipc 304a
+    summary: >-
+      Causing someone's death by a rash or negligent act is punishable with up to five years
+      in prison and a fine (up to two years for a registered doctor during a medical
+      procedure). Sub-section (2) sets a higher penalty for a driver who causes a death and
+      escapes without reporting it; it was held back when the BNS came into force, so check
+      the official text for its current status. This was section 304A of the IPC.
+
+  - number: "115"
+    title: Voluntarily causing hurt
+    keywords: hurt beating slap assault injury fight ipc 323
+    summary: >-
+      Intentionally causing someone bodily pain, disease or infirmity. Up to one year in
+      prison, or a fine of up to ₹10,000, or both. This was section 323 of the IPC.
+
+  - number: "281"
+    title: Rash driving on a public road
+    keywords: rash driving speeding road vehicle negligent ipc 279
+    summary: >-
+      Driving or riding on a public road so rashly or negligently that it puts human life at
+      risk or is likely to hurt someone. Up to six months in prison, or a fine of up to
+      ₹1,000, or both. This was section 279 of the IPC.
+
+  - number: "303"
+    title: Theft
+    keywords: theft stolen steal phone bike vehicle ipc 379
+    summary: >-
+      Dishonestly taking movable property out of someone's possession without their consent.
+      Up to three years in prison, or a fine, or both; a second or later conviction brings at
+      least one year. For a first theft of property worth less than ₹5,000, if it is returned
+      or paid for, the court can order community service instead. This was section 379 of the
+      IPC.
+
+  - number: "304"
+    title: Snatching
+    keywords: snatching chain phone purse grabbed bike street
+    summary: >-
+      New in the BNS: suddenly, quickly or forcibly seizing or grabbing movable property from
+      a person, such as a chain, phone or bag. Up to three years in prison and a fine.
+
+  - number: "308"
+    title: Extortion
+    keywords: extortion threat money demand blackmail ipc 384
+    summary: >-
+      Intentionally putting someone in fear of harm to them or another person, to make them
+      hand over property, money or a signed document. This was section 383 of the IPC, and its
+      punishment section 384 is now 308(2).
+
+  - number: "316"
+    title: Criminal breach of trust
+    keywords: breach of trust entrusted money misappropriation employer agent ipc 406
+    summary: >-
+      Someone who was trusted with property or money, and dishonestly uses it for themselves
+      or against the terms they were given it on. This was section 405 of the IPC, and its
+      punishment section 406 is now 316(2).
+
+  - number: "318"
+    title: Cheating
+    keywords: cheating fraud scam deceive online money ipc 420
+    summary: >-
+      Deceiving someone to make them hand over property, or to do or not do something they
+      otherwise wouldn't, causing them harm. Cheating that makes someone hand over property
+      or money, the old "420", is now section 318(4): up to seven years in prison and a fine.
+
+  - number: "319"
+    title: Cheating by pretending to be someone else
+    keywords: impersonation fake identity personation bank official call fraud ipc 419
+    summary: >-
+      Cheating by pretending to be another person, or by knowingly passing one person off as
+      another, for example a caller posing as a bank officer or a relative. This was section
+      416 of the IPC, and its punishment section 419 is now 319(2).
+
+  - number: "351"
+    title: Criminal intimidation
+    keywords: threat threatening intimidation kill harm ipc 506
+    summary: >-
+      Threatening someone with harm to their body, reputation or property, or to someone they
+      care about, to alarm them or make them do something. Up to two years in prison, or a
+      fine, or both; up to seven years for threats to kill or cause grievous hurt. This was
+      sections 503 and 506 of the IPC.
+
+  - number: "356"
+    title: Defamation
+    keywords: defamation reputation false statement social media post ipc 499 500
+    summary: >-
+      Saying, writing or publishing something about a person intending to harm their
+      reputation, or knowing it will. There are exceptions, such as a true statement made for
+      the public good or a fair opinion on a public servant's conduct. Up to two years in
+      prison, a fine, both, or community service. This was sections 499 and 500 of the IPC.

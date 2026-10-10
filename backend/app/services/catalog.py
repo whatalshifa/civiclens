@@ -25,6 +25,8 @@ from app.models import (
     Constituency,
     DataVersion,
     LawSection,
+    OldCode,
+    OldSection,
     Pincode,
     PincodeConstituency,
     Representative,
@@ -41,6 +43,7 @@ HIGHLIGHT_MARKS = ("«", "»")
 
 PIN_PATTERN = re.compile(r"^[1-9][0-9]{5}$")  # Indian PIN codes are six digits and never start with 0
 ID_PATTERN = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
+SECTION_NUMBER = r"^[0-9]+[A-Z]?(\([0-9a-z]+\))*$"  # "6", "21A", "2(f)", "154(3)"
 
 
 class CatalogError(ValueError):
@@ -129,7 +132,7 @@ class PlacesFile(Strict):
 
 
 class SectionIn(Strict):
-    number: str = Field(pattern=r"^[0-9]+[A-Z]?(\([0-9a-z]+\))*$")
+    number: str = Field(pattern=SECTION_NUMBER)
     title: str
     summary: str
     keywords: str = ""
@@ -150,10 +153,37 @@ class ActIn(Strict):
     sections: list[SectionIn]
 
 
+class OldCodeIn(Strict):
+    """A code the new criminal laws replaced, with its correspondence table (old-to-new.yaml)."""
+
+    code: str = Field(pattern=r"^[a-z]+$")
+    name: str
+    short_name: str
+    aliases: list[str]
+    new_act: str
+    source: str
+    # [old number, new number, heading of the new section]
+    rows: list[tuple[str, str, str]]
+    # Old sections that were not carried over, and why.
+    notes: dict[str, str] = {}
+
+    @model_validator(mode="after")
+    def _numbers(self):
+        for old, new, _ in self.rows:
+            for n in (old, new):
+                if not re.match(SECTION_NUMBER, n):
+                    raise ValueError(f"{self.code}: {n!r} isn't a section number like 420, 498A or 154(3)")
+        for old in self.notes:
+            if not re.match(SECTION_NUMBER, old):
+                raise ValueError(f"{self.code}: note for {old!r}, which isn't a section number")
+        return self
+
+
 class Catalog(BaseModel):
     sources: list[SourceIn]
     places: PlacesFile
     acts: list[ActIn]
+    old_codes: list[OldCodeIn] = []
 
 
 def _read_yaml(path: Path):
@@ -253,11 +283,13 @@ def read_catalog(data_dir: Path = DATA_DIR) -> Catalog:
     """Reads and checks every data file. Raises CatalogError naming the first problem found."""
     try:
         generated_sources = sorted((data_dir / "generated").glob("sources*.yaml"))
+        old_to_new = data_dir / "old-to-new.yaml"
         catalog = Catalog(
             sources=_read_yaml(data_dir / "sources.yaml")
             + [s for p in generated_sources for s in _read_yaml(p)],
             places=_merge_generated(_read_yaml(data_dir / "places.yaml"), data_dir),
             acts=[_read_yaml(p) for p in sorted((data_dir / "laws").glob("*.yaml"))],
+            old_codes=_read_yaml(old_to_new) if old_to_new.exists() else [],
         )
     except (OSError, yaml.YAMLError, ValueError) as exc:
         raise CatalogError(str(exc)) from exc
@@ -306,6 +338,15 @@ def read_catalog(data_dir: Path = DATA_DIR) -> Catalog:
                 if any(mark in field for mark in HIGHLIGHT_MARKS):
                     raise CatalogError(f"{act.id} section {s.number} uses « or », which search reserves")
 
+    acts = {a.id for a in catalog.acts}
+    _unique([c.code for c in catalog.old_codes], "old codes")
+    for c in catalog.old_codes:
+        need_source(c.source, f"The {c.short_name} correspondence table")
+        if c.new_act not in acts:
+            raise CatalogError(f"{c.short_name} is replaced by {c.new_act!r}, which isn't in the law library")
+        olds = [old for old, _, _ in c.rows] + list(c.notes)
+        _unique(olds, f"{c.short_name} sections")
+
     return catalog
 
 
@@ -332,6 +373,8 @@ def load_catalog(session: Session, data_dir: Path = DATA_DIR, *, force: bool = F
     sources = {s.id: s for s in catalog.sources}
 
     for table in (
+        OldSection,
+        OldCode,
         LawSection,
         Act,
         RepresentativeFact,
@@ -422,6 +465,28 @@ def load_catalog(session: Session, data_dir: Path = DATA_DIR, *, force: bool = F
                         official_text=s.official_text,
                     )
                     for i, s in enumerate(a.sections)
+                ],
+            )
+        )
+
+    session.flush()
+    for position, c in enumerate(catalog.old_codes):
+        session.add(
+            OldCode(
+                code=c.code,
+                name=c.name,
+                short_name=c.short_name,
+                aliases="|".join(a.lower() for a in c.aliases),
+                new_act_id=c.new_act,
+                source_id=c.source,
+                position=position,
+                sections=[
+                    OldSection(number=old, new_number=new, title=title, position=i)
+                    for i, (old, new, title) in enumerate(c.rows)
+                ]
+                + [
+                    OldSection(number=old, title="Not carried over", note=note, position=len(c.rows) + i)
+                    for i, (old, note) in enumerate(c.notes.items())
                 ],
             )
         )
