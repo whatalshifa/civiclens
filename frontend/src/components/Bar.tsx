@@ -9,8 +9,9 @@ import { Logo } from "@/components/Logo";
 export function BarTop({ href, label, children }: { href: string; label: string; children: React.ReactNode }) {
   return (
     <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
-      <Link href={href} aria-label={label} className="-m-1 p-1 focus-visible:outline-header-ink">
-        <Logo tone="bar" />
+      {/* On the narrowest phones the controls need the room, so the emblem stands alone; the link keeps its name. */}
+      <Link href={href} aria-label={label} className="-m-1 shrink-0 p-1 focus-visible:outline-header-ink">
+        <Logo tone="bar" wordmarkClassName="max-[379px]:hidden" />
       </Link>
       <div className="flex items-center gap-2 sm:gap-4">{children}</div>
     </div>

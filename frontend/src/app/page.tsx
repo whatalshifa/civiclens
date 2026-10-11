@@ -586,7 +586,7 @@ export default async function Landing() {
             </div>
 
             {datasets.length > 0 && (
-              <div className="mt-10 overflow-x-auto border-2 border-rule">
+              <div className="relative mt-10 overflow-x-auto border-2 border-rule">
                 <table className="w-full min-w-[20rem] text-left text-[0.9375rem]">
                   <caption className="sr-only">Datasets you can download</caption>
                   <thead className="bg-rule text-background">

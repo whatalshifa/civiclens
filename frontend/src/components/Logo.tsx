@@ -69,13 +69,21 @@ export function Seal({ className = "h-28 w-28", knockout = "var(--background)" }
  * The emblem and the condensed-capitals wordmark. `tone="bar"` is for the dark-teal bar (white and
  * amber); `tone="page"` is for the page itself (ink and teal).
  */
-export function Logo({ tone = "bar", compact = false }: { tone?: "bar" | "page"; compact?: boolean }) {
+export function Logo({
+  tone = "bar",
+  compact = false,
+  wordmarkClassName = "",
+}: {
+  tone?: "bar" | "page";
+  compact?: boolean;
+  wordmarkClassName?: string;
+}) {
   const bar = tone === "bar";
   return (
     <span className={`flex items-center gap-2 sm:gap-2.5 ${bar ? "text-header-ink" : "text-foreground"}`}>
       <Emblem className={compact ? "h-8 w-8" : "h-8 w-8 sm:h-10 sm:w-10"} />
       <span
-        className={`leading-none font-black tracking-[0.06em] uppercase ${compact ? "text-[1.25rem]" : "text-[1.25rem] sm:text-[1.625rem]"}`}
+        className={`leading-none font-black tracking-[0.06em] uppercase ${compact ? "text-[1.25rem]" : "text-[1.25rem] sm:text-[1.625rem]"} ${wordmarkClassName}`}
         style={{ fontStretch: "68%" }}
       >
         Civic<span className={bar ? "text-signal" : "text-accent"}>Lens</span>
