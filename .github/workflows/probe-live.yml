@@ -1,0 +1,31 @@
+name: probe-live
+on: { push: { branches: [probe-live] } }
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Time every live page, API and image (twice, to see cold vs warm)
+        run: |
+          urls="
+          https://civiclens-api-jwu3.onrender.com/api/health
+          https://report-saathi-api.onrender.com/api/health
+          https://paper2lab-api.onrender.com/api/health
+          https://civiclens-ruby.vercel.app/
+          https://civiclens-ruby.vercel.app/services
+          https://civiclens-ruby.vercel.app/seats
+          https://civiclens-ruby.vercel.app/og.png
+          https://report-saathi-six.vercel.app/
+          https://report-saathi-six.vercel.app/landing/sample-report-2026-01.png
+          https://report-saathi-six.vercel.app/_next/image?url=%2Flanding%2Fsample-report-2026-01.png&w=1080&q=75
+          https://report-saathi-six.vercel.app/opengraph-image
+          https://paper2lab-psi.vercel.app/
+          https://paper2lab-psi.vercel.app/library
+          https://paper2lab-psi.vercel.app/opengraph-image
+          "
+          for pass in 1 2; do
+            echo "== pass $pass"
+            for u in $urls; do
+              curl -s -o /tmp/body -w "%{http_code} %{time_total}s %{size_download}B %{content_type} $u\n" --max-time 120 "$u" || echo "FAIL $u"
+              case "$u" in *civiclens-ruby.vercel.app/|*civiclens-ruby.vercel.app/services) head -c 400 /tmp/body | tr '\n' ' '; echo;; esac
+            done
+          done
