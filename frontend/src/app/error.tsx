@@ -1,16 +1,23 @@
 "use client";
 
-export default function Error({ reset }: { error: Error; reset: () => void }) {
+import { BarTop } from "@/components/Bar";
+import { ErrorState } from "@/components/ErrorState";
+
+/**
+ * For the landing page, which has no frame of its own above this boundary: the brand's bar, then
+ * the same calm "waking up" message as the service. (The service's pages use (app)/error.tsx.)
+ */
+export default function RootError({ retry }: { error: Error & { digest?: string }; retry: () => void }) {
   return (
-    <div className="mx-auto max-w-md py-10 text-center">
-      <p className="eyebrow">Something went wrong</p>
-      <h1 className="mt-2 page-title">We couldn&apos;t load this page</h1>
-      <p className="mt-3 text-muted">
-        The CivicLens server may be waking up after a quiet spell, which can take up to a minute. Please try again.
-      </p>
-      <button type="button" onClick={reset} className="btn btn-primary mt-6">
-        Try again
-      </button>
-    </div>
+    <>
+      <header className="bg-header text-header-ink">
+        <BarTop href="/" label="CivicLens home">
+          {null}
+        </BarTop>
+      </header>
+      <main id="main" className="mx-auto w-full max-w-6xl flex-1 px-4 sm:px-6">
+        <ErrorState retry={retry} />
+      </main>
+    </>
   );
 }

@@ -10,3 +10,7 @@ All on free tiers, in your own accounts.
    - `API_URL`: the Render address, like `https://civiclens-api.onrender.com`
    - `API_PROXY_SECRET`: the value Render generated for `CL_PROXY_SECRET`
    - `SITE_URL`: the Vercel address
+4. **Keeping it awake (optional).** `.github/workflows/keep-warm.yml` pings the API's
+   `/api/health` every 10 minutes on weekdays, 09:30–18:30 India time, so visitors in those hours
+   rarely wait for a cold start. Change the address in it if your API lives elsewhere. It uses
+   about 200 of the 750 free instance hours Render gives a workspace each month.

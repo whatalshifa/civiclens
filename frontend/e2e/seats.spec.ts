@@ -15,6 +15,8 @@ test("every Lok Sabha seat is listed by state, and each opens with its sources",
   // A member list says who sits now, not when they were elected, so the card says when it was listed.
   await expect(page.getByText(/Sitting member of the 18th Lok Sabha, as listed on/)).toBeVisible();
   await expect(page.getByText(/result declared/)).toHaveCount(0);
+  // The source list is folded until wanted; it opens on the first reference followed.
+  await page.locator("a.ref").first().click();
   for (const href of await page.locator("a.ref").evaluateAll((links) => links.map((a) => a.getAttribute("href")))) {
     await expect(page.locator(href!)).toBeVisible();
   }

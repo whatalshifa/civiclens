@@ -1,48 +1,69 @@
 @import "tailwindcss";
 
 /* Dark mode follows a class on <html>, set before the first paint by the script in layout.tsx.
-   "System" (the default) copies the device setting; the switch in the header can pin light or dark. */
+   Until someone picks LIGHT or DARK in the header, it copies the device setting. */
 @custom-variant dark (&:where(.dark, .dark *));
+/* "js" is set on <html> by the same early script, so parts that need JavaScript (form steps) can
+   hide themselves before the first paint, and everything stays on show when scripts don't run. */
+@custom-variant js (&:where(.js, .js *));
 
-/* Plain and trustworthy, in the manner of the GOV.UK and US web design systems: dark text on white,
-   hairline dividers instead of boxes, and one accent colour. The accent is a deep teal, chosen because
-   it isn't the colour of any major Indian party; party names are always plain text, never coloured. */
+/*
+ * CivicLens is set like public signage and a data desk: a solid dark-teal bar, condensed capitals,
+ * heavy rules, square corners and solid offset shadows on anything you can press. One signal colour,
+ * civic amber, marks notices and focus. Teal belongs to no major Indian party, and party names are
+ * always plain text, never coloured.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #0e1716;
+  --background: #f3f5f4;
+  --foreground: #081513;
   --surface: #ffffff;
-  --sunken: #f2f4f3;
-  --muted: #4f5b58;
-  --border: #d8dddb;
-  --strong: #0e1716;
-  --input-border: #6b7774;
-  --accent: #0f6b63;
-  --accent-soft: #e4f1ee;
-  --focus: #0f766e;
-  --mark: #fdf0b8;
-  /* The service frame: a solid dark-teal bar with a bright rule under it, then a pale navigation bar. */
+  --sunken: #e6ecea;
+  --muted: #44514e;
+  --border: #c3cdca;
+  /* The heavy structural rule and the border of every control. */
+  --rule: #081513;
+  --input-border: #081513;
+  --accent: #0c6359;
+  --accent-soft: #d8ede8;
+  --mark: #ffe27a;
+  /* Civic amber: the notice strip, the call to action and the focus halo. */
+  --signal: #ffc829;
+  --signal-ink: #1b1400;
+  /* The offset shadow under buttons and cards you can press. */
+  --shadow: #0b3a36;
   --header: #0b3a36;
-  --header-stripe: #14a394;
-  --servicebar: #eef5f3;
+  --header-deep: #072925;
+  --header-ink: #ffffff;
+  --header-muted: #b9d6d1;
+  --primary: #0c6359;
+  --primary-hover: #094b44;
+  --primary-ink: #ffffff;
   color-scheme: light;
 }
 
+/* Night desk: deep blue-green ink, bright teal for anything live, amber kept for notices. */
 .dark {
-  --background: #0c1211;
-  --foreground: #e6ebe9;
-  --surface: #121a19;
-  --sunken: #17211f;
-  --muted: #9eaca8;
-  --border: #283532;
-  --strong: #e6ebe9;
-  --input-border: #5f6f6b;
-  --accent: #5ad1c0;
-  --accent-soft: #10302d;
-  --focus: #5ad1c0;
-  --mark: #4a3f10;
-  --header: #08221f;
-  --header-stripe: #2bb3a3;
-  --servicebar: #111b1a;
+  --background: #06100f;
+  --foreground: #e4eeeb;
+  --surface: #0c1b19;
+  --sunken: #102320;
+  --muted: #9db2ad;
+  --border: #23403b;
+  --rule: #7da29b;
+  --input-border: #7da29b;
+  --accent: #5fd4c3;
+  --accent-soft: #0f2f2b;
+  --mark: #5a4a0c;
+  --signal: #f2c14e;
+  --signal-ink: #1b1400;
+  --shadow: #1f5f57;
+  --header: #0b2a27;
+  --header-deep: #071d1b;
+  --header-ink: #f1f7f5;
+  --header-muted: #9cc4bd;
+  --primary: #5fd4c3;
+  --primary-hover: #86e2d5;
+  --primary-ink: #03201c;
   color-scheme: dark;
 }
 
@@ -53,46 +74,68 @@
   --color-sunken: var(--sunken);
   --color-muted: var(--muted);
   --color-line: var(--border);
-  --color-strong: var(--strong);
+  --color-rule: var(--rule);
   --color-input: var(--input-border);
   --color-accent: var(--accent);
   --color-accent-soft: var(--accent-soft);
+  --color-signal: var(--signal);
+  --color-signal-ink: var(--signal-ink);
+  --color-shade: var(--shadow);
   --color-header: var(--header);
-  --color-header-stripe: var(--header-stripe);
-  --color-servicebar: var(--servicebar);
-  /* Public Sans for everything; JetBrains Mono only for PIN codes and section numbers. */
-  --font-sans: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
+  --color-header-deep: var(--header-deep);
+  --color-header-ink: var(--header-ink);
+  --color-header-muted: var(--header-muted);
+  --color-primary: var(--primary);
+  --color-primary-ink: var(--primary-ink);
+  /* Archivo for everything, condensed for headings and labels; JetBrains Mono only for numbers and data. */
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+/* Square corners everywhere: a 2px softening at most. */
+@theme {
+  --radius-xs: 2px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
+  --radius-4xl: 0px;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-public-sans), system-ui, sans-serif;
+  font-family: var(--font-archivo), system-ui, sans-serif;
+  font-stretch: 100%;
   line-height: 1.6;
   text-rendering: optimizeLegibility;
 }
 
 @layer base {
+  /* Focus: an ink outline with an amber halo, visible on teal, white and the dark bar alike. */
   :where(a, button, summary, select, input, textarea, [tabindex]):focus-visible {
-    outline: 3px solid var(--focus);
-    outline-offset: 2px;
+    outline: 3px solid var(--foreground);
+    outline-offset: 0;
+    box-shadow: 0 0 0 6px var(--signal);
   }
   h1,
   h2,
-  h3 {
-    line-height: 1.2;
+  h3,
+  h4 {
+    font-stretch: 82%;
+    line-height: 1.1;
     text-wrap: balance;
   }
   mark {
     background: var(--mark);
     color: var(--foreground);
-    border-radius: 0.125rem;
     padding: 0 0.1rem;
   }
   /* Leave room for the sticky header when jumping to a section. */
   [id] {
-    scroll-margin-top: 5rem;
+    scroll-margin-top: 6rem;
   }
 }
 
@@ -107,108 +150,139 @@ body {
   }
 }
 
-/* One radius scale: 8px for controls, 12px for cards, full only for small badges. */
 @layer components {
+  /* Condensed heavy capitals: buttons, tabs, plates and table heads. */
+  .caps {
+    @apply font-bold tracking-[0.05em] uppercase;
+    font-stretch: 75%;
+  }
+  .condensed {
+    font-stretch: 75%;
+  }
+  .semi-condensed {
+    font-stretch: 87%;
+  }
+
   .page-title {
-    @apply text-[1.875rem] leading-tight font-bold tracking-[-0.015em] text-balance sm:text-[2.5rem];
+    @apply text-[2.25rem] leading-[1.02] font-extrabold tracking-[-0.01em] text-balance sm:text-[3.25rem];
+    font-stretch: 72%;
   }
   .lede {
-    @apply mt-3 max-w-[65ch] text-[1.0625rem] leading-relaxed text-muted sm:text-lg;
+    @apply mt-4 max-w-[62ch] text-[1.0625rem] leading-relaxed text-muted sm:text-lg;
+  }
+  /* A section label as a solid plate hanging off a heavy rule, like a route number on a sign. */
+  .kicker {
+    @apply inline-flex items-center gap-2 bg-rule px-2 py-1 text-[0.75rem] leading-none font-bold tracking-[0.08em]
+      text-background uppercase;
+    font-stretch: 75%;
   }
   .section-title {
-    @apply text-[1.375rem] leading-snug font-bold tracking-[-0.01em] sm:text-2xl;
+    @apply text-[1.625rem] leading-tight font-extrabold sm:text-[2rem];
+    font-stretch: 75%;
   }
 
   .card {
-    @apply rounded-xl border border-line bg-surface;
+    @apply border-2 border-rule bg-surface;
   }
-  /* A whole card that is a link: the border darkens on hover, nothing moves. */
+  /* A whole card that is a link: it sits on a solid shadow and lifts when hovered. */
   .card-link {
-    @apply block rounded-xl border border-line bg-surface transition-colors hover:border-accent;
+    @apply block border-2 border-rule bg-surface shadow-[5px_5px_0_var(--shadow)] transition-[transform,box-shadow]
+      duration-100 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[7px_7px_0_var(--shadow)]
+      active:translate-x-[3px] active:translate-y-[3px] active:shadow-[2px_2px_0_var(--shadow)];
   }
 
   .note {
-    @apply rounded-lg bg-sunken px-4 py-3 text-sm;
+    @apply border-l-[6px] border-rule bg-sunken px-4 py-3 text-sm;
   }
   .note-accent {
-    @apply rounded-lg border-l-4 border-accent bg-accent-soft px-4 py-3 text-sm;
+    @apply border-l-[6px] border-accent bg-accent-soft px-4 py-3 text-sm;
   }
 
   .btn {
-    @apply inline-flex h-10 items-center justify-center gap-2 rounded-[4px] border border-transparent px-4 text-[0.9375rem]
-      font-semibold whitespace-nowrap transition-colors select-none
-      disabled:cursor-not-allowed disabled:opacity-60;
+    @apply inline-flex h-11 items-center justify-center gap-2 border-2 border-rule px-4 text-[0.9375rem] leading-none
+      font-bold tracking-[0.05em] whitespace-nowrap uppercase shadow-[3px_3px_0_var(--shadow)] transition-[transform,box-shadow,background-color]
+      duration-100 select-none hover:-translate-x-px hover:-translate-y-px hover:shadow-[4px_4px_0_var(--shadow)]
+      active:translate-x-[3px] active:translate-y-[3px] active:shadow-none
+      disabled:pointer-events-none disabled:opacity-60;
+    font-stretch: 75%;
   }
-  /* White on teal-800 is 7.4:1, readable in both themes. */
   .btn-primary {
-    @apply bg-teal-800 text-white shadow-[0_2px_0_#042f2e] hover:bg-teal-900 active:translate-y-px active:shadow-none;
+    @apply bg-primary text-primary-ink hover:bg-[var(--primary-hover)];
   }
   .btn-secondary {
-    @apply border-line bg-surface text-foreground hover:border-muted hover:bg-sunken;
+    @apply bg-surface text-foreground hover:bg-sunken;
+  }
+  /* Civic amber: the one call to action on a page or on the dark bar. */
+  .btn-signal {
+    @apply border-signal-ink bg-signal text-signal-ink shadow-[3px_3px_0_var(--signal-ink)] hover:shadow-[4px_4px_0_var(--signal-ink)];
   }
   .btn-ghost {
-    @apply text-muted hover:bg-sunken hover:text-foreground;
+    @apply border-transparent text-muted shadow-none hover:bg-sunken hover:text-foreground hover:shadow-none;
   }
   .btn-sm {
-    @apply h-8 px-3 text-sm;
+    @apply h-9 px-3 text-[0.8125rem] shadow-[2px_2px_0_var(--shadow)];
   }
   .btn-lg {
-    @apply h-12 px-6 text-base;
+    @apply h-14 px-6 text-[1.0625rem];
   }
 
   .icon-btn {
-    @apply inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-muted transition-colors
-      hover:bg-sunken hover:text-foreground;
+    @apply inline-flex h-10 w-10 shrink-0 items-center justify-center text-muted transition-colors hover:bg-sunken
+      hover:text-foreground;
   }
 
   /* Small filter links, such as "search within one law". */
   .chip {
-    @apply inline-flex h-8 items-center gap-1.5 rounded-lg border border-line bg-surface px-3 text-sm
-      text-foreground transition-colors hover:border-accent hover:text-accent;
+    @apply inline-flex h-8 items-center gap-1.5 border-2 border-rule bg-surface px-2.5 text-sm font-semibold text-foreground
+      transition-colors hover:bg-accent-soft;
   }
 
   .badge {
-    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium whitespace-nowrap;
+    @apply inline-flex items-center gap-1 border border-current px-1.5 py-0.5 text-[0.6875rem] leading-none font-bold
+      tracking-[0.06em] whitespace-nowrap uppercase;
+    font-stretch: 75%;
   }
 
   .input {
-    @apply block h-11 w-full rounded-[4px] border-2 border-input bg-surface px-3.5 text-base text-foreground outline-none
-      transition placeholder:text-muted/80 focus:border-teal-700 focus:ring-3 focus:ring-teal-600/25
-      focus-visible:outline-none dark:focus:border-teal-400;
+    @apply block h-12 w-full border-2 border-input bg-surface px-3.5 text-base text-foreground outline-none
+      transition-[box-shadow] placeholder:text-muted/80 focus:shadow-[inset_0_0_0_2px_var(--input-border),0_0_0_4px_var(--signal)]
+      focus-visible:outline-none;
   }
   textarea.input {
     @apply h-auto;
   }
 
   .link {
-    @apply font-medium text-accent underline decoration-accent/40 underline-offset-[3px] hover:decoration-2
-      hover:decoration-accent;
+    @apply font-semibold text-accent underline decoration-2 decoration-accent/40 underline-offset-[3px]
+      hover:bg-accent-soft hover:decoration-accent;
   }
-  /* A link that reads like body text until hovered: lists of seats, acts and places. */
   .row-link {
     @apply transition-colors hover:text-accent;
   }
 
-  /* Used sparingly, above a page title or a card's heading. */
+  /* Above a page title or a card's heading: a small solid plate. */
   .eyebrow {
-    @apply text-sm font-medium text-accent;
+    @apply inline-block bg-accent-soft px-1.5 py-0.5 text-[0.8125rem] leading-snug font-bold tracking-[0.06em] text-accent
+      uppercase;
+    font-stretch: 75%;
   }
   .label {
     @apply text-sm font-semibold text-foreground;
   }
 
   .ref {
-    @apply ml-0.5 align-super text-[0.7rem] font-medium text-accent tabular-nums no-underline hover:underline;
+    @apply ml-0.5 align-super font-mono text-[0.68rem] font-semibold text-accent tabular-nums no-underline hover:underline;
   }
 
-  /* A citation in the assistant's answer: a small number linking to the section. */
+  /* A citation in the assistant's answer: a small square number linking to the section. */
   .cite {
-    @apply inline-flex h-[1.15rem] min-w-[1.15rem] items-center justify-center rounded bg-accent-soft px-1
-      text-[0.7rem] leading-none font-semibold text-accent tabular-nums no-underline hover:bg-teal-700 hover:text-white;
+    @apply inline-flex h-[1.15rem] min-w-[1.15rem] items-center justify-center border border-accent bg-accent-soft px-1
+      font-mono text-[0.68rem] leading-none font-semibold text-accent tabular-nums no-underline
+      hover:bg-accent hover:text-background;
   }
 
   .field-label {
-    @apply mb-1.5 block text-[0.9375rem] font-semibold;
+    @apply mb-1.5 block text-[1rem] font-bold;
   }
 
   .field-hint {
@@ -216,11 +290,16 @@ body {
   }
 
   .skeleton {
-    @apply animate-pulse rounded-lg bg-sunken;
+    @apply animate-pulse bg-sunken;
   }
 
   .prose-civic {
     @apply max-w-[70ch] text-base leading-relaxed text-pretty;
+  }
+
+  /* Diagonal hazard hatching, used once per page at most: the notice strip's edge. */
+  .hatch {
+    background-image: repeating-linear-gradient(-45deg, var(--signal-ink) 0 6px, transparent 6px 12px);
   }
 }
 
@@ -251,12 +330,46 @@ body {
   }
 }
 
-/* The section someone jumped to gets a soft highlight, so they can see where they landed. */
+/*
+ * One pane at a time (the seats by state, an act's sections): every pane is in the page, and the
+ * address's #fragment picks the one on show, so links like /laws/bnss-2023#s-173 still land on it.
+ * Without JavaScript this is CSS :target; with it, PaneSwitcher marks the pane (data-shown), which
+ * also covers links that change the address without a real jump. data-all shows every pane.
+ */
+@layer components {
+  [data-panes] [data-pane] {
+    display: none;
+  }
+  [data-panes]:not([data-live]) [data-pane]:target,
+  [data-panes]:not([data-live]):not(:has([data-pane]:target)) [data-pane][data-default],
+  [data-panes][data-live] [data-pane][data-shown],
+  [data-panes][data-all] [data-pane] {
+    display: block;
+  }
+  /* On narrow screens a picked pane replaces the list it was picked from. */
+  @media (width < 64rem) {
+    [data-panes]:not([data-live]):has([data-pane]:not([data-default]):target) [data-pane-list],
+    [data-panes][data-live][data-picked] [data-pane-list] {
+      display: none;
+    }
+    [data-panes]:not([data-live]):not(:has([data-pane]:not([data-default]):target)) [data-pane-back],
+    [data-panes][data-live]:not([data-picked]) [data-pane-back] {
+      display: none;
+    }
+  }
+  @media (width >= 64rem) {
+    [data-pane-back] {
+      display: none;
+    }
+  }
+}
+
+/* The section someone jumped to gets a highlight bar, so they can see where they landed. */
 .law-section {
   @apply -mx-4 px-4 sm:-mx-6 sm:px-6;
 }
 .law-section:target {
-  @apply rounded-xl border-transparent bg-accent-soft;
+  @apply border-l-[6px] border-signal bg-accent-soft;
 }
 
 @media print {
@@ -267,6 +380,11 @@ body {
     --surface: #ffffff;
     --muted: #475569;
     --border: #cbd5e1;
+    --rule: #0f172a;
     color-scheme: light;
+  }
+  .btn,
+  .card-link {
+    box-shadow: none !important;
   }
 }

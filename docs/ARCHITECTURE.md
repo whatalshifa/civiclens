@@ -99,6 +99,10 @@ Pages are React **server components** (`frontend/src/app/`). They fetch from the
   which redirects to the right page. There is deliberately no `loading.tsx`: it would wrap every page
   in a Suspense boundary, and then pages arrive hidden until JavaScript reveals them.
   `components/NavProgress.tsx` shows the "server is waking up" note after a click instead.
+- if the API can't be reached, a page shows `components/ErrorState.tsx` (from `error.tsx`): a calm
+  "waking up" message that retries on its own every 15 seconds, three times, before suggesting the
+  visitor try later. The landing page and `/services` still render, with
+  `components/WakingNotice.tsx` in place of their numbers.
 
 Sources on the PIN page work like footnotes: `SourceNotes` in `components/Sources.tsx` numbers each
 source the first time the page cites it, and the list at the bottom explains each number.
@@ -148,7 +152,7 @@ and a browser test checks that nothing typed is sent anywhere. The assistant's
 
 ## 8. Tests
 
-- `backend/tests/`: 98 tests against a real Postgres, covering the data checks, the API, search,
+- `backend/tests/`: 156 tests against a real Postgres, covering the data checks, the API, search,
   the assistant and the data pipeline (on small made-up member lists and maps).
 - `frontend/e2e/`: Playwright drives Chromium on a desktop and a phone screen through the real
   website, API and database, and `axe` checks every page for WCAG AA accessibility in light and dark

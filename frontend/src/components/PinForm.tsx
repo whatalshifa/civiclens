@@ -1,9 +1,9 @@
 "use client";
 
-import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useId, useState } from "react";
 
+import { IconSearch } from "@/components/icons";
 import { readFindQuery } from "@/lib/format";
 
 /**
@@ -53,7 +53,7 @@ export function PinForm({
   return (
     <form action="/find" method="get" onSubmit={submit} noValidate role="search">
       <div className={lg && error ? "border-l-4 border-rose-700 pl-4 dark:border-rose-400" : undefined}>
-        <label htmlFor={id} className={lg ? "block text-lg font-bold sm:text-xl" : "sr-only"}>
+        <label htmlFor={id} className={lg ? "block text-xl font-extrabold sm:text-2xl" : "sr-only"}>
           PIN code or constituency name
         </label>
         {lg && (
@@ -66,7 +66,7 @@ export function PinForm({
           <input
             id={id}
             name="q"
-            className={`input min-w-0 ${lg ? "h-14 flex-none text-xl sm:flex-1 sm:rounded-r-none" : "flex-1"} ${error ? "border-rose-700 dark:border-rose-400" : ""}`}
+            className={`input min-w-0 ${lg ? "h-14 flex-none text-xl sm:flex-1 sm:border-r-0" : "flex-1"} ${error ? "border-rose-700 dark:border-rose-400" : ""}`}
             autoComplete="off"
             inputMode="search"
             maxLength={60}
@@ -82,10 +82,10 @@ export function PinForm({
           />
           <button
             type="submit"
-            className={`btn btn-primary ${lg ? "h-14 px-7 text-lg sm:rounded-l-none" : "h-11"}`}
+            className={`btn btn-primary ${lg ? "h-14 px-7 text-xl" : "h-12"}`}
             disabled={pending}
           >
-            {lg && <Search aria-hidden className="h-5 w-5" strokeWidth={2.25} />}
+            {lg && <IconSearch className="h-5 w-5" />}
             {pending ? "Finding…" : "Find"}
           </button>
         </div>

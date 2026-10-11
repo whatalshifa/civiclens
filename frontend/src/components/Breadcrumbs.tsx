@@ -1,12 +1,13 @@
 "use client";
 
-import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-/** The parent pages of each section, after GOV.UK breadcrumbs: they name where you are, not the page itself. */
+import { IconRight } from "@/components/icons";
+
+/** The parent pages of each section: they name where you are, not the page itself. */
 const PARENTS: { match: RegExp; trail: { href: string; label: string }[] }[] = [
-  { match: /^\/(pin|find)(\/|$)/, trail: [{ href: "/", label: "Find your MP and MLA" }] },
+  { match: /^\/(pin|find)(\/|$)/, trail: [{ href: "/services#find", label: "Find your MP and MLA" }] },
   { match: /^\/seats\/.+/, trail: [{ href: "/seats", label: "Seats and MPs" }] },
   { match: /^\/laws\/.+/, trail: [{ href: "/laws", label: "Law library" }] },
   { match: /^\/accuracy$/, trail: [{ href: "/assistant", label: "Rights assistant" }] },
@@ -16,15 +17,15 @@ const PARENTS: { match: RegExp; trail: { href: string; label: string }[] }[] = [
 
 export function Breadcrumbs() {
   const path = usePathname();
-  if (path === "/") return null;
-  const trail = [{ href: "/", label: "Home" }, ...(PARENTS.find((p) => p.match.test(path))?.trail ?? [])];
+  if (path === "/services") return null;
+  const trail = [{ href: "/services", label: "Home" }, ...(PARENTS.find((p) => p.match.test(path))?.trail ?? [])];
   return (
-    <nav aria-label="Breadcrumb" className="mt-3 print:hidden">
-      <ol className="flex flex-wrap items-center gap-y-1 text-sm">
+    <nav aria-label="Breadcrumb" className="print:hidden">
+      <ol className="flex flex-wrap items-center gap-y-1 text-sm font-semibold">
         {trail.map((crumb, i) => (
           <li key={crumb.href} className="flex items-center">
-            {i > 0 && <ChevronRight aria-hidden className="mx-1.5 h-3.5 w-3.5 text-muted" />}
-            <Link href={crumb.href} className="text-foreground underline underline-offset-[3px] hover:decoration-2">
+            {i > 0 && <IconRight className="mx-2 h-2.5 w-2.5 text-accent" />}
+            <Link href={crumb.href} className="text-foreground underline decoration-2 underline-offset-[3px] hover:text-accent">
               {crumb.label}
             </Link>
           </li>

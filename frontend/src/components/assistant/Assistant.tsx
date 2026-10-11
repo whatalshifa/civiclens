@@ -1,9 +1,9 @@
 "use client";
 
-import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
+import { IconDown, IconRight } from "@/components/icons";
 import { Answer } from "@/components/assistant/Answer";
 import { Steps } from "@/components/assistant/Steps";
 import { readEvents } from "@/lib/sse";
@@ -41,14 +41,22 @@ export function runFromEvents(events: AssistantEvent[]): Run {
   return events.reduce(apply, { question: "", steps: [], running: false });
 }
 
+/**
+ * The question box and sample questions, with the answer beside them once there is one, like a
+ * reading pane: on a wide screen the answer scrolls in its own column and the controls stay put.
+ * `aside` (how answers are kept honest, and where to get help) sits beside the form until then,
+ * and under the controls after.
+ */
 export function Assistant({
   info,
   initial,
   initialSample,
+  aside,
 }: {
   info: AssistantInfo;
   initial?: AssistantEvent[];
   initialSample?: string;
+  aside?: React.ReactNode;
 }) {
   const [question, setQuestion] = useState("");
   const [run, setRun] = useState<Run | null>(initial ? runFromEvents(initial) : null);
@@ -114,69 +122,99 @@ export function Assistant({
     ask(text);
   }
 
-  return (
-    <div>
-      <form onSubmit={onSubmit} aria-label="Ask the rights assistant">
-        <label htmlFor="assistant-q" className="field-label">
-          Describe your situation or ask a question
-        </label>
-        <textarea
-          id="assistant-q"
-          className="input min-h-28 resize-y py-3 leading-relaxed"
-          placeholder="e.g. My landlord won't return my deposit. What can I do?"
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) e.currentTarget.form?.requestSubmit();
-          }}
-          maxLength={600}
-          required
-          minLength={3}
-        />
-        <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
-          <p className="text-xs text-muted">
-            {info.ai_enabled
-              ? "Don't include names, phone numbers or other personal details."
-              : "Demo mode: the AI is switched off, so only the sample questions get a full answer."}
-          </p>
-          <button type="submit" className="btn btn-primary" disabled={run?.running || question.trim().length < 3}>
-            {run?.running ? "Answering…" : "Ask"}
-          </button>
-        </div>
-      </form>
+  const samples = (className: string) => (
+    <ul className={`card divide-y divide-line overflow-hidden ${className}`}>
+      {info.samples.map((s) => (
+        <li key={s.id}>
+          <a
+            href={`/assistant?sample=${s.id}`}
+            onClick={(e) => {
+              e.preventDefault();
+              if (run?.running && activeSample === s.id) return;
+              setQuestion("");
+              ask(s.question, s.id);
+            }}
+            aria-current={activeSample === s.id ? "true" : undefined}
+            className="flex items-center justify-between gap-3 px-4 py-3 text-[0.9375rem] transition-colors hover:bg-sunken aria-[current]:bg-accent-soft aria-[current]:font-medium"
+          >
+            {s.question}
+            <IconRight className="h-4 w-4 shrink-0 text-muted" />
+          </a>
+        </li>
+      ))}
+    </ul>
+  );
 
-      <div className="mt-8">
-        <p className="label">{info.ai_enabled ? "Or try a sample question" : "Sample questions"}</p>
-        <ul className="card mt-2 divide-y divide-line overflow-hidden">
-          {info.samples.map((s) => (
-            <li key={s.id}>
-              <a
-                href={`/assistant?sample=${s.id}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (run?.running && activeSample === s.id) return;
-                  setQuestion("");
-                  ask(s.question, s.id);
-                }}
-                aria-current={activeSample === s.id ? "true" : undefined}
-                className="flex items-center justify-between gap-3 px-4 py-3 text-[0.9375rem] transition-colors hover:bg-sunken aria-[current]:bg-accent-soft aria-[current]:font-medium"
-              >
-                {s.question}
-                <ChevronRight aria-hidden className="h-4 w-4 shrink-0 text-muted" />
-              </a>
-            </li>
-          ))}
-        </ul>
+  return (
+    <div
+      className={`grid gap-8 lg:gap-x-10 ${
+        run ? "lg:grid-cols-[minmax(0,21rem)_minmax(0,1fr)]" : "lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-x-14"
+      }`}
+    >
+      <div className="min-w-0">
+        <form onSubmit={onSubmit} aria-label="Ask the rights assistant">
+          <label htmlFor="assistant-q" className="field-label">
+            Describe your situation or ask a question
+          </label>
+          <textarea
+            id="assistant-q"
+            className="input min-h-28 resize-y py-3 leading-relaxed"
+            placeholder="e.g. My landlord won't return my deposit. What can I do?"
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) e.currentTarget.form?.requestSubmit();
+            }}
+            maxLength={600}
+            required
+            minLength={3}
+          />
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+            <p className="text-xs text-muted">
+              {info.ai_enabled
+                ? "Don't include names, phone numbers or other personal details."
+                : "Demo mode: the AI is switched off, so only the sample questions get a full answer."}
+            </p>
+            <button type="submit" className="btn btn-primary" disabled={run?.running || question.trim().length < 3}>
+              {run?.running ? "Answering…" : "Ask"}
+            </button>
+          </div>
+        </form>
+
+        {/* Once an answer is on show, a phone folds the samples away so the answer comes next. */}
+        {run && (
+          <details className="group mt-5 border-2 border-rule bg-surface lg:hidden">
+            <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 px-4 py-2 text-sm font-semibold [&::-webkit-details-marker]:hidden">
+              <IconDown className="h-3.5 w-3.5 shrink-0 text-accent transition-transform group-open:rotate-180" />
+              {info.ai_enabled ? "Or try a sample question" : "Sample questions"}
+            </summary>
+            {samples("border-x-0 border-b-0")}
+          </details>
+        )}
+        <div className={`mt-6 ${run ? "hidden lg:block" : ""}`}>
+          <p className="label">{info.ai_enabled ? "Or try a sample question" : "Sample questions"}</p>
+          {samples("mt-2")}
+        </div>
       </div>
 
-      {run && <Result run={run} headingRef={resultHeading} />}
+      {run && (
+        <div className="min-w-0 lg:sticky lg:top-4 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:max-h-[calc(100dvh-2rem)] lg:self-start lg:overflow-y-auto">
+          <Result run={run} headingRef={resultHeading} />
+        </div>
+      )}
+
+      {aside && (
+        <aside className={`space-y-4 text-sm ${run ? "lg:col-start-1" : "lg:col-start-2 lg:row-start-1 lg:pt-2"}`}>
+          {aside}
+        </aside>
+      )}
     </div>
   );
 }
 
 export function Result({ run, headingRef }: { run: Run; headingRef?: React.Ref<HTMLHeadingElement> }) {
   return (
-    <section className="card mt-10 p-5 sm:p-7" aria-labelledby="result-heading" aria-busy={run.running}>
+    <section className="card p-5 sm:p-7" aria-labelledby="result-heading" aria-busy={run.running}>
       <p className="eyebrow">{run.mode === "demo" ? "Sample answer" : "Your question"}</p>
       <h2
         id="result-heading"
@@ -191,7 +229,7 @@ export function Result({ run, headingRef }: { run: Run; headingRef?: React.Ref<H
         <details className="group mt-6" open={run.running || !run.answer}>
           <summary className="cursor-pointer list-none text-sm font-semibold text-muted [&::-webkit-details-marker]:hidden">
             <span className="inline-flex items-center gap-1.5">
-              <ChevronRight aria-hidden className="h-4 w-4 transition-transform group-open:rotate-90" />
+              <IconRight className="h-4 w-4 transition-transform group-open:rotate-90" />
               {run.running
                 ? "Searching and reading the law"
                 : `How this was answered: ${run.steps.length} step${run.steps.length === 1 ? "" : "s"}`}
@@ -224,7 +262,7 @@ export function Result({ run, headingRef }: { run: Run; headingRef?: React.Ref<H
         {run.error && (
           <p
             role="alert"
-            className="mt-6 rounded-lg border border-rose-300/60 bg-rose-50 p-4 text-sm text-rose-900 dark:border-rose-500/30 dark:bg-rose-950/40 dark:text-rose-100"
+            className="mt-6 border-2 border-l-[6px] border-rose-700 bg-rose-50 p-4 text-sm text-rose-900 dark:border-rose-400 dark:bg-rose-950/40 dark:text-rose-100"
           >
             {run.error}
           </p>

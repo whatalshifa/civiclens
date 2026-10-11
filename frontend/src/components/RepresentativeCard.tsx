@@ -1,6 +1,6 @@
-import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 
+import { IconDown, IconOut } from "@/components/icons";
 import { ParliamentRecord } from "@/components/ParliamentRecord";
 import { Ref, type SourceNotes } from "@/components/Sources";
 import { HOUSE_NAMES, formatDate } from "@/lib/format";
@@ -101,10 +101,13 @@ export function RepresentativeCard({ seat, notes, yours = true }: { seat: Seat; 
           to be sure.
         </p>
       )}
-      <p className="mt-5 text-sm text-muted">{ROLE[seat.house]}</p>
-      <div className="mt-auto pt-6">
-        <h3 className="border-t border-line pt-5 text-sm font-semibold">Check their record yourself</h3>
-        <ul className="mt-2.5 space-y-1.5 text-sm">
+      <p className="mt-4 text-sm text-muted">{ROLE[seat.house]}</p>
+      <details className="group mt-auto pt-5">
+        <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 border-t border-line pt-3 [&::-webkit-details-marker]:hidden">
+          <IconDown className="h-3.5 w-3.5 shrink-0 text-accent transition-transform group-open:rotate-180" />
+          <h3 className="text-sm font-semibold">Check their record yourself</h3>
+        </summary>
+        <ul className="mt-1 space-y-1.5 text-sm">
           {LOOK_UP[seat.house].map((link) => (
             <li key={link.href}>
               <a
@@ -114,12 +117,12 @@ export function RepresentativeCard({ seat, notes, yours = true }: { seat: Seat; 
                 rel="noopener noreferrer"
               >
                 {link.label}
-                <ArrowUpRight aria-hidden className="mt-0.5 h-4 w-4 shrink-0" />
+                <IconOut className="mt-0.5 h-4 w-4 shrink-0" />
               </a>
             </li>
           ))}
         </ul>
-      </div>
+      </details>
     </article>
   );
 }

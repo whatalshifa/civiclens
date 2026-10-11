@@ -49,21 +49,36 @@ const TILES: Record<string, { code: string; col: number; row: number }> = {
 
 // Four shades of teal, light to dark. Text on each passes WCAG AA (ink on the light two, 14:1 and
 // up; white on the dark two, 5.5:1 and up).
+// In dark mode the scale runs the other way, dim to bright, so the big states still stand out
+// without the small ones glaring.
 const SHADES = [
-  { upTo: 5, className: "border-teal-300 bg-teal-50 text-[#111816]" },
-  { upTo: 15, className: "border-teal-300 bg-teal-200 text-[#111816]" },
-  { upTo: 30, className: "border-teal-700 bg-teal-700 text-white" },
-  { upTo: Infinity, className: "border-teal-900 bg-teal-900 text-white" },
+  { upTo: 5, className: "border-teal-700/40 bg-surface text-[#081513] dark:border-teal-700 dark:bg-[#0c1b19] dark:text-teal-50" },
+  { upTo: 15, className: "border-teal-700/40 bg-[#bfe6df] text-[#081513] dark:border-teal-700 dark:bg-teal-800 dark:text-white" },
+  { upTo: 30, className: "border-[#0c6359] bg-[#0c6359] text-white dark:border-teal-400 dark:bg-teal-400 dark:text-[#04201d]" },
+  { upTo: Infinity, className: "border-[#072925] bg-[#072925] text-white dark:border-teal-200 dark:bg-teal-200 dark:text-[#04201d]" },
 ];
 
-export function StateMap({ states }: { states: StateSeats[] }) {
+export function StateMap({
+  states,
+  size = "md",
+  caption = "Choose a state to see its seats.",
+  annotation,
+}: {
+  states: StateSeats[];
+  /** "lg" is the landing page's hero: bigger tiles and labels, with more room between them. */
+  size?: "md" | "lg";
+  caption?: React.ReactNode;
+  /** A note set in the empty water south-east of the peninsula (shown from small tablets up). */
+  annotation?: React.ReactNode;
+}) {
+  const lg = size === "lg";
   const placed = states.filter((s) => TILES[s.state]);
   // A state the map doesn't know yet still gets listed, below the grid, so nothing goes missing.
   const unplaced = states.filter((s) => !TILES[s.state]);
   return (
     <figure>
       <nav aria-label="Lok Sabha seats by state">
-        <ul className="grid grid-cols-9 gap-1" style={{ gridTemplateRows: "repeat(7, minmax(0, 1fr))" }}>
+        <ul className={`grid grid-cols-9 ${lg ? "gap-1 sm:gap-1.5" : "gap-1"}`} style={{ gridTemplateRows: "repeat(7, minmax(0, 1fr))" }}>
           {placed.map((s) => {
             const tile = TILES[s.state];
             const shade = SHADES.find((x) => s.seats.length <= x.upTo)!;
@@ -71,16 +86,24 @@ export function StateMap({ states }: { states: StateSeats[] }) {
               <li key={s.state} style={{ gridColumn: tile.col, gridRow: tile.row + 1 }}>
                 <Link
                   href={`/seats#${slugify(s.state)}`}
-                  aria-label={`${s.state}, ${s.seats.length} ${s.seats.length === 1 ? "seat" : "seats"}`}
                   title={s.state}
-                  className={`flex aspect-square flex-col items-center justify-center rounded-md border leading-none transition-shadow hover:ring-2 hover:ring-foreground hover:ring-offset-1 hover:ring-offset-background ${shade.className}`}
+                  className={`flex aspect-square flex-col items-center justify-center border-2 leading-none transition-[transform,box-shadow] duration-100 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[3px_3px_0_var(--rule)] ${shade.className}`}
                 >
-                  <span className="text-[0.625rem] font-semibold sm:text-[0.8125rem]">{tile.code}</span>
-                  <span className="mt-0.5 text-[0.5625rem] tabular-nums opacity-90 sm:text-[0.6875rem]">{s.seats.length}</span>
+                  <span className={`font-extrabold tracking-[0.04em] [font-stretch:75%] ${lg ? "text-[0.6875rem] sm:text-[0.9375rem]" : "text-[0.625rem] sm:text-[0.8125rem]"}`}>{tile.code}</span>
+                  <span className={`mt-0.5 font-mono tabular-nums opacity-90 ${lg ? "text-[0.625rem] sm:text-[0.8125rem]" : "text-[0.5625rem] sm:text-[0.6875rem]"}`}>{s.seats.length}</span>
+                  {/* The name a screen reader hears starts with the visible text ("UP 80"), so voice control finds it too. */}
+                  <span className="sr-only">
+                    {` ${s.seats.length === 1 ? "seat" : "seats"}, ${s.state}`}
+                  </span>
                 </Link>
               </li>
             );
           })}
+          {annotation && (
+            <li className="hidden items-center sm:flex" style={{ gridColumn: "5 / span 3", gridRow: "5 / span 2" }}>
+              {annotation}
+            </li>
+          )}
         </ul>
         {unplaced.length > 0 && (
           <ul className="mt-3 flex flex-wrap gap-2 text-sm">
@@ -95,12 +118,12 @@ export function StateMap({ states }: { states: StateSeats[] }) {
         )}
       </nav>
       <figcaption className="mt-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 text-[0.8125rem] text-muted">
-        <span>Choose a state to see its seats.</span>
+        <span>{caption}</span>
         <span className="flex items-center gap-2.5" aria-hidden>
           <span>Seats</span>
           {["1–5", "6–15", "16–30", "31+"].map((label, i) => (
             <span key={label} className="flex items-center gap-1">
-              <span className={`inline-block h-3 w-3 rounded-[3px] border ${SHADES[i].className}`} />
+              <span className={`inline-block h-3 w-3 border-2 ${SHADES[i].className}`} />
               <span className="tabular-nums">{label}</span>
             </span>
           ))}

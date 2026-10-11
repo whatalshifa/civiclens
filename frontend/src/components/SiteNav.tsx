@@ -1,13 +1,15 @@
 "use client";
 
-import { ChevronDown, ChevronUp } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
-/** Each item and the paths that count as being in its section, for the active state. */
+import { tabClass } from "@/components/Bar";
+import { IconDown, IconUp } from "@/components/icons";
+
+/** Each item and the paths that count as being in its section, for the active tab. */
 const NAV: { href: string; label: string; match: string[] }[] = [
-  { href: "/", label: "Find your MP and MLA", match: ["/pin", "/find"] },
+  { href: "/services", label: "Find your MP and MLA", match: ["/services", "/pin", "/find"] },
   { href: "/seats", label: "Seats and MPs", match: ["/seats"] },
   { href: "/laws", label: "Law library", match: ["/laws"] },
   { href: "/assistant", label: "Rights assistant", match: ["/assistant", "/accuracy"] },
@@ -16,53 +18,64 @@ const NAV: { href: string; label: string; match: string[] }[] = [
 ];
 
 function isActive(item: (typeof NAV)[number], path: string) {
-  if (item.href === "/" && path === "/") return true;
   return item.match.some((m) => path === m || path.startsWith(`${m}/`));
 }
 
 /**
- * The service navigation bar under the dark header, after GOV.UK's service navigation: one row of
- * plain links on wide screens, the current section underlined. On a phone it folds into a "Menu"
- * button that opens the same links as a list in the page flow (not an overlay), so nothing is hidden.
+ * The service's tabs, on the deep strip at the foot of the bar. The current section's tab is cut
+ * out of the bar in the page colour, so the page reads as hanging from it. On a phone the tabs fold
+ * into a "Menu" button that opens the same links as a list in the page flow (not an overlay).
  */
 export function SiteNav() {
   const path = usePathname();
   const [open, setOpen] = useState(false);
   const listId = useId();
+  const button = useRef<HTMLButtonElement>(null);
 
   // Close the phone menu after moving to another page.
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setOpen(false), [path]);
 
+  // Escape closes the phone menu and puts focus back on its button.
+  useEffect(() => {
+    if (!open) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key !== "Escape") return;
+      setOpen(false);
+      button.current?.focus();
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open]);
+
+  const current = NAV.find((item) => isActive(item, path));
+
   return (
-    <nav aria-label="Main" className="border-b border-line bg-servicebar print:hidden">
+    <nav aria-label="Main" className="bg-header-deep print:hidden">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <button
+          ref={button}
           type="button"
-          className="flex h-12 items-center gap-1 text-[0.9375rem] font-bold text-accent underline underline-offset-4 md:hidden"
+          className="caps flex h-12 w-full items-center justify-between gap-2 text-[0.9375rem] text-header-ink md:hidden"
           aria-expanded={open}
           aria-controls={listId}
           onClick={() => setOpen((o) => !o)}
         >
-          Menu
-          {open ? <ChevronUp aria-hidden className="h-4 w-4" /> : <ChevronDown aria-hidden className="h-4 w-4" />}
+          <span className="flex items-center gap-2">
+            {open ? <IconUp className="h-3.5 w-3.5 text-signal" /> : <IconDown className="h-3.5 w-3.5 text-signal" />}
+            Menu
+          </span>
+          {current && <span aria-hidden className="truncate text-header-muted">{current.label}</span>}
         </button>
-        <ul
-          id={listId}
-          className={`${open ? "block" : "hidden"} pb-2 md:flex md:flex-wrap md:gap-x-7 md:pb-0`}
-        >
+        <ul id={listId} className={`${open ? "block" : "hidden"} pb-3 md:flex md:pb-0`}>
           {NAV.map((item) => {
             const active = isActive(item, path);
             return (
-              <li key={item.href} className="md:flex">
+              <li key={item.href} className="max-md:border-t max-md:border-white/15 md:flex">
                 <Link
                   href={item.href}
                   aria-current={active ? "page" : undefined}
-                  className={`flex min-h-11 items-center border-l-4 pl-3 text-[0.9375rem] md:-mb-px md:h-[3.25rem] md:border-b-4 md:border-l-0 md:pl-0 ${
-                    active
-                      ? "border-accent font-bold text-foreground"
-                      : "border-transparent font-medium text-accent underline-offset-4 hover:underline md:hover:border-transparent"
-                  }`}
+                  className={`${tabClass(active)} max-md:h-12 max-md:border-t-0 max-md:border-l-[6px] ${active ? "max-md:border-signal" : "max-md:border-transparent"}`}
                 >
                   {item.label}
                 </Link>

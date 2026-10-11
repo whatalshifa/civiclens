@@ -48,14 +48,14 @@ export function LetterPreview({
   }
 
   return (
-    <div className="lg:sticky lg:top-20 lg:self-start">
+    <div className="lg:sticky lg:top-4 lg:self-start">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-3 print:hidden">
         <h2 className="text-lg font-semibold">{title}</h2>
         {language && onLanguage && (
           <div
             role="radiogroup"
             aria-label="Language of the letter"
-            className="flex gap-0.5 rounded-lg border border-line bg-surface p-0.5"
+            className="flex border-2 border-rule bg-surface"
           >
             {(["en", "hi"] as const).map((lang) => (
               <button
@@ -64,7 +64,7 @@ export function LetterPreview({
                 role="radio"
                 aria-checked={language === lang}
                 onClick={() => onLanguage(lang)}
-                className="btn btn-sm rounded-md text-muted aria-checked:bg-teal-800 aria-checked:text-white"
+                className="h-8 px-3 text-sm font-bold text-foreground first:border-r-2 first:border-rule aria-checked:bg-primary aria-checked:text-primary-ink"
                 lang={lang}
               >
                 {lang === "en" ? "English" : "हिंदी"}
@@ -78,7 +78,7 @@ export function LetterPreview({
         aria-label="Letter preview"
         tabIndex={0}
         lang={language === "hi" ? "hi" : "en"}
-        className="card max-h-[70vh] overflow-auto p-5 font-serif text-[0.95rem] leading-relaxed whitespace-pre-wrap sm:p-8 lg:max-h-[calc(100vh-14rem)] print:max-h-none print:overflow-visible print:border-0 print:p-0 print:shadow-none"
+        className="card max-h-[55dvh] overflow-auto p-5 text-[0.95rem] leading-relaxed whitespace-pre-wrap sm:p-8 lg:max-h-[calc(100dvh-24rem)] print:max-h-none print:overflow-visible print:border-0 print:p-0 print:shadow-none"
       >
         {letter}
       </article>

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-import { Check, Field, Fieldset } from "@/components/letters/form";
+import { Check, Field, Fieldset, Steps } from "@/components/letters/form";
 import { LetterPreview } from "@/components/letters/LetterPreview";
 import { formatDate } from "@/lib/letters";
 import { type AppealDraft, buildAppeal, EMPTY_APPEAL, type Ground, GROUNDS, missing } from "@/lib/rti-appeal";
@@ -86,7 +86,7 @@ export function AppealDrafter({ today }: { today: string }) {
     <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-10">
       <form className="space-y-8 print:hidden" onSubmit={(e) => e.preventDefault()} aria-label="First appeal details">
         {saved && (
-          <div className="flex flex-col gap-3 rounded-xl border border-teal-600/30 bg-accent-soft p-4 text-sm sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-3 border-2 border-accent bg-accent-soft p-4 text-sm sm:flex-row sm:items-center sm:justify-between">
             <p>
               You saved an application sent on <strong>{formatDate(saved.sentOn)}</strong>
               {saved.authority.trim() ? ` to ${saved.authority.trim()}` : ""}.
@@ -97,105 +97,110 @@ export function AppealDrafter({ today }: { today: string }) {
           </div>
         )}
 
-        <Fieldset legend="1. Your application">
-          {text("authority", "Public authority you applied to", {
-            hint: "The appeal goes to the officer senior to the PIO, in the same office.",
-          })}
-          <Field label="Office address" optional>
-            {(id) => (
-              <textarea
-                id={id}
-                className="input min-h-20 py-3"
-                value={draft.authorityAddress}
-                onChange={(e) => set("authorityAddress", e.target.value)}
-                maxLength={300}
-              />
-            )}
-          </Field>
-          <Field label="Which government runs the office">
-            {(id) => (
-              <select
-                id={id}
-                className="input"
-                value={draft.jurisdiction}
-                onChange={(e) => set("jurisdiction", e.target.value as Jurisdiction)}
-              >
-                {JURISDICTIONS.map((j) => (
-                  <option key={j} value={j}>
-                    {RTI_RULES[j].name}
-                  </option>
-                ))}
-              </select>
-            )}
-          </Field>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {date("applicationDate", "Date you sent the application")}
-            {text("applicationRef", "Registration or receipt number", { optional: true, max: 80 })}
-          </div>
-          <Field label="Information you asked for" hint="One item per line, as in your application.">
-            {(id) => (
-              <textarea
-                id={id}
-                className="input min-h-28 py-3 leading-relaxed"
-                value={draft.information}
-                onChange={(e) => set("information", e.target.value)}
-                maxLength={3000}
-              />
-            )}
-          </Field>
-          {date("replyDate", "Date of the reply, if one came", true, "Leave this empty if there was no reply.")}
-        </Fieldset>
+        <Steps label="Steps of the appeal">
+          <Fieldset legend="1. The office">
+            {text("authority", "Public authority you applied to", {
+              hint: "The appeal goes to the officer senior to the PIO, in the same office.",
+            })}
+            <Field label="Office address" optional>
+              {(id) => (
+                <textarea
+                  id={id}
+                  className="input min-h-20 py-3"
+                  value={draft.authorityAddress}
+                  onChange={(e) => set("authorityAddress", e.target.value)}
+                  maxLength={300}
+                />
+              )}
+            </Field>
+            <Field label="Which government runs the office">
+              {(id) => (
+                <select
+                  id={id}
+                  className="input"
+                  value={draft.jurisdiction}
+                  onChange={(e) => set("jurisdiction", e.target.value as Jurisdiction)}
+                >
+                  {JURISDICTIONS.map((j) => (
+                    <option key={j} value={j}>
+                      {RTI_RULES[j].name}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </Field>
+          </Fieldset>
 
-        <Fieldset legend="2. Why you are appealing">
-          {(Object.keys(GROUNDS) as Ground[]).map((g) => (
+          <Fieldset legend="2. Your application">
+            <div className="grid gap-4 sm:grid-cols-2">
+              {date("applicationDate", "Date you sent the application")}
+              {text("applicationRef", "Registration or receipt number", { optional: true, max: 80 })}
+            </div>
+            <Field label="Information you asked for" hint="One item per line, as in your application.">
+              {(id) => (
+                <textarea
+                  id={id}
+                  className="input min-h-28 py-3 leading-relaxed"
+                  value={draft.information}
+                  onChange={(e) => set("information", e.target.value)}
+                  maxLength={3000}
+                />
+              )}
+            </Field>
+            {date("replyDate", "Date of the reply, if one came", true, "Leave this empty if there was no reply.")}
+          </Fieldset>
+
+          <Fieldset legend="3. Why you are appealing">
+            {(Object.keys(GROUNDS) as Ground[]).map((g) => (
+              <Check
+                key={g}
+                checked={draft.grounds.includes(g)}
+                onChange={(on) => toggle(g, on)}
+                title={GROUNDS[g].title}
+                detail={GROUNDS[g].detail}
+              />
+            ))}
+            <Field label="Anything else" optional hint="One point per line, in your own words.">
+              {(id) => (
+                <textarea
+                  id={id}
+                  className="input min-h-20 py-3"
+                  value={draft.otherGrounds}
+                  onChange={(e) => set("otherGrounds", e.target.value)}
+                  maxLength={1500}
+                />
+              )}
+            </Field>
             <Check
-              key={g}
-              checked={draft.grounds.includes(g)}
-              onChange={(on) => toggle(g, on)}
-              title={GROUNDS[g].title}
-              detail={GROUNDS[g].detail}
+              checked={draft.hearing}
+              onChange={(v) => set("hearing", v)}
+              title="Ask to be heard before the decision"
+              detail="You can explain your case in person or by video."
             />
-          ))}
-          <Field label="Anything else" optional hint="One point per line, in your own words.">
-            {(id) => (
-              <textarea
-                id={id}
-                className="input min-h-20 py-3"
-                value={draft.otherGrounds}
-                onChange={(e) => set("otherGrounds", e.target.value)}
-                maxLength={1500}
-              />
-            )}
-          </Field>
-          <Check
-            checked={draft.hearing}
-            onChange={(v) => set("hearing", v)}
-            title="Ask to be heard before the decision"
-            detail="You can explain your case in person or by video."
-          />
-        </Fieldset>
+          </Fieldset>
 
-        <Fieldset legend="3. Your details">
-          {text("name", "Your name", { max: 120, auto: "name" })}
-          <Field label="Your address">
-            {(id) => (
-              <textarea
-                id={id}
-                className="input min-h-20 py-3"
-                value={draft.address}
-                onChange={(e) => set("address", e.target.value)}
-                maxLength={300}
-                autoComplete="street-address"
-              />
-            )}
-          </Field>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {text("phone", "Phone", { optional: true, max: 20, auto: "tel" })}
-            {text("email", "Email", { optional: true, max: 120, auto: "email" })}
-            {text("place", "Place", { max: 60, auto: "address-level2" })}
-            {date("date", "Date")}
-          </div>
-        </Fieldset>
+          <Fieldset legend="4. Your details">
+            {text("name", "Your name", { max: 120, auto: "name" })}
+            <Field label="Your address">
+              {(id) => (
+                <textarea
+                  id={id}
+                  className="input min-h-20 py-3"
+                  value={draft.address}
+                  onChange={(e) => set("address", e.target.value)}
+                  maxLength={300}
+                  autoComplete="street-address"
+                />
+              )}
+            </Field>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {text("phone", "Phone", { optional: true, max: 20, auto: "tel" })}
+              {text("email", "Email", { optional: true, max: 120, auto: "email" })}
+              {text("place", "Place", { max: 60, auto: "address-level2" })}
+              {date("date", "Date")}
+            </div>
+          </Fieldset>
+        </Steps>
       </form>
 
       <LetterPreview
