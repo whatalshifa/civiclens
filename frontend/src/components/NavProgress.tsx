@@ -46,8 +46,8 @@ export function NavProgress() {
   return (
     <>
       {pending && (
-        <div aria-hidden className="nav-progress fixed inset-x-0 top-0 z-50 h-0.5 overflow-hidden print:hidden">
-          <div className="h-full w-1/3 bg-teal-600" />
+        <div aria-hidden className="nav-progress fixed inset-x-0 top-0 z-50 h-1 overflow-hidden print:hidden">
+          <div className="h-full w-1/3 bg-signal" />
         </div>
       )}
       <div
@@ -56,7 +56,7 @@ export function NavProgress() {
         className="pointer-events-none fixed inset-x-0 bottom-4 z-50 flex justify-center px-4"
       >
         {pending && (
-          <p className="nav-progress-note card px-4 py-2.5 text-sm text-muted shadow-lg">
+          <p className="nav-progress-note card px-4 py-2.5 text-sm text-muted shadow-[4px_4px_0_var(--shadow)]">
             Loading. If CivicLens hasn&apos;t been used for a while, the server takes up to a minute to wake up.
           </p>
         )}

@@ -52,10 +52,10 @@ const TILES: Record<string, { code: string; col: number; row: number }> = {
 // In dark mode the scale runs the other way, dim to bright, so the big states still stand out
 // without the small ones glaring.
 const SHADES = [
-  { upTo: 5, className: "border-teal-300 bg-teal-50 text-[#111816] dark:border-teal-800 dark:bg-[#10302d] dark:text-teal-50" },
-  { upTo: 15, className: "border-teal-300 bg-teal-200 text-[#111816] dark:border-teal-700 dark:bg-teal-800 dark:text-white" },
-  { upTo: 30, className: "border-teal-700 bg-teal-700 text-white dark:border-teal-400 dark:bg-teal-400 dark:text-[#04201d]" },
-  { upTo: Infinity, className: "border-teal-900 bg-teal-900 text-white dark:border-teal-200 dark:bg-teal-200 dark:text-[#04201d]" },
+  { upTo: 5, className: "border-teal-700/40 bg-surface text-[#081513] dark:border-teal-700 dark:bg-[#0c1b19] dark:text-teal-50" },
+  { upTo: 15, className: "border-teal-700/40 bg-[#bfe6df] text-[#081513] dark:border-teal-700 dark:bg-teal-800 dark:text-white" },
+  { upTo: 30, className: "border-[#0c6359] bg-[#0c6359] text-white dark:border-teal-400 dark:bg-teal-400 dark:text-[#04201d]" },
+  { upTo: Infinity, className: "border-[#072925] bg-[#072925] text-white dark:border-teal-200 dark:bg-teal-200 dark:text-[#04201d]" },
 ];
 
 export function StateMap({
@@ -88,10 +88,10 @@ export function StateMap({
                   href={`/seats#${slugify(s.state)}`}
                   aria-label={`${s.state}, ${s.seats.length} ${s.seats.length === 1 ? "seat" : "seats"}`}
                   title={s.state}
-                  className={`flex aspect-square flex-col items-center justify-center border leading-none ${lg ? "rounded-[3px] sm:rounded-md" : "rounded-md"} transition-shadow hover:ring-2 hover:ring-foreground hover:ring-offset-1 hover:ring-offset-background ${shade.className}`}
+                  className={`flex aspect-square flex-col items-center justify-center border-2 leading-none transition-[transform,box-shadow] duration-100 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[3px_3px_0_var(--rule)] ${shade.className}`}
                 >
-                  <span className={`font-semibold ${lg ? "text-[0.6875rem] sm:text-[0.9375rem]" : "text-[0.625rem] sm:text-[0.8125rem]"}`}>{tile.code}</span>
-                  <span className={`mt-0.5 tabular-nums opacity-90 ${lg ? "text-[0.625rem] sm:text-[0.8125rem]" : "text-[0.5625rem] sm:text-[0.6875rem]"}`}>{s.seats.length}</span>
+                  <span className={`font-extrabold tracking-[0.04em] [font-stretch:75%] ${lg ? "text-[0.6875rem] sm:text-[0.9375rem]" : "text-[0.625rem] sm:text-[0.8125rem]"}`}>{tile.code}</span>
+                  <span className={`mt-0.5 font-mono tabular-nums opacity-90 ${lg ? "text-[0.625rem] sm:text-[0.8125rem]" : "text-[0.5625rem] sm:text-[0.6875rem]"}`}>{s.seats.length}</span>
                 </Link>
               </li>
             );
@@ -120,7 +120,7 @@ export function StateMap({
           <span>Seats</span>
           {["1–5", "6–15", "16–30", "31+"].map((label, i) => (
             <span key={label} className="flex items-center gap-1">
-              <span className={`inline-block h-3 w-3 rounded-[3px] border ${SHADES[i].className}`} />
+              <span className={`inline-block h-3 w-3 border-2 ${SHADES[i].className}`} />
               <span className="tabular-nums">{label}</span>
             </span>
           ))}

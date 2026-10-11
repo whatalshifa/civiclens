@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
+import { IconArrow } from "@/components/icons";
 import { LawSearchForm } from "@/components/LawSearchForm";
 import { api } from "@/lib/api";
 import type { ActBrief } from "@/lib/types";
@@ -39,7 +39,7 @@ export default async function LawsPage() {
               <p className="mt-auto inline-flex items-center gap-1 text-sm font-semibold text-accent">
                 <span className="tabular-nums">{act.section_count}</span>{" "}
                 {act.unit === "Article" ? "articles" : "sections"}
-                <ArrowRight aria-hidden className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                <IconArrow className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </p>
             </Link>
           </li>

@@ -46,7 +46,7 @@ export default async function AssistantPage({ searchParams }: PageProps<"/assist
             <li>It stays out of politics: no opinions on parties, politicians or governments.</li>
           </ul>
         </div>
-        <div className="rounded-xl bg-sunken p-5 text-muted">
+        <div className="border-l-[6px] border-rule bg-sunken p-5 text-muted">
           <p>
             <span className="font-semibold text-foreground">Not legal advice.</span> In an emergency, call{" "}
             <a href="tel:112" className="link">

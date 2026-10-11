@@ -110,7 +110,7 @@ export default async function OldToNewPage({ searchParams }: PageProps<"/laws/ol
             . {code.sections.length} common sections.
           </p>
           <div
-            className="mt-4 overflow-x-auto rounded-xl border border-line"
+            className="mt-4 overflow-x-auto border-2 border-rule"
             tabIndex={0}
             role="region"
             aria-label={`${code.short_name} to ${code.new_act_short_name} table`}

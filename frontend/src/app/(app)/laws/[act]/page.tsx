@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { IconOut } from "@/components/icons";
 import { ACT_HELP, FreeHelp } from "@/components/FreeHelp";
 import { LawSearchForm } from "@/components/LawSearchForm";
 import { ApiError, api } from "@/lib/api";
@@ -39,8 +39,8 @@ export default async function ActPage({ params }: PageProps<"/laws/[act]">) {
       <p className="mt-1.5 text-sm text-muted">{act.citation}</p>
       <p className="lede">{act.summary}</p>
       <div className="mt-5 flex flex-wrap gap-3">
-        <a href={act.source.url} className="btn btn-secondary" target="_blank" rel="noopener noreferrer">
-          Official text: {act.source.publisher.split(",")[0]} <ExternalLink aria-hidden className="h-4 w-4" />
+        <a href={act.source.url} className="btn btn-secondary h-auto min-h-11 py-2.5 leading-tight whitespace-normal" target="_blank" rel="noopener noreferrer">
+          Official text: {act.source.publisher.split(",")[0]} <IconOut className="h-4 w-4" />
         </a>
       </div>
       {act.source.note && <p className="mt-2 text-sm text-muted">{act.source.note}</p>}
@@ -107,7 +107,7 @@ function Contents({ act }: { act: Act }) {
     <ol className="mt-2 space-y-1 text-sm">
       {act.sections.map((s) => (
         <li key={s.anchor}>
-          <a href={`#${s.anchor}`} className="flex gap-2 rounded-lg px-2 py-1.5 hover:bg-sunken">
+          <a href={`#${s.anchor}`} className="flex gap-2 px-2 py-1.5 hover:bg-accent-soft">
             <span className="w-12 shrink-0 font-mono text-xs leading-5 text-muted">{s.number}</span>
             <span>{s.title}</span>
           </a>

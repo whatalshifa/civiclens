@@ -1,8 +1,9 @@
-import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
-import { Logo } from "@/components/Logo";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { BarTop, tabClass } from "@/components/Bar";
+import { IconArrow } from "@/components/icons";
+import { ThemeSwitch } from "@/components/ThemeSwitch";
+import { formatDate } from "@/lib/format";
 
 const LINKS = [
   { href: "#rights", label: "Your rights" },
@@ -11,32 +12,47 @@ const LINKS = [
   { href: "#data", label: "Open data" },
 ];
 
-/** The landing page's own header: lighter than the service frame, with one way into the service. */
-export function LandingHeader() {
+/**
+ * The landing page's bar: the same solid dark-teal bar as the service, with this page's sections as
+ * tabs (the overview tab cut out in the page colour), then the amber notice strip.
+ */
+export function LandingHeader({ updated }: { updated?: string }) {
   return (
-    <header className="sticky top-0 z-30 border-b border-line bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85 print:hidden">
-      <div className="mx-auto flex h-16 max-w-[75rem] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-        <Link href="/" aria-label="CivicLens home" className="rounded-sm text-foreground">
-          <Logo />
+    <header className="bg-header text-header-ink print:hidden">
+      <BarTop href="/" label="CivicLens home">
+        <ThemeSwitch className="max-[350px]:hidden" />
+        <Link href="/services" className="btn btn-signal h-10 px-2.5 sm:px-4">
+          Open<span className="max-sm:sr-only"> the app</span>
+          <IconArrow className="h-4 w-4" />
         </Link>
-        <nav aria-label="On this page" className="hidden lg:block">
-          <ul className="flex items-center gap-8 text-[0.9375rem] font-medium">
-            {LINKS.map((link) => (
-              <li key={link.href}>
-                <a href={link.href} className="text-foreground/80 underline-offset-[6px] hover:text-foreground hover:underline">
-                  {link.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-        <div className="flex items-center gap-1.5 sm:gap-3">
-          <ThemeToggle />
-          <Link href="/services" className="btn btn-primary h-10 px-3.5 sm:px-4">
-            Open the app
-            <ArrowRight aria-hidden className="h-4 w-4" strokeWidth={2.25} />
-          </Link>
-        </div>
+      </BarTop>
+      <nav aria-label="On this page" className="hidden bg-header-deep md:block">
+        <ul className="mx-auto flex max-w-6xl px-4 sm:px-6">
+          <li>
+            <a href="#main" aria-current="page" className={tabClass(true)}>
+              Overview
+            </a>
+          </li>
+          {LINKS.map((link) => (
+            <li key={link.href}>
+              <a href={link.href} className={tabClass(false)}>
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      <div className="relative bg-signal text-signal-ink">
+        <div aria-hidden className="hatch absolute inset-y-0 left-0 w-3 opacity-90 sm:w-5" />
+        <p className="mx-auto flex max-w-6xl flex-wrap items-baseline gap-x-3 gap-y-0.5 py-2 pr-4 pl-7 text-[0.875rem] sm:px-6 sm:pl-10 lg:pl-6">
+          <strong className="caps text-[0.8125rem]">Notice</strong>
+          <span>Independent and nonpartisan. Not a government website.</span>
+          {updated && (
+            <span className="font-mono text-[0.8125rem] max-sm:hidden">
+              Record updated <time dateTime={updated}>{formatDate(updated)}</time>
+            </span>
+          )}
+        </p>
       </div>
     </header>
   );

@@ -1,7 +1,21 @@
-import { ArrowRight, ArrowUpRight, Check, Download } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import {
+  IconArrow,
+  IconBallot,
+  IconBuilding,
+  IconCheck,
+  IconDownload,
+  IconLetter,
+  IconOut,
+  IconPeople,
+  IconPerson,
+  IconRight,
+  IconScales,
+  IconSpeech,
+  IconTable,
+} from "@/components/icons";
 import { BrowserFrame } from "@/components/landing/BrowserFrame";
 import { LandingHeader } from "@/components/landing/LandingHeader";
 import { LetterSample } from "@/components/landing/LetterSample";
@@ -129,66 +143,72 @@ export default async function Landing() {
     <>
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-lg focus:bg-surface focus:px-3 focus:py-2"
+        className="caps sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-signal focus:px-3 focus:py-2 focus:text-signal-ink"
       >
         Skip to content
       </a>
-      <LandingHeader />
+      <LandingHeader updated={updated} />
       <main id="main" className="flex-1">
-        {/* 1. The statement and the search, with every seat as the picture. */}
-        <section id="find" aria-labelledby="hero-heading" className="relative overflow-hidden">
-          <div className="mx-auto grid max-w-[75rem] items-center gap-9 px-4 pt-8 pb-16 sm:px-6 sm:pt-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16 lg:px-8 lg:pt-20 lg:pb-24">
+        {/* 1. The statement and the search, with every state as the picture. */}
+        <section id="find" aria-labelledby="hero-heading">
+          <div className="mx-auto grid max-w-6xl gap-12 px-4 pt-10 pb-16 sm:px-6 sm:pt-14 lg:grid-cols-[minmax(0,7fr)_minmax(0,6fr)] lg:gap-14 lg:pt-16 lg:pb-24">
             <div>
-              <p className="kicker text-accent">
+              <SectionLabel n={1} icon={IconBallot}>
                 The 18th Lok Sabha<span className="max-sm:hidden"> · {states.length || 36} states and union territories</span>
-              </p>
+              </SectionLabel>
               <h1
                 id="hero-heading"
-                className="mt-5 text-[2.75rem] leading-[1] font-bold tracking-[-0.04em] text-balance sm:text-[3.75rem] lg:text-[4rem]"
+                className="mt-6 text-[3.25rem] leading-[0.9] font-black tracking-[0.01em] uppercase [word-spacing:0.12em] sm:text-[4.75rem] lg:text-[5.25rem]"
+                style={{ fontStretch: "66%" }}
               >
-                {number.format(seats || 543)} seats.{" "}
+                <span className="block">{number.format(seats || 543)} seats.</span>{" "}
                 <span className="block text-accent">One of them is yours.</span>
               </h1>
-              <p className="mt-5 max-w-[34rem] text-base leading-relaxed text-muted sm:mt-6 sm:text-lg">
+              <p className="mt-6 max-w-[34rem] text-[1.0625rem] leading-relaxed text-muted sm:text-lg">
                 Find who represents you in Parliament and your state assembly, read the laws that protect you in plain
                 words, and check every fact against the official record it came from.
               </p>
-              <div className="mt-7 max-w-[36rem] border-t-2 border-foreground pt-5 sm:mt-9">
+              <div className="mt-8 max-w-[38rem] border-2 border-rule bg-surface p-5 shadow-[8px_8px_0_var(--shadow)] sm:mt-10 sm:p-6">
                 <PinForm />
+                {coverage && coverage.examples.length > 0 && (
+                  <div className="mt-5 flex flex-wrap items-center gap-x-2.5 gap-y-2 border-t-2 border-line pt-4 text-[0.9375rem]">
+                    <span className="caps mr-1 text-[0.8125rem] text-muted">Try</span>
+                    {coverage.examples.slice(0, 3).map((p, i) => (
+                      <Link key={p.pin} href={`/pin/${p.pin}`} className={`chip h-9 ${i === 2 ? "max-sm:hidden" : ""}`}>
+                        <span className="font-mono text-[0.8125rem] text-accent">{p.pin}</span>
+                        {p.area.replace(/ G\.P\.O\.$/, "").replace(/ \(.*\)$/, "")}
+                      </Link>
+                    ))}
+                  </div>
+                )}
               </div>
-              {coverage && coverage.examples.length > 0 && (
-                <div className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-2 text-[0.9375rem]">
-                  <span className="text-muted">Try</span>
-                  {coverage.examples.slice(0, 3).map((p, i) => (
-                    <Link key={p.pin} href={`/pin/${p.pin}`} className={`chip h-9 ${i === 2 ? "max-sm:hidden" : ""}`}>
-                      <span className="font-mono text-[0.8125rem] text-accent">{p.pin}</span>
-                      {p.area.replace(/ G\.P\.O\.$/, "").replace(/ \(.*\)$/, "")}
-                    </Link>
-                  ))}
-                </div>
-              )}
             </div>
 
             {states.length > 0 && (
-              <div className="lg:pl-2">
-                <div className="flex items-baseline justify-between gap-4 border-t-2 border-foreground pt-3 pb-4">
-                  <p className="kicker">Fig. 1 · Lok Sabha seats by state</p>
-                  <Link href="/seats" className="link shrink-0 text-sm">
+              <div className="lg:pt-1">
+                <div className="flex items-start justify-between gap-4 border-t-[6px] border-rule">
+                  <p className="kicker">
+                    <span className="font-mono">Fig. 1</span> Lok Sabha seats by state
+                  </p>
+                  <Link href="/seats" className="link mt-2 shrink-0 text-sm">
                     All seats
                   </Link>
                 </div>
-                <StateMap
-                  states={states}
-                  size="lg"
-                  caption="Every state gets one tile; the shade shows its seats. Choose one to open it."
-                  annotation={
-                    <p className="text-[0.8125rem] leading-snug text-muted">
-                      <strong className="font-semibold text-foreground">{biggest?.state}</strong> elects{" "}
-                      {biggest?.seats.length} MPs, the most. <strong className="font-semibold text-foreground">{single}</strong>{" "}
-                      states and territories elect one.
-                    </p>
-                  }
-                />
+                <div className="mt-5">
+                  <StateMap
+                    states={states}
+                    size="lg"
+                    caption="Every state gets one tile; the shade shows its seats. Choose one to open it."
+                    annotation={
+                      <p className="border-l-4 border-signal pl-2.5 text-[0.8125rem] leading-snug text-muted">
+                        <strong className="font-bold text-foreground">{biggest?.state}</strong> elects{" "}
+                        <span className="font-mono">{biggest?.seats.length}</span> MPs, the most.{" "}
+                        <strong className="font-mono font-bold text-foreground">{single}</strong> states and territories
+                        elect one.
+                      </p>
+                    }
+                  />
+                </div>
                 {memberList && (
                   <p className="mt-3 text-[0.8125rem] text-muted">
                     Source:{" "}
@@ -204,54 +224,56 @@ export default async function Landing() {
         </section>
 
         {/* 2. The whole house, seat by seat, and the numbers behind the site. */}
-        <section aria-labelledby="numbers-heading" className="bg-header text-white">
-          <div className="mx-auto max-w-[75rem] px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
-            <div className="grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-center lg:gap-16">
+        <section aria-labelledby="numbers-heading" className="bg-header text-header-ink">
+          <div className="mx-auto max-w-6xl px-4 pb-16 sm:px-6 sm:pb-20 lg:pb-24">
+            <SectionLabel n={2} icon={IconBuilding} tone="signal">
+              The whole house
+            </SectionLabel>
+            <div className="mt-8 grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-center lg:gap-16">
               <div>
-                <p className="kicker text-teal-200">The whole house</p>
-                <h2 id="numbers-heading" className="mt-4 text-[2rem] leading-[1.08] font-bold tracking-[-0.03em] text-balance sm:text-[2.75rem]">
+                <h2 id="numbers-heading" className={H2}>
                   Every seat, every MP, straight from the Lok Sabha&apos;s own list.
                 </h2>
-                <p className="mt-5 max-w-[30rem] text-[1.0625rem] leading-relaxed text-white/80">
+                <p className="mt-5 max-w-[30rem] text-[1.0625rem] leading-relaxed text-header-muted">
                   A weekly job checks the official member list and proposes any change as a pull request, so a person
                   reviews every update before it goes live.
                 </p>
                 {vacant.length > 0 && (
-                  <p className="mt-6 flex items-start gap-3 text-[0.9375rem] text-white/80">
-                    <span aria-hidden className="mt-1 inline-block h-3.5 w-3.5 shrink-0 rounded-[3px] border-2 border-amber-300" />
+                  <p className="mt-6 flex items-start gap-3 border-l-4 border-signal pl-3 text-[0.9375rem] text-header-muted">
                     <span>
-                      <strong className="font-semibold text-white">{vacant.length} seats are vacant</strong> until a
-                      by-election: {vacant.map((s) => s.name).join(", ")}.
+                      <strong className="font-bold text-header-ink">{vacant.length} seats are vacant</strong> until a
+                      by-election: {vacant.map((s) => s.name).join(", ")}. Drawn hollow in amber.
                     </span>
                   </p>
                 )}
               </div>
               {states.length > 0 && (
-                <figure>
+                <figure className="border-2 border-header-ink/30 p-4 sm:p-5">
                   <SeatGrid states={states} />
-                  <figcaption className="mt-3 text-[0.8125rem] text-white/70">
-                    Fig. 2 · Each square is one seat, grouped by state in alphabetical order. No party colours, ever.
+                  <figcaption className="mt-4 text-[0.8125rem] text-header-muted">
+                    <span className="font-mono">Fig. 2</span> · Each square is one seat, grouped by state in alphabetical
+                    order. No party colours, ever.
                   </figcaption>
                 </figure>
               )}
             </div>
 
-            <dl className="mt-14 grid grid-cols-2 border-t border-white/20 lg:mt-20 lg:grid-cols-5">
+            <dl className="mt-14 grid grid-cols-2 border-t-4 border-signal lg:mt-16 lg:grid-cols-5">
               {stats.map((stat, i) => (
                 <div
                   key={stat.label}
-                  className={`flex flex-col border-b border-white/20 py-5 pr-4 lg:border-b-0 lg:py-6 ${i % 2 ? "pl-4 lg:pl-6" : "lg:pl-6"} ${i > 0 ? "lg:border-l" : "lg:pl-0"} ${i % 2 ? "border-l" : ""} border-white/20`}
+                  className={`flex flex-col border-b-2 border-header-ink/20 py-5 pr-4 lg:border-b-0 lg:py-6 ${i % 2 ? "border-l-2 pl-4" : ""} ${i > 0 ? "lg:border-l-2 lg:pl-5" : "lg:border-l-0 lg:pl-0"}`}
                 >
-                  <dt className="text-sm text-white/75">{stat.label}</dt>
-                  <dd className="order-first text-[2.25rem] leading-none font-bold tracking-[-0.03em] tabular-nums sm:text-[2.75rem]">
+                  <dt className="text-sm text-header-muted">{stat.label}</dt>
+                  <dd className="order-first font-mono text-[2.125rem] leading-none font-bold tracking-[-0.04em] tabular-nums sm:text-[2.75rem]">
                     {stat.value}
                   </dd>
                 </div>
               ))}
               {updated && (
-                <div className="col-span-2 flex flex-col py-5 lg:col-span-1 lg:border-l lg:border-white/20 lg:py-6 lg:pl-6">
-                  <dt className="text-sm text-white/75">last record published</dt>
-                  <dd className="order-first text-[1.5rem] leading-[1.15] font-bold tracking-[-0.02em] sm:text-[1.75rem]">
+                <div className="col-span-2 flex flex-col py-5 lg:col-span-1 lg:border-l-2 lg:border-header-ink/20 lg:py-6 lg:pl-5">
+                  <dt className="text-sm text-header-muted">last record published</dt>
+                  <dd className="order-first font-mono text-[1.375rem] leading-[1.15] font-bold sm:text-[1.5rem]">
                     <time dateTime={updated}>{formatDate(updated)}</time>
                   </dd>
                 </div>
@@ -262,65 +284,80 @@ export default async function Landing() {
 
         {/* 3. The product: a real page, with its footnotes. */}
         {place && (
-          <section aria-labelledby="record-heading" className="border-b border-line">
-            <div className="mx-auto grid max-w-[75rem] gap-12 px-4 py-16 sm:px-6 sm:py-20 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16 lg:px-8 lg:py-28">
-              <div className="lg:pt-6">
-                <p className="kicker text-accent">Your representatives</p>
-                <h2 id="record-heading" className="mt-4 text-[2rem] leading-[1.08] font-bold tracking-[-0.03em] text-balance sm:text-[2.75rem]">
-                  One PIN code. Your MP, your MLA, and the footnotes.
-                </h2>
-                <p className="mt-5 text-[1.0625rem] leading-relaxed text-muted">
-                  This is the real page for PIN code <span className="font-mono text-[0.9375rem] text-foreground">{place.pin}</span>,{" "}
-                  {place.area}. Scroll it: every fact carries a numbered source, like a footnote, and a date.
-                </p>
-                <ol className="mt-8 space-y-5 border-t border-line pt-6">
-                  {[
-                    ["Who sits for you", "The MP for your Lok Sabha seat and the MLA for your assembly seat, with when and how each was elected."],
-                    ["What they do in office", "Questions asked, attendance and the local area fund, each beside the average for all MPs. Never a score."],
-                    ["Where it came from", "The Lok Sabha, the Election Commission and the MPLADS dashboard, linked and dated."],
-                  ].map(([title, text], i) => (
-                    <li key={title} className="grid grid-cols-[2.25rem_minmax(0,1fr)] gap-x-3">
-                      <span className="font-mono text-sm font-medium text-accent tabular-nums">[{i + 1}]</span>
-                      <div>
-                        <h3 className="font-bold">{title}</h3>
-                        <p className="mt-1 text-[0.9375rem] text-muted">{text}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ol>
-                <Link href={`/pin/${place.pin}`} className="btn btn-primary btn-lg mt-9">
-                  Open the {place.area} page
-                  <ArrowRight aria-hidden className="h-4 w-4" strokeWidth={2.25} />
-                </Link>
+          <section aria-labelledby="record-heading">
+            <div className="mx-auto max-w-6xl px-4 pt-16 pb-16 sm:px-6 sm:pt-20 sm:pb-20 lg:pt-24 lg:pb-28">
+              <div className="border-t-[6px] border-rule">
+                <SectionLabel n={3} icon={IconPerson}>
+                  Your representatives
+                </SectionLabel>
               </div>
-              <BrowserFrame path={`/pin/${place.pin}`} label={`Live preview of the page for PIN code ${place.pin}`}>
-                <div className="bg-background px-5 pt-6 pb-8 sm:px-7">
-                  <p className="eyebrow">
-                    PIN code <span className="font-mono">{place.pin}</span>
+              <div className="mt-8 grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+                <div>
+                  <h2 id="record-heading" className={H2}>
+                    One PIN code. Your MP, your MLA, and the footnotes.
+                  </h2>
+                  <p className="mt-5 text-[1.0625rem] leading-relaxed text-muted">
+                    This is the real page for PIN code{" "}
+                    <span className="font-mono text-[0.9375rem] text-foreground">{place.pin}</span>, {place.area}. Scroll
+                    it: every fact carries a numbered source, like a footnote, and a date.
                   </p>
-                  <p className="mt-1 text-[1.75rem] leading-tight font-bold tracking-[-0.015em]">{place.area}</p>
-                  <p className="mt-1 text-[0.9375rem] text-muted">
-                    {place.district} district, {place.state}
-                  </p>
-                  <div className="mt-6 grid gap-5">
-                    {place.seats.map((seat) => (
-                      <RepresentativeCard key={seat.id} seat={seat} notes={notes} />
+                  <ol className="mt-8 border-t-2 border-rule">
+                    {[
+                      ["Who sits for you", "The MP for your Lok Sabha seat and the MLA for your assembly seat, with when and how each was elected."],
+                      ["What they do in office", "Questions asked, attendance and the local area fund, each beside the average for all MPs. Never a score."],
+                      ["Where it came from", "The Lok Sabha, the Election Commission and the MPLADS dashboard, linked and dated."],
+                    ].map(([title, text], i) => (
+                      <li key={title} className="grid grid-cols-[2.75rem_minmax(0,1fr)] gap-x-4 border-b-2 border-line py-4">
+                        <span className="flex h-11 w-11 items-center justify-center bg-rule font-mono text-lg font-bold text-background tabular-nums">
+                          {i + 1}
+                        </span>
+                        <div>
+                          <h3 className="text-lg font-extrabold">{title}</h3>
+                          <p className="mt-1 text-[0.9375rem] text-muted">{text}</p>
+                        </div>
+                      </li>
                     ))}
-                  </div>
-                  <SourceList sources={notes.all} />
+                  </ol>
+                  <Link href={`/pin/${place.pin}`} className="btn btn-primary btn-lg mt-9">
+                    Open the {place.area} page
+                    <IconArrow className="h-4 w-4" />
+                  </Link>
                 </div>
-              </BrowserFrame>
+                <BrowserFrame path={`/pin/${place.pin}`} label={`Live preview of the page for PIN code ${place.pin}`}>
+                  <div className="bg-background px-5 pt-6 pb-8 sm:px-7">
+                    <p className="eyebrow">
+                      PIN code <span className="font-mono">{place.pin}</span>
+                    </p>
+                    <p className="mt-2 text-[2rem] leading-tight font-extrabold" style={{ fontStretch: "75%" }}>
+                      {place.area}
+                    </p>
+                    <p className="mt-1 text-[0.9375rem] text-muted">
+                      {place.district} district, {place.state}
+                    </p>
+                    <div className="mt-6 grid gap-5">
+                      {place.seats.map((seat) => (
+                        <RepresentativeCard key={seat.id} seat={seat} notes={notes} />
+                      ))}
+                    </div>
+                    <SourceList sources={notes.all} />
+                  </div>
+                </BrowserFrame>
+              </div>
             </div>
           </section>
         )}
 
         {/* 4. Know your rights: everyday situations, each with the section that answers it. */}
-        <section id="rights" aria-labelledby="rights-heading" className="border-b border-line">
-          <div className="mx-auto max-w-[75rem] px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-28">
-            <div className="grid gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-end lg:gap-16">
+        <section id="rights" aria-labelledby="rights-heading" className="bg-sunken">
+          <div className="mx-auto max-w-6xl px-4 pb-16 sm:px-6 sm:pb-20 lg:pb-28">
+            <div className="border-t-[6px] border-rule">
+              <SectionLabel n={4} icon={IconScales}>
+                Know your rights
+              </SectionLabel>
+            </div>
+            <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-end lg:gap-16">
               <div>
-                <p className="kicker text-accent">Know your rights</p>
-                <h2 id="rights-heading" className="mt-4 text-[2rem] leading-[1.08] font-bold tracking-[-0.03em] text-balance sm:text-[2.75rem]">
+                <h2 id="rights-heading" className={H2}>
                   The law, in the words you&apos;d use to describe the problem.
                 </h2>
                 <p className="mt-5 max-w-[38rem] text-[1.0625rem] leading-relaxed text-muted">
@@ -328,23 +365,24 @@ export default async function Landing() {
                   and linked to the official text. Describe what happened; the search finds the section.
                 </p>
               </div>
-              <div className="border-t-2 border-foreground pt-5">
+              <div className="border-2 border-rule bg-surface p-5 shadow-[6px_6px_0_var(--shadow)]">
                 <LawSearchForm label="Describe your problem" />
               </div>
             </div>
 
             {situations.length > 0 && (
-              <div className="mt-14 grid gap-px overflow-hidden border-y-2 border-foreground bg-line lg:mt-16 lg:grid-cols-2">
+              <div className="mt-14 grid gap-0.5 border-2 border-rule bg-rule lg:mt-16 lg:grid-cols-2">
                 {situations.map((s, i) => (
                   <article
                     key={s.number + s.act.id}
-                    className={`flex flex-col ${i === 0 ? "bg-accent-soft px-5 py-9 sm:px-8 sm:py-10 lg:row-span-3 lg:px-12 lg:py-14" : "bg-background py-9 sm:py-10 lg:px-10"}`}
+                    className={`flex flex-col ${i === 0 ? "bg-accent-soft px-5 py-8 sm:px-8 sm:py-10 lg:row-span-3 lg:px-10 lg:py-12" : "bg-surface px-5 py-7 sm:px-8 sm:py-8"}`}
                   >
-                    <p className="kicker text-muted">
+                    <p className="font-mono text-[0.8125rem] font-semibold text-accent">
                       {s.act.short_name} · {s.act.unit} {s.section.number}
                     </p>
                     <h3
-                      className={`mt-4 font-bold tracking-[-0.025em] text-balance ${i === 0 ? "text-[2rem] leading-[1.05] sm:text-[2.75rem] lg:text-[3.25rem]" : "text-[1.5rem] leading-[1.15] sm:text-[1.75rem]"}`}
+                      className={`mt-3 font-extrabold text-balance ${i === 0 ? "text-[2.25rem] leading-[1] sm:text-[3rem] lg:text-[3.5rem]" : "text-[1.625rem] leading-[1.05] sm:text-[1.875rem]"}`}
+                      style={{ fontStretch: "70%" }}
                     >
                       &ldquo;{s.says}&rdquo;
                       <span className="mt-1 block text-accent">{s.ask}</span>
@@ -353,35 +391,38 @@ export default async function Landing() {
                       {s.section.summary}
                     </p>
                     <p className="mt-5">
-                      <Link href={`/laws/${s.act.id}#${s.section.anchor}`} className="link">
+                      <Link href={`/laws/${s.act.id}#${s.section.anchor}`} className="link inline-flex items-center gap-1.5">
                         Read {s.act.unit.toLowerCase()} {s.section.number} of the {s.act.short_name}
-                        <ArrowRight aria-hidden className="ml-1.5 inline-block h-4 w-4 align-[-0.15em]" />
+                        <IconArrow className="h-3.5 w-3.5" />
                       </Link>
                     </p>
                     {i === 0 && arrestSample && (
-                      <figure className="mt-10 rounded-lg border border-teal-700/25 bg-background/70 p-5">
-                        <figcaption className="kicker text-muted">Asked the rights assistant · sample</figcaption>
-                        <blockquote className="mt-3 text-[1.0625rem] leading-snug font-medium">
+                      <figure className="mt-10 border-2 border-rule bg-surface p-5">
+                        <figcaption className="flex items-center gap-2 text-sm font-bold text-muted">
+                          <IconSpeech className="h-4 w-4 text-accent" />
+                          Asked the rights assistant · sample
+                        </figcaption>
+                        <blockquote className="mt-3 text-[1.125rem] leading-snug font-semibold">
                           &ldquo;{arrestSample.question}&rdquo;
                         </blockquote>
-                        <Link href={`/assistant?sample=${arrestSample.id}`} className="link mt-3 inline-block text-[0.9375rem]">
+                        <Link href={`/assistant?sample=${arrestSample.id}`} className="link mt-3 inline-flex items-center gap-1.5 text-[0.9375rem]">
                           Watch it answer, step by step
-                          <ArrowRight aria-hidden className="ml-1.5 inline-block h-4 w-4 align-[-0.15em]" />
+                          <IconArrow className="h-3.5 w-3.5" />
                         </Link>
                       </figure>
                     )}
                     {i === 0 && arrestRights.length > 0 && (
                       <div className="mt-auto pt-10">
-                        <h4 className="kicker border-b border-foreground/25 pb-2.5 text-muted">Also when you are arrested</h4>
+                        <h4 className="caps border-b-4 border-rule pb-2 text-[0.9375rem]">Also when you are arrested</h4>
                         <ul>
                           {arrestRights.map((x) => (
-                            <li key={x.anchor} className="border-b border-foreground/15">
+                            <li key={x.anchor} className="border-b-2 border-rule/20">
                               <Link
                                 href={`/laws/bnss-2023#${x.anchor}`}
                                 className="group grid grid-cols-[4.5rem_minmax(0,1fr)] gap-x-3 py-3 text-[0.9375rem]"
                               >
-                                <span className="font-mono text-[0.8125rem] leading-6 text-accent">s. {x.number}</span>
-                                <span className="font-medium group-hover:text-accent group-hover:underline">{x.title}</span>
+                                <span className="font-mono text-[0.8125rem] leading-6 font-semibold text-accent">s. {x.number}</span>
+                                <span className="font-semibold group-hover:text-accent group-hover:underline">{x.title}</span>
                               </Link>
                             </li>
                           ))}
@@ -394,8 +435,8 @@ export default async function Landing() {
             )}
 
             <div className="mt-10 grid gap-6 text-[0.9375rem] sm:grid-cols-2 lg:grid-cols-3">
-              <p>
-                <Link href="/assistant" className="link font-semibold">
+              <p className="border-l-4 border-rule pl-4">
+                <Link href="/assistant" className="link">
                   Ask the rights assistant
                 </Link>
                 <span className="text-muted">
@@ -404,14 +445,14 @@ export default async function Landing() {
                   so it answers five sample questions.
                 </span>
               </p>
-              <p>
-                <Link href="/laws/old-to-new" className="link font-semibold">
+              <p className="border-l-4 border-rule pl-4">
+                <Link href="/laws/old-to-new" className="link">
                   Old to new sections
                 </Link>
                 <span className="text-muted"> turns &ldquo;IPC 420&rdquo; into &ldquo;BNS 318(4)&rdquo;, from the official correspondence tables.</span>
               </p>
-              <p>
-                <Link href="/laws" className="link font-semibold">
+              <p className="border-l-4 border-rule pl-4">
+                <Link href="/laws" className="link">
                   The law library
                 </Link>
                 <span className="text-muted">: {acts.map((a) => a.short_name).join(", ")}.</span>
@@ -421,141 +462,157 @@ export default async function Landing() {
         </section>
 
         {/* 5. Take action: the RTI drafter's real output. */}
-        <section id="letters" aria-labelledby="letters-heading" className="border-b border-line bg-sunken">
-          <div className="mx-auto grid max-w-[75rem] gap-14 px-4 py-16 sm:px-6 sm:py-20 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:items-center lg:gap-20 lg:px-8 lg:py-28">
-            <div className="order-2 pr-3 sm:pr-5 lg:order-1">
-              <LetterSample english={buildLetter(SAMPLE_RTI)} hindi={buildLetter({ ...SAMPLE_RTI, language: "hi" })} />
+        <section id="letters" aria-labelledby="letters-heading">
+          <div className="mx-auto max-w-6xl px-4 pt-16 pb-16 sm:px-6 sm:pt-20 sm:pb-20 lg:pt-24 lg:pb-28">
+            <div className="border-t-[6px] border-rule">
+              <SectionLabel n={5} icon={IconLetter}>
+                Take action
+              </SectionLabel>
             </div>
-            <div className="order-1 lg:order-2">
-              <p className="kicker text-accent">Take action</p>
-              <h2 id="letters-heading" className="mt-4 text-[2rem] leading-[1.08] font-bold tracking-[-0.03em] text-balance sm:text-[2.75rem]">
-                Ask the government. In writing, in English or Hindi.
-              </h2>
-              <p className="mt-5 text-[1.0625rem] leading-relaxed text-muted">
-                Answer a few questions and get a letter that cites the right sections, ready to print and send. The RTI
-                drafter fills in your state&apos;s fee and portal: Rs. {RTI_RULES.central.fee} for central offices, Rs.{" "}
-                {RTI_RULES.gujarat.fee} in Gujarat. Nothing you type leaves your browser.
-              </p>
-              <ul className="mt-8 border-t border-line">
-                {[
-                  ["/rti", "RTI application", "under section 6 of the RTI Act"],
-                  ["/rti/appeal", "First appeal", "when 30 days pass with no reply"],
-                  ["/letters/consumer", "Consumer complaint", "to the seller, then the Commission"],
-                  ["/letters/police", "Police won’t register an FIR", "a complaint to the SP"],
-                ].map(([href, label, note]) => (
-                  <li key={href} className="border-b border-line">
-                    <Link href={href} className="group flex items-baseline justify-between gap-4 py-3.5">
-                      <span>
-                        <span className="font-semibold text-accent group-hover:underline">{label}</span>
-                        <span className="text-[0.9375rem] text-muted"> · {note}</span>
-                      </span>
-                      <ArrowRight aria-hidden className="h-4 w-4 shrink-0 translate-y-0.5 text-accent" />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-              <Link href={SAMPLE_RTI_LINK} className="btn btn-primary btn-lg mt-8">
-                Draft an RTI application
-                <ArrowRight aria-hidden className="h-4 w-4" strokeWidth={2.25} />
-              </Link>
+            <div className="mt-8 grid gap-14 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:items-start lg:gap-20">
+              <div className="order-2 pr-3 sm:pr-4 lg:order-1">
+                <LetterSample english={buildLetter(SAMPLE_RTI)} hindi={buildLetter({ ...SAMPLE_RTI, language: "hi" })} />
+              </div>
+              <div className="order-1 lg:order-2">
+                <h2 id="letters-heading" className={H2}>
+                  Ask the government. In writing, in English or Hindi.
+                </h2>
+                <p className="mt-5 text-[1.0625rem] leading-relaxed text-muted">
+                  Answer a few questions and get a letter that cites the right sections, ready to print and send. The RTI
+                  drafter fills in your state&apos;s fee and portal: Rs. {RTI_RULES.central.fee} for central offices, Rs.{" "}
+                  {RTI_RULES.gujarat.fee} in Gujarat. Nothing you type leaves your browser.
+                </p>
+                <ul className="mt-8 border-t-4 border-rule">
+                  {[
+                    ["/rti", "RTI application", "under section 6 of the RTI Act"],
+                    ["/rti/appeal", "First appeal", "when 30 days pass with no reply"],
+                    ["/letters/consumer", "Consumer complaint", "to the seller, then the Commission"],
+                    ["/letters/police", "Police won’t register an FIR", "a complaint to the SP"],
+                  ].map(([href, label, note]) => (
+                    <li key={href} className="border-b-2 border-line">
+                      <Link href={href} className="group flex items-center justify-between gap-4 py-3.5 hover:bg-accent-soft">
+                        <span>
+                          <span className="font-bold text-accent group-hover:underline">{label}</span>
+                          <span className="text-[0.9375rem] text-muted"> · {note}</span>
+                        </span>
+                        <IconArrow className="h-4 w-4 shrink-0 text-accent transition-transform group-hover:translate-x-1" />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+                <Link href={SAMPLE_RTI_LINK} className="btn btn-primary btn-lg mt-8">
+                  Draft an RTI application
+                  <IconArrow className="h-4 w-4" />
+                </Link>
+              </div>
             </div>
           </div>
         </section>
 
         {/* 6. How we stay neutral and sourced. */}
-        <section id="neutral" aria-labelledby="neutral-heading" className="border-b border-line">
-          <div className="mx-auto grid max-w-[75rem] gap-12 px-4 py-16 sm:px-6 sm:py-20 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16 lg:px-8 lg:py-28">
-            <div>
-              <p className="kicker text-accent">How we work</p>
-              <h2 id="neutral-heading" className="mt-4 text-[2rem] leading-[1.08] font-bold tracking-[-0.03em] text-balance sm:text-[2.75rem]">
-                No ratings. No party colours. A source for every fact.
-              </h2>
-              <p className="mt-5 text-[1.0625rem] leading-relaxed text-muted">
-                CivicLens is an independent project, not a government website, and it doesn&apos;t give legal advice.
-                These rules are checked in the data and the tests, not just promised here.
-              </p>
-              {demo && (
-                <figure className="mt-10 border-t-2 border-foreground pt-4">
-                  <figcaption className="kicker">The rights assistant, counted</figcaption>
-                  <dl className="mt-4 grid grid-cols-3 gap-4">
-                    {[
-                      [number.format(demo.answered), "sample answers"],
-                      [number.format(demo.citations), "citations checked"],
-                      [number.format(demo.dropped), "removed as unread"],
-                    ].map(([value, label]) => (
-                      <div key={label} className="flex flex-col">
-                        <dt className="text-sm text-muted">{label}</dt>
-                        <dd className="order-first text-[2rem] leading-none font-bold tracking-[-0.03em] tabular-nums">{value}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                  <p className="mt-4 text-sm text-muted">
-                    Demo mode{demo.first_run && <>, counted since {formatDate(demo.first_run)}</>}.{" "}
-                    {live && live.runs === 0 ? "Live AI answers: none yet, because the AI is switched off. " : ""}
-                    <Link href="/accuracy" className="link">
-                      See the accuracy page
-                    </Link>
-                    .
-                  </p>
-                </figure>
-              )}
+        <section id="neutral" aria-labelledby="neutral-heading" className="bg-sunken">
+          <div className="mx-auto max-w-6xl px-4 pb-16 sm:px-6 sm:pb-20 lg:pb-28">
+            <div className="border-t-[6px] border-rule">
+              <SectionLabel n={6} icon={IconPeople}>
+                How we work
+              </SectionLabel>
             </div>
-            <ul className="border-t-2 border-foreground">
-              {RULES.map(([rule, detail]) => (
-                <li key={rule} className="grid grid-cols-[1.75rem_minmax(0,1fr)] gap-x-3 border-b border-line py-5 sm:grid-cols-[1.75rem_15rem_minmax(0,1fr)] sm:gap-x-5">
-                  <Check aria-hidden className="mt-0.5 h-5 w-5 text-accent" strokeWidth={2.5} />
-                  <p className="font-bold">{rule}</p>
-                  <p className="col-start-2 mt-1 text-[0.9375rem] text-muted sm:col-start-3 sm:mt-0">{detail}</p>
-                </li>
-              ))}
-            </ul>
+            <div className="mt-8 grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+              <div>
+                <h2 id="neutral-heading" className={H2}>
+                  No ratings. No party colours. A source for every fact.
+                </h2>
+                <p className="mt-5 text-[1.0625rem] leading-relaxed text-muted">
+                  CivicLens is an independent project, not a government website, and it doesn&apos;t give legal advice.
+                  These rules are checked in the data and the tests, not just promised here.
+                </p>
+                {demo && (
+                  <figure className="mt-10 border-2 border-rule bg-surface p-5">
+                    <figcaption className="caps text-[0.9375rem]">The rights assistant, counted</figcaption>
+                    <dl className="mt-4 grid grid-cols-3 gap-4 border-t-2 border-line pt-4">
+                      {[
+                        [number.format(demo.answered), "sample answers"],
+                        [number.format(demo.citations), "citations checked"],
+                        [number.format(demo.dropped), "removed as unread"],
+                      ].map(([value, label]) => (
+                        <div key={label} className="flex flex-col">
+                          <dt className="text-sm text-muted">{label}</dt>
+                          <dd className="order-first font-mono text-[2rem] leading-none font-bold tracking-[-0.04em] tabular-nums">{value}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                    <p className="mt-4 text-sm text-muted">
+                      Demo mode{demo.first_run && <>, counted since {formatDate(demo.first_run)}</>}.{" "}
+                      {live && live.runs === 0 ? "Live AI answers: none yet, because the AI is switched off. " : ""}
+                      <Link href="/accuracy" className="link">
+                        See the accuracy page
+                      </Link>
+                      .
+                    </p>
+                  </figure>
+                )}
+              </div>
+              <ul className="border-t-4 border-rule">
+                {RULES.map(([rule, detail]) => (
+                  <li key={rule} className="grid grid-cols-[2rem_minmax(0,1fr)] gap-x-3 border-b-2 border-line py-4 sm:grid-cols-[2rem_15rem_minmax(0,1fr)] sm:gap-x-5">
+                    <span className="flex h-7 w-7 items-center justify-center bg-accent text-background">
+                      <IconCheck className="h-4 w-4" />
+                    </span>
+                    <p className="font-extrabold">{rule}</p>
+                    <p className="col-start-2 mt-1 text-[0.9375rem] text-muted sm:col-start-3 sm:mt-0">{detail}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </section>
 
         {/* 7. Open data and sources: the appendix. */}
-        <section id="data" aria-labelledby="data-heading" className="border-b border-line">
-          <div className="mx-auto max-w-[75rem] px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
-            <div className="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
-              <div>
-                <p className="kicker text-accent">Open data</p>
-                <h2 id="data-heading" className="mt-4 text-[2rem] leading-[1.08] font-bold tracking-[-0.03em] text-balance sm:text-[2.75rem]">
-                  Take the data with you.
-                </h2>
-              </div>
-              <p className="text-[1.0625rem] leading-relaxed text-muted lg:pt-10">
+        <section id="data" aria-labelledby="data-heading">
+          <div className="mx-auto max-w-6xl px-4 pt-16 pb-16 sm:px-6 sm:pt-20 sm:pb-20 lg:pt-24 lg:pb-24">
+            <div className="border-t-[6px] border-rule">
+              <SectionLabel n={7} icon={IconTable}>
+                Open data
+              </SectionLabel>
+            </div>
+            <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+              <h2 id="data-heading" className={H2}>
+                Take the data with you.
+              </h2>
+              <p className="text-[1.0625rem] leading-relaxed text-muted lg:pt-2">
                 Every table the site shows downloads as CSV, each row with the official source it came from. Next on the
                 list: every PIN code in India, and every state assembly seat and MLA.
               </p>
             </div>
 
             {datasets.length > 0 && (
-              <div className="mt-10 overflow-x-auto">
+              <div className="mt-10 overflow-x-auto border-2 border-rule">
                 <table className="w-full min-w-[20rem] text-left text-[0.9375rem]">
                   <caption className="sr-only">Datasets you can download</caption>
-                  <thead>
-                    <tr className="border-b-2 border-foreground">
-                      <th scope="col" className="kicker py-3 pr-4 font-medium">Dataset</th>
-                      <th scope="col" className="kicker py-3 pr-4 text-right font-medium">Rows</th>
-                      <th scope="col" className="kicker hidden py-3 pr-4 text-right font-medium sm:table-cell">Columns</th>
-                      <th scope="col" className="kicker py-3 text-right font-medium">
+                  <thead className="bg-rule text-background">
+                    <tr>
+                      <th scope="col" className="caps px-4 py-2.5 text-[0.8125rem]">Dataset</th>
+                      <th scope="col" className="caps px-4 py-2.5 text-right text-[0.8125rem]">Rows</th>
+                      <th scope="col" className="caps hidden px-4 py-2.5 text-right text-[0.8125rem] sm:table-cell">Columns</th>
+                      <th scope="col" className="px-4 py-2.5 text-right">
                         <span className="sr-only">Download</span>
                       </th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody className="bg-surface">
                     {datasets.map((d) => (
-                      <tr key={d.id} className="border-b border-line align-baseline">
-                        <th scope="row" className="py-4 pr-4 font-semibold">
+                      <tr key={d.id} className="border-t-2 border-line align-baseline">
+                        <th scope="row" className="px-4 py-4 font-bold">
                           {d.title}
                           <span className="mt-0.5 hidden max-w-[44rem] text-sm font-normal text-muted md:block">
                             {d.description.split(". ")[0].replace(/\.$/, "")}.
                           </span>
                         </th>
-                        <td className="py-4 pr-4 text-right font-mono tabular-nums">{number.format(d.rows)}</td>
-                        <td className="hidden py-4 pr-4 text-right font-mono tabular-nums sm:table-cell">{d.columns.length}</td>
-                        <td className="py-4 text-right">
+                        <td className="px-4 py-4 text-right font-mono tabular-nums">{number.format(d.rows)}</td>
+                        <td className="hidden px-4 py-4 text-right font-mono tabular-nums sm:table-cell">{d.columns.length}</td>
+                        <td className="px-4 py-4 text-right">
                           <a href={`/data/${d.id}.csv`} download className="link inline-flex items-center gap-1.5 whitespace-nowrap">
-                            <Download aria-hidden className="h-4 w-4" />
+                            <IconDownload className="h-4 w-4" />
                             CSV<span className="sr-only">: {d.title}</span>
                           </a>
                         </td>
@@ -568,24 +625,28 @@ export default async function Landing() {
 
             {publishers.length > 0 && (
               <div id="sources" className="mt-16">
-                <h3 className="kicker border-b-2 border-foreground pb-3">
-                  Where the data comes from · {sources.length} official records from {publishers.length} publishers
+                <h3 className="caps border-b-4 border-rule pb-2.5 text-base">
+                  Where the data comes from · <span className="font-mono">{sources.length}</span> official records from{" "}
+                  <span className="font-mono">{publishers.length}</span> publishers
                 </h3>
-                <div className="mt-2 grid gap-x-12 md:grid-cols-2">
+                <div className="mt-1 grid gap-x-12 md:grid-cols-2">
                   {publishers.map(([publisher, list]) => (
-                    <details key={publisher} className="group border-b border-line">
-                      <summary className="flex min-h-12 cursor-pointer list-none items-baseline justify-between gap-4 py-3 [&::-webkit-details-marker]:hidden">
-                        <span className="font-semibold">{publisher}</span>
+                    <details key={publisher} className="group border-b-2 border-line">
+                      <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-4 py-3 [&::-webkit-details-marker]:hidden">
+                        <span className="flex items-center gap-2.5 font-bold">
+                          <IconRight className="h-3 w-3 shrink-0 text-accent transition-transform group-open:rotate-90" />
+                          {publisher}
+                        </span>
                         <span className="shrink-0 font-mono text-sm text-muted tabular-nums">
                           {list.length} {list.length === 1 ? "record" : "records"}
                         </span>
                       </summary>
-                      <ul className="space-y-2.5 pb-4 text-sm">
+                      <ul className="space-y-2.5 pb-4 pl-5.5 text-sm">
                         {list.map((s) => (
                           <li key={s.id}>
-                            <a href={s.url} className="link inline-flex items-start gap-1" target="_blank" rel="noopener noreferrer">
+                            <a href={s.url} className="link inline-flex items-start gap-1.5" target="_blank" rel="noopener noreferrer">
                               {s.title}
-                              <ArrowUpRight aria-hidden className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                              <IconOut className="mt-1 h-3 w-3 shrink-0" />
                             </a>
                             {s.published_on && <span className="text-muted"> · published {formatDate(s.published_on)}</span>}
                           </li>
@@ -600,29 +661,59 @@ export default async function Landing() {
         </section>
 
         {/* 8. The last word: back to the search. */}
-        <section aria-labelledby="cta-heading" className="relative overflow-hidden bg-teal-800 text-white">
-          <div className="mx-auto flex max-w-[75rem] flex-col gap-8 px-4 py-16 sm:px-6 sm:py-20 lg:flex-row lg:items-end lg:justify-between lg:px-8 lg:py-24">
+        <section aria-labelledby="cta-heading" className="bg-signal text-signal-ink">
+          <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-14 sm:px-6 sm:py-16 lg:flex-row lg:items-end lg:justify-between lg:py-20">
             <div>
-              <h2 id="cta-heading" className="text-[2.25rem] leading-[1.02] font-bold tracking-[-0.04em] text-balance sm:text-[3.5rem]">
+              <h2
+                id="cta-heading"
+                className="text-[2.75rem] leading-[0.92] font-black tracking-[0.01em] uppercase [word-spacing:0.12em] sm:text-[4rem]"
+                style={{ fontStretch: "66%" }}
+              >
                 {number.format(seats || 543)} seats. Find yours.
               </h2>
-              <p className="mt-4 max-w-[34rem] text-[1.0625rem] text-white/85">
+              <p className="mt-4 max-w-[34rem] text-[1.0625rem]">
                 Free, no sign-up, and it works on any phone. Start with a PIN code or the name of your constituency.
               </p>
             </div>
-            <div className="flex flex-wrap gap-3">
-              <Link href="/services" className="btn btn-lg bg-white text-teal-900 hover:bg-teal-50">
+            <div className="flex flex-wrap gap-4">
+              <Link href="/services" className="btn btn-lg border-signal-ink bg-signal-ink text-signal shadow-[4px_4px_0_var(--shadow)]">
                 Open the app
-                <ArrowRight aria-hidden className="h-4 w-4" strokeWidth={2.25} />
+                <IconArrow className="h-4 w-4" />
               </Link>
-              <Link href="/seats" className="btn btn-lg border-white/60 text-white hover:bg-white/10">
+              <Link href="/seats" className="btn btn-lg border-signal-ink bg-transparent text-signal-ink shadow-[4px_4px_0_var(--signal-ink)]">
                 Browse every seat
               </Link>
             </div>
           </div>
         </section>
       </main>
-      <SiteFooter wide />
+      <SiteFooter />
     </>
+  );
+}
+
+const H2 = "text-[2.25rem] leading-[1] font-extrabold text-balance sm:text-[3rem] [font-stretch:70%]";
+
+/**
+ * A section's label: a solid plate hanging from the heavy rule above it, with a pictogram and a
+ * section number, like the panel at the top of a public sign.
+ */
+function SectionLabel({
+  n,
+  icon: Icon,
+  tone = "ink",
+  children,
+}: {
+  n: number;
+  icon: (p: { className?: string }) => React.ReactNode;
+  tone?: "ink" | "signal";
+  children: React.ReactNode;
+}) {
+  return (
+    <p className={`kicker py-1.5 pr-2.5 text-[0.8125rem] ${tone === "signal" ? "bg-signal text-signal-ink" : ""}`}>
+      <Icon className="h-4 w-4" />
+      <span className="font-mono font-medium tracking-normal">{String(n).padStart(2, "0")}</span>
+      <span>{children}</span>
+    </p>
   );
 }

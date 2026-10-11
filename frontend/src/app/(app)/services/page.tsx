@@ -1,6 +1,6 @@
-import { ChevronDown, Download } from "lucide-react";
 import Link from "next/link";
 
+import { IconDown, IconDownload, IconLetter, IconPerson, IconScales, IconTable } from "@/components/icons";
 import { PinForm } from "@/components/PinForm";
 import { StateMap } from "@/components/StateMap";
 import { api } from "@/lib/api";
@@ -10,13 +10,14 @@ import type { ActBrief, Coverage, Dataset, Source, StateSeats } from "@/lib/type
 const number = new Intl.NumberFormat("en-IN");
 
 type IndexLink = { href: string; label: string; note?: string };
-type IndexSection = { id: string; title: string; href: string; summary: string; links: IndexLink[] };
+type IndexSection = { id: string; title: string; href: string; summary: string; links: IndexLink[]; icon: (p: { className?: string }) => React.ReactNode };
 
 /** The directory below the search: every service on the site, as plain link lists under four headings. */
 function directory(acts: ActBrief[], seats: number, sections: number): IndexSection[] {
   return [
     {
       id: "representatives",
+      icon: IconPerson,
       title: "Your representatives",
       href: "/seats",
       summary: "Who sits for your area in the Lok Sabha and the state assembly, and their record in office.",
@@ -30,6 +31,7 @@ function directory(acts: ActBrief[], seats: number, sections: number): IndexSect
     },
     {
       id: "rights",
+      icon: IconScales,
       title: "Know your rights",
       href: "/laws",
       summary: `${sections} sections of the Constitution and seven Acts, each summarised in plain words.`,
@@ -49,6 +51,7 @@ function directory(acts: ActBrief[], seats: number, sections: number): IndexSect
     },
     {
       id: "action",
+      icon: IconLetter,
       title: "Take action",
       href: "/letters",
       summary: "Ready-to-send letters in English or Hindi. Nothing you type leaves your browser.",
@@ -62,6 +65,7 @@ function directory(acts: ActBrief[], seats: number, sections: number): IndexSect
     },
     {
       id: "data",
+      icon: IconTable,
       title: "Data and sources",
       href: "/data",
       summary: "Every table on this site, with the official record each row came from.",
@@ -124,16 +128,14 @@ export default async function Services({ searchParams }: PageProps<"/services">)
       {/* One job first: the lookup. Left-aligned in two thirds of the page, with the data panel beside it. */}
       <div className="grid gap-10 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:gap-12">
         <div id="find">
-          <p className="text-base font-medium text-muted sm:text-lg">Representatives</p>
-          <h1 className="mt-1 text-[2rem] leading-[1.1] font-bold tracking-[-0.02em] sm:text-5xl">
-            Find your MP and MLA
-          </h1>
+          <p className="eyebrow">Representatives</p>
+          <h1 className="page-title mt-3">Find your MP and MLA</h1>
           <p className="mt-4 max-w-[38rem] text-[1.0625rem] leading-relaxed sm:text-[1.1875rem]">
             See who represents your area in the Lok Sabha and in your state&apos;s Vidhan Sabha, with the official record
             behind every fact.
           </p>
 
-          <div className="mt-7">
+          <div className="mt-7 border-2 border-rule bg-surface p-5 shadow-[6px_6px_0_var(--shadow)] sm:p-6">
             <PinForm
               serverError={
                 pin === "invalid" ? "Type a six-digit PIN code, like 110001, or a name, like Baramati." : undefined
@@ -143,7 +145,7 @@ export default async function Services({ searchParams }: PageProps<"/services">)
 
           {coverage && coverage.examples.length > 0 && (
             <div className="mt-5 text-[0.9375rem]">
-              <p className="font-bold">Examples</p>
+              <p className="caps text-[0.875rem]">Examples</p>
               <ul className="mt-1.5 flex flex-wrap gap-x-5 gap-y-1.5">
                 {coverage.examples.map((p) => (
                   <li key={p.pin}>
@@ -157,7 +159,7 @@ export default async function Services({ searchParams }: PageProps<"/services">)
             </div>
           )}
 
-          <div className="mt-7 max-w-[38rem] border-l-[6px] border-line py-1 pl-4 text-[0.9375rem]">
+          <div className="note mt-7 max-w-[38rem] text-[0.9375rem]">
             Every Lok Sabha seat can be found by name. PIN codes cover a checked sample of{" "}
             <span className="tabular-nums">{coverage?.pincodes ?? 25}</span> areas so far.{" "}
             <Link href="/seats" className="link">
@@ -173,15 +175,16 @@ export default async function Services({ searchParams }: PageProps<"/services">)
       </div>
 
       {/* The directory, after a GOV.UK topic page: headings and plain link lists, no cards. */}
-      <section aria-labelledby="services-heading" className="mt-14 border-t-2 border-foreground pt-6 sm:mt-16">
-        <h2 id="services-heading" className="text-[1.5rem] font-bold tracking-[-0.01em] sm:text-[1.75rem]">
+      <section aria-labelledby="services-heading" className="mt-14 border-t-[6px] border-rule pt-5 sm:mt-16">
+        <h2 id="services-heading" className="section-title">
           Services and information
         </h2>
 
         <div className="mt-6 hidden gap-x-8 gap-y-10 md:grid md:grid-cols-2 lg:grid-cols-4">
           {index.map((section) => (
-            <div key={section.id}>
-              <h3 className="text-lg font-bold">
+            <div key={section.id} className="border-t-4 border-rule pt-4">
+              <section.icon className="h-10 w-10 text-accent" />
+              <h3 className="mt-3 text-xl font-extrabold">
                 <Link href={section.href} className="link">
                   {section.title}
                 </Link>
@@ -193,15 +196,16 @@ export default async function Services({ searchParams }: PageProps<"/services">)
         </div>
 
         {/* On a phone the same index folds into sections, so the search stays the first thing. */}
-        <div className="mt-4 border-b border-line md:hidden">
+        <div className="mt-4 border-b-2 border-rule md:hidden">
           {index.map((section) => (
-            <details key={section.id} className="group border-t border-line">
+            <details key={section.id} className="group border-t-2 border-rule">
               <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 py-3 [&::-webkit-details-marker]:hidden">
-                <span>
-                  <span className="block text-lg leading-snug font-bold text-accent">{section.title}</span>
+                <section.icon className="h-7 w-7 shrink-0 self-start text-accent" />
+                <span className="flex-1">
+                  <span className="block text-lg leading-snug font-extrabold text-accent">{section.title}</span>
                   <span className="mt-0.5 block text-sm text-muted">{section.summary}</span>
                 </span>
-                <ChevronDown aria-hidden className="h-5 w-5 shrink-0 text-accent transition-transform group-open:rotate-180" />
+                <IconDown className="h-4 w-4 shrink-0 text-accent transition-transform group-open:rotate-180" />
               </summary>
               <div className="pb-4">
                 <IndexList links={section.links} />
@@ -211,7 +215,7 @@ export default async function Services({ searchParams }: PageProps<"/services">)
         </div>
 
         <div className="mt-10 grid gap-x-8 gap-y-3 md:grid-cols-[minmax(0,1fr)_minmax(0,3fr)] md:items-baseline">
-          <h3 className="text-base font-bold">Common questions about your rights</h3>
+          <h3 className="caps text-base">Common questions about your rights</h3>
           <ul className="flex flex-col gap-y-2 text-[0.9375rem] md:flex-row md:flex-wrap md:gap-x-6">
             {QUESTIONS.map((q) => (
               <li key={q}>
@@ -229,13 +233,13 @@ export default async function Services({ searchParams }: PageProps<"/services">)
       </div>
 
       {states.length > 0 && (
-        <section aria-labelledby="states-heading" className="mt-14 border-t-2 border-foreground pt-6 sm:mt-16">
+        <section aria-labelledby="states-heading" className="mt-14 border-t-[6px] border-rule pt-5 sm:mt-16">
           <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
-            <h2 id="states-heading" className="text-[1.5rem] font-bold tracking-[-0.01em] sm:text-[1.75rem]">
+            <h2 id="states-heading" className="section-title">
               Lok Sabha seats by state
             </h2>
             <a href="/data/representatives.csv" download className="link inline-flex items-center gap-1.5 text-sm">
-              <Download aria-hidden className="h-4 w-4" />
+              <IconDownload className="h-4 w-4" />
               Download as CSV
             </a>
           </div>
@@ -258,10 +262,10 @@ export default async function Services({ searchParams }: PageProps<"/services">)
             <div className="hidden lg:block">
               <StateMap states={states} />
             </div>
-            <details className="group border-y border-line md:hidden">
+            <details className="group border-y-2 border-rule md:hidden">
               <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between font-bold text-accent [&::-webkit-details-marker]:hidden">
                 Show all {states.length} states
-                <ChevronDown aria-hidden className="h-5 w-5 transition-transform group-open:rotate-180" />
+                <IconDown className="h-4 w-4 transition-transform group-open:rotate-180" />
               </summary>
               <StateTable states={byName} />
             </details>
@@ -309,27 +313,28 @@ function DataPanel({
   memberList?: Source;
 }) {
   return (
-    <aside aria-labelledby={id} className="self-start border-t-4 border-accent bg-sunken px-5 pt-4 pb-5">
-      <h2 id={id} className="text-lg font-bold">
+    <aside aria-labelledby={id} className="self-start border-2 border-rule bg-surface">
+      <h2 id={id} className="caps flex items-center gap-2 bg-rule px-4 py-2.5 text-[0.9375rem] text-background">
+        <IconTable className="h-4 w-4" />
         About this data
       </h2>
-      <dl className="mt-3 text-[0.9375rem]">
+      <dl className="px-4 pt-1 text-[0.9375rem]">
         {rows.map(([label, value]) => (
-          <div key={label} className="flex items-baseline justify-between gap-4 border-b border-line py-2">
+          <div key={label} className="flex items-baseline justify-between gap-4 border-b-2 border-line py-2">
             <dt className="text-muted">{label}</dt>
-            <dd className="font-bold tabular-nums">{value}</dd>
+            <dd className="font-mono text-base font-bold tabular-nums">{value}</dd>
           </div>
         ))}
         {updated && (
           <div className="flex items-baseline justify-between gap-4 py-2">
             <dt className="text-muted">Last updated</dt>
-            <dd className="font-bold">
+            <dd className="font-mono text-sm font-bold">
               <time dateTime={updated}>{formatDate(updated)}</time>
             </dd>
           </div>
         )}
       </dl>
-      <p className="mt-3 text-sm text-muted">
+      <p className="mt-2 px-4 text-sm text-muted">
         Seats and members from the{" "}
         {memberList ? (
           <a href={memberList.url} className="link" target="_blank" rel="noopener noreferrer">
@@ -340,7 +345,7 @@ function DataPanel({
         )}
         , checked weekly. Results from the Election Commission; laws from India Code.
       </p>
-      <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+      <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 border-t-2 border-rule bg-sunken px-4 py-2.5 text-sm">
         <Link href="/data" className="link">
           Open data
         </Link>
@@ -365,7 +370,7 @@ function StateTable({ states }: { states: StateSeats[] }) {
       </thead>
       <tbody className="block sm:columns-2 sm:gap-x-8 xl:columns-3">
         {states.map((s) => (
-          <tr key={s.state} className="flex break-inside-avoid items-baseline gap-2 border-b border-line py-1.5">
+          <tr key={s.state} className="flex break-inside-avoid items-baseline gap-2 border-b-2 border-line py-1.5">
             <th
               scope="row"
               className="flex min-w-0 flex-1 items-baseline gap-2 text-left font-normal after:mb-1 after:min-w-4 after:flex-1 after:self-end after:border-b after:border-dotted after:border-muted/50 after:content-['']"
@@ -374,7 +379,7 @@ function StateTable({ states }: { states: StateSeats[] }) {
                 {s.state}
               </Link>
             </th>
-            <td className="font-bold tabular-nums">{s.seats.length}</td>
+            <td className="font-mono font-bold tabular-nums">{s.seats.length}</td>
           </tr>
         ))}
       </tbody>

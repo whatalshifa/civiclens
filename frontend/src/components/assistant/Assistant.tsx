@@ -1,9 +1,9 @@
 "use client";
 
-import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
+import { IconRight } from "@/components/icons";
 import { Answer } from "@/components/assistant/Answer";
 import { Steps } from "@/components/assistant/Steps";
 import { readEvents } from "@/lib/sse";
@@ -162,7 +162,7 @@ export function Assistant({
                 className="flex items-center justify-between gap-3 px-4 py-3 text-[0.9375rem] transition-colors hover:bg-sunken aria-[current]:bg-accent-soft aria-[current]:font-medium"
               >
                 {s.question}
-                <ChevronRight aria-hidden className="h-4 w-4 shrink-0 text-muted" />
+                <IconRight className="h-4 w-4 shrink-0 text-muted" />
               </a>
             </li>
           ))}
@@ -191,7 +191,7 @@ export function Result({ run, headingRef }: { run: Run; headingRef?: React.Ref<H
         <details className="group mt-6" open={run.running || !run.answer}>
           <summary className="cursor-pointer list-none text-sm font-semibold text-muted [&::-webkit-details-marker]:hidden">
             <span className="inline-flex items-center gap-1.5">
-              <ChevronRight aria-hidden className="h-4 w-4 transition-transform group-open:rotate-90" />
+              <IconRight className="h-4 w-4 transition-transform group-open:rotate-90" />
               {run.running
                 ? "Searching and reading the law"
                 : `How this was answered: ${run.steps.length} step${run.steps.length === 1 ? "" : "s"}`}
@@ -224,7 +224,7 @@ export function Result({ run, headingRef }: { run: Run; headingRef?: React.Ref<H
         {run.error && (
           <p
             role="alert"
-            className="mt-6 rounded-lg border border-rose-300/60 bg-rose-50 p-4 text-sm text-rose-900 dark:border-rose-500/30 dark:bg-rose-950/40 dark:text-rose-100"
+            className="mt-6 border-2 border-l-[6px] border-rose-700 bg-rose-50 p-4 text-sm text-rose-900 dark:border-rose-400 dark:bg-rose-950/40 dark:text-rose-100"
           >
             {run.error}
           </p>

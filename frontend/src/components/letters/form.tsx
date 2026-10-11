@@ -58,7 +58,7 @@ export function Choice<T extends string>({
         {options.map((option) => (
           <label
             key={option.value}
-            className="flex min-h-11 cursor-pointer items-center gap-3 rounded-lg border border-line bg-surface px-3 py-2 text-[0.9375rem] has-[:checked]:border-teal-600/60 has-[:checked]:bg-accent-soft"
+            className="flex min-h-11 cursor-pointer items-center gap-3 border-2 border-line bg-surface px-3 py-2 text-[0.9375rem] has-[:checked]:border-rule has-[:checked]:bg-accent-soft has-[:checked]:font-semibold"
           >
             <input
               type="radio"
@@ -66,7 +66,7 @@ export function Choice<T extends string>({
               value={option.value}
               checked={value === option.value}
               onChange={() => onChange(option.value)}
-              className="h-4 w-4 accent-teal-700"
+              className="h-4 w-4 accent-[var(--accent)]"
             />
             {option.label}
           </label>
@@ -88,10 +88,10 @@ export function Check({
   detail?: string;
 }) {
   return (
-    <label className="flex items-start gap-3 rounded-lg border border-line bg-surface p-3 text-[0.9375rem]">
+    <label className="flex items-start gap-3 border-2 border-line bg-surface p-3 text-[0.9375rem]">
       <input
         type="checkbox"
-        className="mt-0.5 h-4 w-4 accent-teal-700"
+        className="mt-0.5 h-4 w-4 accent-[var(--accent)]"
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
       />

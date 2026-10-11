@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { Download } from "lucide-react";
 import Link from "next/link";
 
+import { IconDownload } from "@/components/icons";
 import { api } from "@/lib/api";
 import type { Dataset } from "@/lib/types";
 
@@ -40,7 +40,7 @@ export default async function DataPage() {
               aria-label={`Download CSV: ${d.title}`}
               download
             >
-              <Download aria-hidden className="h-4 w-4" />
+              <IconDownload className="h-4 w-4" />
               Download CSV
             </a>
           </li>

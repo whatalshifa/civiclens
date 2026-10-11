@@ -24,7 +24,7 @@ export function SeatGrid({ states, columns = 27 }: { states: StateSeats[]; colum
         const x = (i % columns) * (cell + gap);
         const y = Math.floor(i / columns) * (cell + gap);
         return seat.member ? (
-          <rect key={seat.id} x={x} y={y} width={cell} height={cell} rx={2} className={seat.tint ? "fill-teal-300" : "fill-teal-500"}>
+          <rect key={seat.id} x={x} y={y} width={cell} height={cell} className={seat.tint ? "fill-[#9fe3d8]" : "fill-[#3fb6a6]"}>
             <title>{`${seat.name}, ${seat.state}`}</title>
           </rect>
         ) : (
@@ -34,8 +34,7 @@ export function SeatGrid({ states, columns = 27 }: { states: StateSeats[]; colum
             y={y + 1}
             width={cell - 2}
             height={cell - 2}
-            rx={2}
-            className="fill-none stroke-amber-300"
+            className="fill-none stroke-signal"
             strokeWidth={2}
           >
             <title>{`${seat.name}, ${seat.state}: vacant`}</title>

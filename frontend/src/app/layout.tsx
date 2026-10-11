@@ -1,12 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { JetBrains_Mono, Public_Sans } from "next/font/google";
+import { Archivo, JetBrains_Mono } from "next/font/google";
 
-import { THEME_SCRIPT } from "@/components/ThemeToggle";
+import { THEME_SCRIPT } from "@/components/ThemeSwitch";
 import "./globals.css";
 
-// Public Sans was drawn for government websites, so it suits civic text: it sets everything,
-// headings included. JetBrains Mono is only for PIN codes and section numbers.
-const sans = Public_Sans({ subsets: ["latin"], variable: "--font-public-sans" });
+// Archivo, with its width axis: condensed and heavy for headings, tabs and buttons, like public
+// signage; normal width for reading. JetBrains Mono is only for numbers and data.
+const sans = Archivo({ subsets: ["latin"], axes: ["wdth"], variable: "--font-archivo" });
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains-mono" });
 
 // Pages are rendered per request from the API's data (cached for an hour in lib/api.ts), never at
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#0b3a36" },
-    { media: "(prefers-color-scheme: dark)", color: "#08221f" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b2a27" },
   ],
 };
 
@@ -46,7 +46,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
       <body className="flex min-h-full flex-col">
-{children}
+        {children}
       </body>
     </html>
   );

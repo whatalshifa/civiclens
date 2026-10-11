@@ -1,6 +1,6 @@
-import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 
+import { IconOut } from "@/components/icons";
 import { ParliamentRecord } from "@/components/ParliamentRecord";
 import { Ref, type SourceNotes } from "@/components/Sources";
 import { HOUSE_NAMES, formatDate } from "@/lib/format";
@@ -114,7 +114,7 @@ export function RepresentativeCard({ seat, notes, yours = true }: { seat: Seat; 
                 rel="noopener noreferrer"
               >
                 {link.label}
-                <ArrowUpRight aria-hidden className="mt-0.5 h-4 w-4 shrink-0" />
+                <IconOut className="mt-0.5 h-4 w-4 shrink-0" />
               </a>
             </li>
           ))}

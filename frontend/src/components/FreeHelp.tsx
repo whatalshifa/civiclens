@@ -56,8 +56,8 @@ export const ACT_HELP: Record<string, HelpTopic[]> = {
 export function FreeHelp({ topics = [], className = "" }: { topics?: HelpTopic[]; className?: string }) {
   const shown: Line[] = [LINES.legal, LINES.aid, ...topics.filter((t) => t !== "legal").map((t) => LINES[t])];
   return (
-    <section aria-labelledby="free-help" className={`rounded-xl bg-sunken p-6 sm:p-8 print:hidden ${className}`}>
-      <h2 id="free-help" className="text-lg font-semibold">
+    <section aria-labelledby="free-help" className={`border-t-[6px] border-rule bg-sunken p-6 sm:p-8 print:hidden ${className}`}>
+      <h2 id="free-help" className="section-title">
         Get free help from a real person
       </h2>
       <p className="mt-1 text-[0.9375rem] text-muted">
@@ -65,13 +65,13 @@ export function FreeHelp({ topics = [], className = "" }: { topics?: HelpTopic[]
       </p>
       <ul className="mt-5 grid gap-x-8 gap-y-5 sm:grid-cols-2">
         {shown.map((line) => (
-          <li key={line.name} className="text-sm">
-            <p className="font-semibold">
+          <li key={line.name} className="border-l-4 border-accent pl-3 text-sm">
+            <p className="font-bold">
               {line.name}
               {line.number && (
                 <>
                   {": "}
-                  <a href={`tel:${line.number}`} className="link tabular-nums">
+                  <a href={`tel:${line.number}`} className="link font-mono text-base tabular-nums">
                     {line.number}
                   </a>
                 </>

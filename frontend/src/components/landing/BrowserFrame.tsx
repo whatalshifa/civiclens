@@ -1,6 +1,6 @@
-import { Lock } from "lucide-react";
+import { IconLock } from "@/components/icons";
 
-/** A plain browser window around a live render of a real page, with its address in the bar. */
+/** A live render of a real page, framed like a screen on a public display: a dark title strip with its address. */
 export function BrowserFrame({
   path,
   label,
@@ -13,15 +13,11 @@ export function BrowserFrame({
   className?: string;
 }) {
   return (
-    <div className={`overflow-hidden rounded-xl border border-line bg-surface shadow-[0_1px_0_rgba(0,0,0,0.04),0_24px_60px_-24px_rgba(4,47,46,0.35)] ${className}`}>
-      <div className="flex h-10 items-center gap-3 border-b border-line bg-sunken px-3.5">
-        <span className="flex gap-1.5" aria-hidden>
-          <span className="h-2.5 w-2.5 rounded-full bg-line" />
-          <span className="h-2.5 w-2.5 rounded-full bg-line" />
-          <span className="h-2.5 w-2.5 rounded-full bg-line" />
-        </span>
-        <span className="flex min-w-0 flex-1 items-center gap-1.5 rounded-md bg-surface px-2.5 py-1 font-mono text-[0.75rem] text-muted">
-          <Lock aria-hidden className="h-3 w-3 shrink-0" />
+    <div className={`border-2 border-rule bg-surface shadow-[8px_8px_0_var(--shadow)] ${className}`}>
+      <div className="flex h-10 items-center gap-3 bg-rule px-3 text-background">
+        <span className="caps shrink-0 bg-signal px-1.5 py-0.5 text-[0.6875rem] leading-tight text-signal-ink">Live page</span>
+        <span className="flex min-w-0 flex-1 items-center gap-1.5 font-mono text-[0.75rem]">
+          <IconLock className="h-3 w-3 shrink-0" />
           <span className="truncate">civiclens{path}</span>
         </span>
       </div>

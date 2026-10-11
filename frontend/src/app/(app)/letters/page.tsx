@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
+import { IconArrow } from "@/components/icons";
 import { FreeHelp } from "@/components/FreeHelp";
 
 export const metadata: Metadata = {
@@ -53,7 +53,7 @@ export default function LettersPage() {
             <Link href={l.href} className="card-link group flex h-full flex-col p-6">
               <h2 className="inline-flex items-center gap-1.5 text-lg font-semibold group-hover:text-accent">
                 {l.title}
-                <ArrowRight aria-hidden className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                <IconArrow className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </h2>
               <p className="mt-2 mb-4 text-[0.9375rem] text-muted">{l.what}</p>
               <p className="mt-auto text-[0.8125rem] text-muted">{l.law}</p>
