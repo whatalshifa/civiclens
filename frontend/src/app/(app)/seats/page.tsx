@@ -7,12 +7,14 @@ import { StateMap } from "@/components/StateMap";
 import { api } from "@/lib/api";
 import { slugify } from "@/lib/format";
 import type { StateSeats } from "@/lib/types";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Every Lok Sabha seat and its MP",
   description:
     "All 543 Lok Sabha constituencies by state, with the sitting member of each, from the Lok Sabha's own list.",
-};
+  path: "/seats",
+});
 
 /** A state with more seats than this shows the first ones, and the rest one tap away. */
 const FIRST = 15;

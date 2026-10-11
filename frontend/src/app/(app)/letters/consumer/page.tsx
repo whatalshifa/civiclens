@@ -5,12 +5,14 @@ import { IconDown } from "@/components/icons";
 import { FreeHelp } from "@/components/FreeHelp";
 import { ConsumerDrafter } from "@/components/letters/ConsumerDrafter";
 import { todayInIndia } from "@/lib/letters";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Draft a consumer complaint",
   description:
     "A faulty product or a bad service? Draft a written complaint to the seller under the Consumer Protection Act, 2019, in English or Hindi. Free, and nothing you type leaves your browser.",
-};
+  path: "/letters/consumer",
+});
 
 const CPA = "/laws/consumer-protection-act-2019";
 

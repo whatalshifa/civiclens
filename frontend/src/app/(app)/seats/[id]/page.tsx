@@ -9,6 +9,7 @@ import { Ref, SourceList, SourceNotes } from "@/components/Sources";
 import { ApiError, api } from "@/lib/api";
 import { HOUSE_NAMES } from "@/lib/format";
 import type { SeatPage } from "@/lib/types";
+import { pageMetadata } from "@/lib/metadata";
 
 async function getSeat(id: string): Promise<SeatPage | null> {
   try {
@@ -22,15 +23,16 @@ async function getSeat(id: string): Promise<SeatPage | null> {
 export async function generateMetadata({ params }: PageProps<"/seats/[id]">): Promise<Metadata> {
   const { id } = await params;
   const page = await getSeat(id).catch(() => null);
-  if (!page) return { title: "Seat not found" };
+  if (!page) return { title: "Page not found" };
   const { seat } = page;
   const house = HOUSE_NAMES[seat.house];
-  return {
+  return pageMetadata({
     title: `${seat.name}, ${seat.state}: ${house.body} seat`,
     description: seat.representative
       ? `${seat.representative.name} is the ${house.short} for ${seat.name}, ${seat.state}. With official sources.`
       : `${seat.name}, ${seat.state}, in the ${house.body}. With official sources.`,
-  };
+    path: `/seats/${seat.id}`,
+  });
 }
 
 export default async function SeatPageView({ params }: PageProps<"/seats/[id]">) {

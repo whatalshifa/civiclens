@@ -5,12 +5,14 @@ import { IconDown } from "@/components/icons";
 import { FreeHelp } from "@/components/FreeHelp";
 import { PoliceDrafter } from "@/components/letters/PoliceDrafter";
 import { todayInIndia } from "@/lib/letters";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Police won't register your FIR? Draft a complaint to the SP",
   description:
     "If a police station refuses to register an FIR, draft a written complaint to the Superintendent of Police under Section 173(4) of the BNSS, in English or Hindi. Free, and nothing you type leaves your browser.",
-};
+  path: "/letters/police",
+});
 
 const BNSS = "/laws/bnss-2023";
 

@@ -7,13 +7,18 @@ import { OldToNewMatch } from "@/components/OldToNew";
 import { IconDown } from "@/components/icons";
 import { api } from "@/lib/api";
 import type { ActBrief, OldLookup, SearchHit, SearchResults } from "@/lib/types";
+import { pageMetadata } from "@/lib/metadata";
 
 /** The closest matches are listed; the rest wait one tap away. */
 const FIRST = 8;
 
 export async function generateMetadata({ searchParams }: PageProps<"/laws/search">): Promise<Metadata> {
   const { q } = await searchParams;
-  return { title: typeof q === "string" && q ? `“${q}” in the law library` : "Search the laws", robots: "noindex" };
+  return pageMetadata({
+    title: typeof q === "string" && q ? `“${q}” in the law library` : "Search the laws",
+    description: "Describe your problem in everyday words to find the sections of the law that apply.",
+    noindex: true,
+  });
 }
 
 export default async function SearchPage({ searchParams }: PageProps<"/laws/search">) {
@@ -34,6 +39,12 @@ export default async function SearchPage({ searchParams }: PageProps<"/laws/sear
   return (
     <div className="grid gap-x-12 gap-y-10 lg:grid-cols-[minmax(0,48rem)_16rem]">
       <div className="min-w-0">
+        {!q && (
+          <>
+            <h1 className="page-title">Search the law in plain words</h1>
+            <p className="lede mb-6">Describe what happened, the way you would tell a friend.</p>
+          </>
+        )}
         <LawSearchForm defaultValue={q} act={act} autoFocus={!q} />
 
         {act && (

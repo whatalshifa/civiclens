@@ -6,12 +6,14 @@ import { SourceList } from "@/components/Sources";
 import { Tabs } from "@/components/Tabs";
 import { api } from "@/lib/api";
 import type { OldCode, OldLookup } from "@/lib/types";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Old IPC, CrPC or Evidence Act section? Find the new one",
   description:
     "IPC 420 is now BNS 318(4), CrPC 154 is BNSS 173. Type an old section number to find its new number under the BNS, BNSS or BSA, from the official correspondence tables.",
-};
+  path: "/laws/old-to-new",
+});
 
 const EXAMPLES = ["IPC 420", "IPC 498A", "CrPC 154", "CrPC 438", "Evidence Act 65B", "BNS 318"];
 

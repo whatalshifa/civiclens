@@ -5,12 +5,14 @@ import { IconDown } from "@/components/icons";
 import { FreeHelp } from "@/components/FreeHelp";
 import { AppealDrafter } from "@/components/rti/AppealDrafter";
 import { todayInIndia } from "@/lib/letters";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Draft an RTI first appeal",
   description:
     "No reply to your RTI application, or an unfair one? Draft a first appeal under Section 19(1) of the RTI Act, 2005, in English or Hindi. Free, and nothing you type leaves your browser.",
-};
+  path: "/rti/appeal",
+});
 
 const RTI = "/laws/rti-act-2005";
 

@@ -4,12 +4,14 @@ import Link from "next/link";
 import { IconDown, IconDownload } from "@/components/icons";
 import { api } from "@/lib/api";
 import type { Dataset } from "@/lib/types";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Open data",
   description:
     "Download everything CivicLens shows as CSV: seats and representatives, MPs' records, the law library, the old-to-new section table and PIN codes. Each row names its official source.",
-};
+  path: "/data",
+});
 
 const number = new Intl.NumberFormat("en-IN");
 

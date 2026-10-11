@@ -5,12 +5,14 @@ import { IconDown } from "@/components/icons";
 import { FreeHelp } from "@/components/FreeHelp";
 import { RtiDrafter } from "@/components/rti/RtiDrafter";
 import { todayInIndia } from "@/lib/letters";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Draft an RTI application",
   description:
     "Fill in a short form and get a ready-to-send application under the Right to Information Act, 2005, in English or Hindi. Free, and nothing you type leaves your browser.",
-};
+  path: "/rti",
+});
 
 const RTI = "/laws/rti-act-2005";
 

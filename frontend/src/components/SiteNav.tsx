@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
 import { tabClass } from "@/components/Bar";
 import { IconDown, IconUp } from "@/components/icons";
@@ -30,10 +30,23 @@ export function SiteNav() {
   const path = usePathname();
   const [open, setOpen] = useState(false);
   const listId = useId();
+  const button = useRef<HTMLButtonElement>(null);
 
   // Close the phone menu after moving to another page.
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setOpen(false), [path]);
+
+  // Escape closes the phone menu and puts focus back on its button.
+  useEffect(() => {
+    if (!open) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key !== "Escape") return;
+      setOpen(false);
+      button.current?.focus();
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open]);
 
   const current = NAV.find((item) => isActive(item, path));
 
@@ -41,6 +54,7 @@ export function SiteNav() {
     <nav aria-label="Main" className="bg-header-deep print:hidden">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <button
+          ref={button}
           type="button"
           className="caps flex h-12 w-full items-center justify-between gap-2 text-[0.9375rem] text-header-ink md:hidden"
           aria-expanded={open}

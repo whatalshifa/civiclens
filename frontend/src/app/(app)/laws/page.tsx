@@ -5,11 +5,14 @@ import { IconArrow } from "@/components/icons";
 import { LawSearchForm } from "@/components/LawSearchForm";
 import { api } from "@/lib/api";
 import type { ActBrief } from "@/lib/types";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Laws in plain language",
-  description: "The Constitution, the RTI Act, consumer rights, arrest rights and more, explained simply with links to the official text.",
-};
+  description:
+    "The Constitution, the RTI Act, consumer rights, arrest rights and more, explained simply with links to the official text.",
+  path: "/laws",
+});
 
 export default async function LawsPage() {
   const acts = await api<ActBrief[]>("/api/laws");

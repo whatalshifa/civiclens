@@ -4,12 +4,14 @@ import Link from "next/link";
 import { api } from "@/lib/api";
 import { formatDate } from "@/lib/format";
 import type { Accuracy, ModeStats } from "@/lib/types";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "How accurate is the assistant?",
   description:
     "Every citation the CivicLens rights assistant writes is checked against the sections it actually read. This page counts how many were kept and how many were removed.",
-};
+  path: "/accuracy",
+});
 
 const number = new Intl.NumberFormat("en-IN");
 

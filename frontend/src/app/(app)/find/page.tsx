@@ -6,11 +6,14 @@ import { PinForm } from "@/components/PinForm";
 import { api } from "@/lib/api";
 import { HOUSE_NAMES, readFindQuery } from "@/lib/format";
 import type { PlaceSearch } from "@/lib/types";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Find your representatives",
-  description: "Search by PIN code, or by the name of a constituency, district or area.",
-};
+  description:
+    "Search by PIN code, or by the name of a constituency, district or area.",
+  noindex: true,
+});
 
 /**
  * Where the find box lands. A PIN code goes on to its page (this is also how the form works without

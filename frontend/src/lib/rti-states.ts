@@ -74,7 +74,3 @@ export const RTI_RULES: Record<Jurisdiction, RtiRule> = {
 };
 
 export const JURISDICTIONS = Object.keys(RTI_RULES) as Jurisdiction[];
-
-export function isJurisdiction(value: unknown): value is Jurisdiction {
-  return typeof value === "string" && value in RTI_RULES;
-}

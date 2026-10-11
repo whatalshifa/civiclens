@@ -9,6 +9,7 @@ import { Ref, SourceList, SourceNotes } from "@/components/Sources";
 import { ApiError, api } from "@/lib/api";
 import { cleanPin } from "@/lib/format";
 import type { Coverage, Place } from "@/lib/types";
+import { pageMetadata } from "@/lib/metadata";
 
 async function getPlace(pin: string): Promise<Place | null> {
   try {
@@ -21,13 +22,15 @@ async function getPlace(pin: string): Promise<Place | null> {
 
 export async function generateMetadata({ params }: PageProps<"/pin/[pin]">): Promise<Metadata> {
   const { pin } = await params;
-  const place = cleanPin(pin) ? await getPlace(pin).catch(() => null) : null;
-  return {
-    title: place ? `Representatives for ${place.area}, ${place.state} (${place.pin})` : `PIN code ${pin}`,
-    description: place
-      ? `Who represents PIN code ${place.pin} in the Lok Sabha and the state assembly, with official sources.`
-      : undefined,
-  };
+  const clean = cleanPin(decodeURIComponent(pin));
+  if (!clean) return { title: "Page not found" };
+  const place = await getPlace(clean).catch(() => null);
+  if (!place) return pageMetadata({ title: `PIN code ${clean}`, path: `/pin/${clean}`, noindex: true });
+  return pageMetadata({
+    title: `Representatives for ${place.area}, ${place.state} (${place.pin})`,
+    description: `Who represents PIN code ${place.pin} in the Lok Sabha and the state assembly, with official sources.`,
+    path: `/pin/${place.pin}`,
+  });
 }
 
 export default async function PinPage({ params }: PageProps<"/pin/[pin]">) {

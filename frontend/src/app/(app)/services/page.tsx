@@ -1,12 +1,22 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import { IconDown, IconDownload, IconLetter, IconPerson, IconScales, IconTable } from "@/components/icons";
 import { PinForm } from "@/components/PinForm";
 import { StateMap } from "@/components/StateMap";
 import { Tabs } from "@/components/Tabs";
+import { WakingNotice } from "@/components/WakingNotice";
 import { api } from "@/lib/api";
 import { formatDate, slugify } from "@/lib/format";
+import { pageMetadata } from "@/lib/metadata";
 import type { ActBrief, Coverage, Dataset, Source, StateSeats } from "@/lib/types";
+
+export const metadata: Metadata = pageMetadata({
+  title: "Find your MP and MLA",
+  description:
+    "Search by constituency, district or PIN code to see who represents you in the Lok Sabha and your state assembly, then explore the law library, letters and open data.",
+  path: "/services",
+});
 
 const number = new Intl.NumberFormat("en-IN");
 
@@ -35,7 +45,7 @@ function directory(acts: ActBrief[], seats: number, sections: number): IndexSect
       icon: IconScales,
       title: "Know your rights",
       href: "/laws",
-      summary: `${sections} sections of the Constitution and seven Acts, each summarised in plain words.`,
+      summary: `${sections ? `${sections} sections of the` : "The"} Constitution and seven Acts, each summarised in plain words.`,
       links: [
         { href: "/laws", label: "Law library A to Z", note: `${acts.length || 8} laws` },
         { href: "/laws#law-q", label: "Search the law in plain words" },
@@ -100,6 +110,9 @@ export default async function Services({ searchParams }: PageProps<"/services">)
     api<Dataset[]>("/api/data").catch(() => []),
   ]);
   const seats = states.reduce((n, s) => n + s.seats.length, 0);
+  // Every call failed: the free-tier API is asleep. Show dashes, not zeros, and say why.
+  const asleep = states.length === 0 && acts.length === 0 && !coverage;
+  const count = (n: number) => (asleep ? "–" : number.format(n));
   const vacant = states.reduce((n, s) => n + s.seats.filter((x) => !x.member).length, 0);
   const sections = acts.reduce((n, a) => n + a.section_count, 0);
   const memberList = sources.find((s) => s.id === "lok-sabha-sitting-members");
@@ -113,12 +126,12 @@ export default async function Services({ searchParams }: PageProps<"/services">)
     <DataPanel
       id={id}
       rows={[
-        ["Lok Sabha seats", number.format(seats)],
-        ["Sitting MPs listed", number.format(seats - vacant)],
-        ["Vacant seats", number.format(vacant)],
-        ["PIN codes checked", number.format(coverage?.pincodes ?? 0)],
-        ["Law sections explained", number.format(sections)],
-        ["Datasets to download", number.format(datasets.length)],
+        ["Lok Sabha seats", count(seats)],
+        ["Sitting MPs listed", count(seats - vacant)],
+        ["Vacant seats", count(vacant)],
+        ["PIN codes checked", count(coverage?.pincodes ?? 0)],
+        ["Law sections explained", count(sections)],
+        ["Datasets to download", count(datasets.length)],
       ]}
       updated={updated}
       memberList={memberList}
@@ -145,6 +158,8 @@ export default async function Services({ searchParams }: PageProps<"/services">)
               }
             />
           </div>
+
+          {asleep && <WakingNotice href="/services" className="mt-5" />}
 
           {coverage && coverage.examples.length > 0 && (
             <div className="mt-5 text-[0.9375rem]">

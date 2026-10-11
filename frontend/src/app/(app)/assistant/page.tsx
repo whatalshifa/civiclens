@@ -5,12 +5,14 @@ import { IconDown } from "@/components/icons";
 import { Assistant } from "@/components/assistant/Assistant";
 import { api, replaySample } from "@/lib/api";
 import type { AssistantEvent, AssistantInfo } from "@/lib/types";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Rights assistant",
   description:
     "Ask about your rights in plain words. The assistant searches the Constitution and key Acts, reads the sections that apply, and cites every one.",
-};
+  path: "/assistant",
+});
 
 export default async function AssistantPage({ searchParams }: PageProps<"/assistant">) {
   const { sample } = await searchParams;

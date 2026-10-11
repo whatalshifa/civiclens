@@ -1,6 +1,10 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import { AppChrome } from "@/components/AppChrome";
+
+// Next adds "noindex" to this page itself.
+export const metadata: Metadata = { title: "Page not found" };
 
 export default function NotFound() {
   return (
@@ -9,7 +13,7 @@ export default function NotFound() {
         <p className="eyebrow">Not found</p>
         <h1 className="mt-2 page-title">We couldn&apos;t find that page</h1>
         <p className="mt-3 text-muted">The link may be wrong, or the page may have moved.</p>
-        <div className="mt-6 flex justify-center gap-3">
+        <div className="mt-6 flex flex-wrap justify-center gap-3">
           <Link href="/services" className="btn btn-primary">
             Find your representatives
           </Link>

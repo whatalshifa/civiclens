@@ -6,7 +6,7 @@ test("the landing page leads with the statement, the search and the seat map", a
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(/543 seats\.\s*One of them is yours\./);
   await expect(page.getByLabel("PIN code or constituency")).toBeVisible();
   await expect(page.getByRole("navigation", { name: "Lok Sabha seats by state" })).toBeAttached();
-  await expect(page.getByRole("link", { name: "Uttar Pradesh, 80 seats" })).toBeAttached();
+  await expect(page.getByRole("link", { name: "UP 80 seats, Uttar Pradesh" })).toBeAttached();
 });
 
 test("the search works right in the hero", async ({ page }) => {

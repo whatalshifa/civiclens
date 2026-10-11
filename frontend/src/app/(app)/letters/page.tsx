@@ -3,12 +3,14 @@ import Link from "next/link";
 
 import { IconArrow } from "@/components/icons";
 import { FreeHelp } from "@/components/FreeHelp";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Letters you can send",
   description:
     "Free drafts of an RTI application, an RTI first appeal, a consumer complaint and a police complaint, in English or Hindi. Nothing you type leaves your browser.",
-};
+  path: "/letters",
+});
 
 const LETTERS = [
   {

@@ -86,12 +86,15 @@ export function StateMap({
               <li key={s.state} style={{ gridColumn: tile.col, gridRow: tile.row + 1 }}>
                 <Link
                   href={`/seats#${slugify(s.state)}`}
-                  aria-label={`${s.state}, ${s.seats.length} ${s.seats.length === 1 ? "seat" : "seats"}`}
                   title={s.state}
                   className={`flex aspect-square flex-col items-center justify-center border-2 leading-none transition-[transform,box-shadow] duration-100 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[3px_3px_0_var(--rule)] ${shade.className}`}
                 >
                   <span className={`font-extrabold tracking-[0.04em] [font-stretch:75%] ${lg ? "text-[0.6875rem] sm:text-[0.9375rem]" : "text-[0.625rem] sm:text-[0.8125rem]"}`}>{tile.code}</span>
                   <span className={`mt-0.5 font-mono tabular-nums opacity-90 ${lg ? "text-[0.625rem] sm:text-[0.8125rem]" : "text-[0.5625rem] sm:text-[0.6875rem]"}`}>{s.seats.length}</span>
+                  {/* The name a screen reader hears starts with the visible text ("UP 80"), so voice control finds it too. */}
+                  <span className="sr-only">
+                    {` ${s.seats.length === 1 ? "seat" : "seats"}, ${s.state}`}
+                  </span>
                 </Link>
               </li>
             );

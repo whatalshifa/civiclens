@@ -8,6 +8,7 @@ import { LawSearchForm } from "@/components/LawSearchForm";
 import { PaneSwitcher } from "@/components/PaneSwitcher";
 import { ApiError, api } from "@/lib/api";
 import type { Act } from "@/lib/types";
+import { pageMetadata } from "@/lib/metadata";
 
 async function getAct(id: string): Promise<Act | null> {
   try {
@@ -20,7 +21,9 @@ async function getAct(id: string): Promise<Act | null> {
 
 export async function generateMetadata({ params }: PageProps<"/laws/[act]">): Promise<Metadata> {
   const act = await getAct((await params).act).catch(() => null);
-  return act ? { title: `${act.short_name} in plain language`, description: act.summary } : {};
+  return act
+    ? pageMetadata({ title: `${act.short_name} in plain language`, description: act.summary, path: `/laws/${act.id}` })
+    : { title: "Page not found" };
 }
 
 /**

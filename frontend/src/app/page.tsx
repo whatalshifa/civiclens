@@ -27,15 +27,21 @@ import { RepresentativeCard } from "@/components/RepresentativeCard";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SourceList, SourceNotes } from "@/components/Sources";
 import { StateMap } from "@/components/StateMap";
+import { WakingNotice } from "@/components/WakingNotice";
 import { api } from "@/lib/api";
 import { formatDate } from "@/lib/format";
 import { buildLetter, EMPTY_DRAFT, type RtiDraft } from "@/lib/rti";
 import { RTI_RULES } from "@/lib/rti-states";
 import type { Accuracy, Act, AssistantInfo, ActBrief, Coverage, Dataset, Place, Source, StateSeats } from "@/lib/types";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
-  title: { absolute: "CivicLens: know who represents you and what your rights are" },
-};
+export const metadata: Metadata = pageMetadata({
+  title: "CivicLens: know who represents you and what your rights are",
+  description:
+    "Find your MP and MLA by constituency or PIN code, and read the laws that protect you in plain language. Strictly nonpartisan: every fact links to its official source.",
+  path: "/",
+  absolute: true,
+});
 
 const number = new Intl.NumberFormat("en-IN");
 
@@ -83,6 +89,8 @@ export default async function Landing() {
   ]);
 
   const seats = states.reduce((n, s) => n + s.seats.length, 0);
+  // Every call failed: the free-tier API is asleep. The page still renders, without empty numbers.
+  const asleep = states.length === 0 && acts.length === 0 && !coverage;
   const vacant = states.flatMap((s) => s.seats.filter((x) => !x.member));
   const sections = acts.reduce((n, a) => n + a.section_count, 0);
   const memberList = sources.find((s) => s.id === "lok-sabha-sitting-members");
@@ -170,6 +178,7 @@ export default async function Landing() {
               </p>
               <div className="mt-8 max-w-[38rem] border-2 border-rule bg-surface p-5 shadow-[8px_8px_0_var(--shadow)] sm:mt-10 sm:p-6">
                 <PinForm />
+                {asleep && <WakingNotice href="/" className="mt-5" />}
                 {coverage && coverage.examples.length > 0 && (
                   <div className="mt-5 flex flex-wrap items-center gap-x-2.5 gap-y-2 border-t-2 border-line pt-4 text-[0.9375rem]">
                     <span className="caps mr-1 text-[0.8125rem] text-muted">Try</span>
@@ -258,27 +267,29 @@ export default async function Landing() {
               )}
             </div>
 
-            <dl className="mt-14 grid grid-cols-2 border-t-4 border-signal lg:mt-16 lg:grid-cols-5">
-              {stats.map((stat, i) => (
-                <div
-                  key={stat.label}
-                  className={`flex flex-col border-b-2 border-header-ink/20 py-5 pr-4 lg:border-b-0 lg:py-6 ${i % 2 ? "border-l-2 pl-4" : ""} ${i > 0 ? "lg:border-l-2 lg:pl-5" : "lg:border-l-0 lg:pl-0"}`}
-                >
-                  <dt className="text-sm text-header-muted">{stat.label}</dt>
-                  <dd className="order-first font-mono text-[2.125rem] leading-none font-bold tracking-[-0.04em] tabular-nums sm:text-[2.75rem]">
-                    {stat.value}
-                  </dd>
-                </div>
-              ))}
-              {updated && (
-                <div className="col-span-2 flex flex-col py-5 lg:col-span-1 lg:border-l-2 lg:border-header-ink/20 lg:py-6 lg:pl-5">
-                  <dt className="text-sm text-header-muted">last record published</dt>
-                  <dd className="order-first font-mono text-[1.375rem] leading-[1.15] font-bold sm:text-[1.5rem]">
-                    <time dateTime={updated}>{formatDate(updated)}</time>
-                  </dd>
-                </div>
-              )}
-            </dl>
+            {!asleep && (
+              <dl className="mt-14 grid grid-cols-2 border-t-4 border-signal lg:mt-16 lg:grid-cols-5">
+                {stats.map((stat, i) => (
+                  <div
+                    key={stat.label}
+                    className={`flex flex-col border-b-2 border-header-ink/20 py-5 pr-4 lg:border-b-0 lg:py-6 ${i % 2 ? "border-l-2 pl-4" : ""} ${i > 0 ? "lg:border-l-2 lg:pl-5" : "lg:border-l-0 lg:pl-0"}`}
+                  >
+                    <dt className="text-sm text-header-muted">{stat.label}</dt>
+                    <dd className="order-first font-mono text-[2.125rem] leading-none font-bold tracking-[-0.04em] tabular-nums sm:text-[2.75rem]">
+                      {stat.value}
+                    </dd>
+                  </div>
+                ))}
+                {updated && (
+                  <div className="col-span-2 flex flex-col py-5 lg:col-span-1 lg:border-l-2 lg:border-header-ink/20 lg:py-6 lg:pl-5">
+                    <dt className="text-sm text-header-muted">last record published</dt>
+                    <dd className="order-first font-mono text-[1.375rem] leading-[1.15] font-bold sm:text-[1.5rem]">
+                      <time dateTime={updated}>{formatDate(updated)}</time>
+                    </dd>
+                  </div>
+                )}
+              </dl>
+            )}
           </div>
         </section>
 
@@ -361,7 +372,7 @@ export default async function Landing() {
                   The law, in the words you&apos;d use to describe the problem.
                 </h2>
                 <p className="mt-5 max-w-[38rem] text-[1.0625rem] leading-relaxed text-muted">
-                  {number.format(sections)} sections of the Constitution and seven Acts, each summarised in plain words
+                  {sections > 0 ? `${number.format(sections)} sections of the` : "The"} Constitution and seven Acts, each summarised in plain words
                   and linked to the official text. Describe what happened; the search finds the section.
                 </p>
               </div>
@@ -455,7 +466,9 @@ export default async function Landing() {
                 <Link href="/laws" className="link">
                   The law library
                 </Link>
-                <span className="text-muted">: {acts.map((a) => a.short_name).join(", ")}.</span>
+                <span className="text-muted">
+                  {acts.length > 0 ? `: ${acts.map((a) => a.short_name).join(", ")}.` : ": the Constitution and seven Acts."}
+                </span>
               </p>
             </div>
           </div>

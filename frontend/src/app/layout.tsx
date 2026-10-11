@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Archivo, JetBrains_Mono } from "next/font/google";
 
 import { THEME_SCRIPT } from "@/components/ThemeSwitch";
+import { OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/metadata";
 import "./globals.css";
 
 // Archivo, with its width axis: condensed and heavy for headings, tabs and buttons, like public
@@ -13,23 +14,28 @@ const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains-mo
 // build time, so building doesn't need the API to be running.
 export const dynamic = "force-dynamic";
 
+const TITLE = "CivicLens: know who represents you and what your rights are";
 const DESCRIPTION =
-  "Enter your PIN code to see your MP and MLA, and read the laws that protect you in plain language. Strictly nonpartisan: every fact links to its official source.";
+  "Find your MP and MLA by constituency or PIN code, and read the laws that protect you in plain language. Strictly nonpartisan: every fact links to its official source.";
 
+// The defaults for every page. Pages set their own title, description and canonical address
+// through pageMetadata() (lib/metadata.ts); the canonical isn't set here, or every page would
+// inherit the home page's.
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.SITE_URL ?? "http://localhost:3000"),
-  title: {
-    default: "CivicLens: know who represents you and what your rights are",
-    template: "%s · CivicLens",
-  },
+  metadataBase: new URL(SITE_URL),
+  title: { default: TITLE, template: "%s · CivicLens" },
   description: DESCRIPTION,
-  applicationName: "CivicLens",
+  applicationName: SITE_NAME,
   openGraph: {
     type: "website",
-    siteName: "CivicLens",
-    title: "CivicLens: know who represents you and what your rights are",
+    siteName: SITE_NAME,
+    locale: "en_IN",
+    title: TITLE,
     description: DESCRIPTION,
+    images: [OG_IMAGE],
   },
+  twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION, images: [OG_IMAGE.url] },
+  formatDetection: { telephone: false },
 };
 
 export const viewport: Viewport = {

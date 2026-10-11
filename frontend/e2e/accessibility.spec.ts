@@ -23,6 +23,8 @@ const PAGES = [
   "/letters",
   "/letters/consumer",
   "/letters/police",
+  "/laws/search",
+  "/no-such-page",
 ];
 
 for (const theme of ["light", "dark"] as const) {
