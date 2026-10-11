@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { IconDown } from "@/components/icons";
 import { FreeHelp } from "@/components/FreeHelp";
 import { AppealDrafter } from "@/components/rti/AppealDrafter";
 import { todayInIndia } from "@/lib/letters";
@@ -35,59 +36,70 @@ export default function AppealPage() {
         </p>
       </div>
 
-      <div className="mt-12">
+      <div className="mt-8">
         <AppealDrafter today={todayInIndia()} />
       </div>
 
-      <section className="mt-20 grid gap-10 border-t border-line pt-12 lg:grid-cols-2 lg:gap-16 print:hidden" aria-label="Sending it and what happens next">
-        <div>
-          <h2 className="text-xl font-semibold">Sending it</h2>
-          <ul className="mt-4 list-disc space-y-3 pl-5 text-[0.9375rem] text-muted marker:text-muted">
-            <li>
-              The PIO&apos;s reply should name the First Appellate Authority. If it doesn&apos;t, address it as above
-              and send it to the same office.
-            </li>
-            <li>
-              Most governments charge no fee for a first appeal. Central government appeals can be filed online at{" "}
-              <a href="https://rtionline.gov.in" className="link" target="_blank" rel="noopener noreferrer">
-                rtionline.gov.in
-              </a>
-              .
-            </li>
-            <li>Send it by registered post or hand it in for a dated receipt, and keep a copy.</li>
-            <li>
-              Late? Explain why in &quot;Anything else&quot;: the authority can accept a late appeal for a good reason.
-            </li>
-          </ul>
-        </div>
-        <div>
-          <h2 className="text-xl font-semibold">What happens next</h2>
-          <ol className="mt-4 space-y-4 text-sm">
-            <li className="grid grid-cols-[8.5rem_1fr] gap-3">
-              <span className="font-semibold">Within 30 days</span>
-              <span className="text-muted">
-                The appeal should be decided, or within 45 days with reasons written down.{" "}
-                <Link href={`${RTI}#s-19`} className="link whitespace-nowrap">
-                  Section 19
-                </Link>
-              </span>
-            </li>
-            <li className="grid grid-cols-[8.5rem_1fr] gap-3">
-              <span className="font-semibold">Within 90 days of that</span>
-              <span className="text-muted">
-                If you are still not satisfied, file a second appeal with the Central or State Information Commission.
-                It can also fine an officer who refused without reason{" "}
-                <Link href={`${RTI}#s-20`} className="link whitespace-nowrap">
-                  (Section 20)
-                </Link>
+      {/* How to send it and what comes next: folded, one tap away, under the form that matters first. */}
+      <section className="mt-8 grid items-start gap-3 lg:grid-cols-2 lg:gap-6 print:hidden" aria-label="Sending it and what happens next">
+        <details className="group border-2 border-rule bg-surface">
+          <summary className="flex min-h-12 cursor-pointer list-none items-center gap-2.5 px-4 py-2.5 hover:bg-sunken [&::-webkit-details-marker]:hidden">
+            <IconDown className="h-3.5 w-3.5 shrink-0 text-accent transition-transform group-open:rotate-180" />
+            <h2 className="text-lg font-semibold">Sending it</h2>
+          </summary>
+          <div className="px-4 pb-5">
+            <ul className="mt-1 list-disc space-y-3 pl-5 text-[0.9375rem] text-muted marker:text-muted">
+              <li>
+                The PIO&apos;s reply should name the First Appellate Authority. If it doesn&apos;t, address it as above
+                and send it to the same office.
+              </li>
+              <li>
+                Most governments charge no fee for a first appeal. Central government appeals can be filed online at{" "}
+                <a href="https://rtionline.gov.in" className="link" target="_blank" rel="noopener noreferrer">
+                  rtionline.gov.in
+                </a>
                 .
-              </span>
-            </li>
-          </ol>
-        </div>
+              </li>
+              <li>Send it by registered post or hand it in for a dated receipt, and keep a copy.</li>
+              <li>
+                Late? Explain why in &quot;Anything else&quot;: the authority can accept a late appeal for a good reason.
+              </li>
+            </ul>
+          </div>
+        </details>
+        <details className="group border-2 border-rule bg-surface">
+          <summary className="flex min-h-12 cursor-pointer list-none items-center gap-2.5 px-4 py-2.5 hover:bg-sunken [&::-webkit-details-marker]:hidden">
+            <IconDown className="h-3.5 w-3.5 shrink-0 text-accent transition-transform group-open:rotate-180" />
+            <h2 className="text-lg font-semibold">What happens next</h2>
+          </summary>
+          <div className="px-4 pb-5">
+            <ol className="mt-1 space-y-4 text-sm">
+              <li className="grid grid-cols-[8.5rem_1fr] gap-3">
+                <span className="font-semibold">Within 30 days</span>
+                <span className="text-muted">
+                  The appeal should be decided, or within 45 days with reasons written down.{" "}
+                  <Link href={`${RTI}#s-19`} className="link whitespace-nowrap">
+                    Section 19
+                  </Link>
+                </span>
+              </li>
+              <li className="grid grid-cols-[8.5rem_1fr] gap-3">
+                <span className="font-semibold">Within 90 days of that</span>
+                <span className="text-muted">
+                  If you are still not satisfied, file a second appeal with the Central or State Information Commission.
+                  It can also fine an officer who refused without reason{" "}
+                  <Link href={`${RTI}#s-20`} className="link whitespace-nowrap">
+                    (Section 20)
+                  </Link>
+                  .
+                </span>
+              </li>
+            </ol>
+          </div>
+        </details>
       </section>
 
-      <FreeHelp className="mt-12" />
+      <FreeHelp className="mt-8" />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { IconDown } from "@/components/icons";
 import { FreeHelp } from "@/components/FreeHelp";
 import { PoliceDrafter } from "@/components/letters/PoliceDrafter";
 import { todayInIndia } from "@/lib/letters";
@@ -41,29 +42,40 @@ export default function PolicePage() {
         </p>
       </div>
 
-      <div className="mt-12">
+      <div className="mt-8">
         <PoliceDrafter today={todayInIndia()} />
       </div>
 
-      <section className="mt-20 grid gap-10 border-t border-line pt-12 lg:grid-cols-2 lg:gap-16 print:hidden" aria-label="Sending it and what happens next">
-        <div>
-          <h2 className="text-xl font-semibold">Sending it</h2>
-          <ul className="mt-4 list-disc space-y-3 pl-5 text-[0.9375rem] text-muted marker:text-muted">
-            <li>Send it by registered post, as the law expects, and keep the postal receipt.</li>
-            <li>Stick to facts you know. A false complaint is itself an offence.</li>
-            <li>Keep copies of everything you send.</li>
-          </ul>
-        </div>
-        <div>
-          <h2 className="text-xl font-semibold">If the SP doesn&apos;t act</h2>
-          <p className="mt-4 text-sm text-muted">
-            You can apply to the Judicial Magistrate, who can order the police to investigate (Section 175(3) of the
-            BNSS). This needs a sworn affidavit, so free legal aid is worth calling first.
-          </p>
-        </div>
+      {/* How to send it and what comes next: folded, one tap away, under the form that matters first. */}
+      <section className="mt-8 grid items-start gap-3 lg:grid-cols-2 lg:gap-6 print:hidden" aria-label="Sending it and what happens next">
+        <details className="group border-2 border-rule bg-surface">
+          <summary className="flex min-h-12 cursor-pointer list-none items-center gap-2.5 px-4 py-2.5 hover:bg-sunken [&::-webkit-details-marker]:hidden">
+            <IconDown className="h-3.5 w-3.5 shrink-0 text-accent transition-transform group-open:rotate-180" />
+            <h2 className="text-lg font-semibold">Sending it</h2>
+          </summary>
+          <div className="px-4 pb-5">
+            <ul className="mt-1 list-disc space-y-3 pl-5 text-[0.9375rem] text-muted marker:text-muted">
+              <li>Send it by registered post, as the law expects, and keep the postal receipt.</li>
+              <li>Stick to facts you know. A false complaint is itself an offence.</li>
+              <li>Keep copies of everything you send.</li>
+            </ul>
+          </div>
+        </details>
+        <details className="group border-2 border-rule bg-surface">
+          <summary className="flex min-h-12 cursor-pointer list-none items-center gap-2.5 px-4 py-2.5 hover:bg-sunken [&::-webkit-details-marker]:hidden">
+            <IconDown className="h-3.5 w-3.5 shrink-0 text-accent transition-transform group-open:rotate-180" />
+            <h2 className="text-lg font-semibold">If the SP doesn&apos;t act</h2>
+          </summary>
+          <div className="px-4 pb-5">
+            <p className="mt-1 text-sm text-muted">
+              You can apply to the Judicial Magistrate, who can order the police to investigate (Section 175(3) of the
+              BNSS). This needs a sworn affidavit, so free legal aid is worth calling first.
+            </p>
+          </div>
+        </details>
       </section>
 
-      <FreeHelp topics={["police", "women", "cyber"]} className="mt-12" />
+      <FreeHelp topics={["police", "women", "cyber"]} className="mt-8" />
     </div>
   );
 }

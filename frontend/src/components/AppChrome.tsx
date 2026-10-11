@@ -10,7 +10,7 @@ import { ThemeSwitch } from "@/components/ThemeSwitch";
 
 /**
  * The frame around every page of the service (not the landing page): the solid dark-teal bar with
- * the service's tabs on it, the beta line and breadcrumbs, and the data-portal footer. The emblem
+ * the service's tabs on it, the beta line and breadcrumbs, and the compact data-portal footer. The emblem
  * goes to the service's home, /services; "About" goes back to the landing page.
  */
 export function AppChrome({ children }: { children: React.ReactNode }) {
@@ -54,10 +54,10 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
           <Breadcrumbs />
         </div>
       </div>
-      <main id="main" className="mx-auto w-full max-w-6xl flex-1 px-4 pt-8 pb-20 sm:px-6 sm:pt-10 sm:pb-24">
+      <main id="main" className="mx-auto w-full max-w-6xl flex-1 px-4 pt-6 pb-12 sm:px-6 sm:pt-8 sm:pb-14">
         {children}
       </main>
-      <SiteFooter />
+      <SiteFooter compact />
     </>
   );
 }

@@ -56,34 +56,43 @@ export const ACT_HELP: Record<string, HelpTopic[]> = {
 export function FreeHelp({ topics = [], className = "" }: { topics?: HelpTopic[]; className?: string }) {
   const shown: Line[] = [LINES.legal, LINES.aid, ...topics.filter((t) => t !== "legal").map((t) => LINES[t])];
   return (
-    <section aria-labelledby="free-help" className={`border-t-[6px] border-rule bg-sunken p-6 sm:p-8 print:hidden ${className}`}>
-      <h2 id="free-help" className="section-title">
-        Get free help from a real person
-      </h2>
-      <p className="mt-1 text-[0.9375rem] text-muted">
-        CivicLens explains the law and drafts letters. It is not legal advice. These services are free.
-      </p>
-      <ul className="mt-5 grid gap-x-8 gap-y-5 sm:grid-cols-2">
-        {shown.map((line) => (
-          <li key={line.name} className="border-l-4 border-accent pl-3 text-sm">
-            <p className="font-bold">
-              {line.name}
-              {line.number && (
-                <>
-                  {": "}
-                  <a href={`tel:${line.number}`} className="link font-mono text-base tabular-nums">
-                    {line.number}
-                  </a>
-                </>
-              )}
-            </p>
-            <p className="mt-0.5 text-muted">{line.what}</p>
-            <a href={line.site.url} className="link mt-0.5 inline-block" target="_blank" rel="noopener noreferrer">
-              {line.site.label}
-            </a>
-          </li>
-        ))}
-      </ul>
+    <section
+      aria-labelledby="free-help"
+      className={`@container border-t-[6px] border-rule bg-sunken p-5 sm:p-6 print:hidden ${className}`}
+    >
+      {/* Laid out by its own width, since it sits in full-width pages and in narrow columns alike. */}
+      <div className="gap-x-8 @3xl:grid @3xl:grid-cols-[14rem_minmax(0,1fr)]">
+        <div>
+          <h2 id="free-help" className="section-title">
+            Get free help from a real person
+          </h2>
+          <p className="mt-1 text-[0.9375rem] text-muted">
+            CivicLens explains the law and drafts letters. It is not legal advice. These services are free.
+          </p>
+        </div>
+        <ul className="mt-4 grid gap-x-6 gap-y-3 @lg:grid-cols-2 @3xl:mt-1 @5xl:grid-cols-3">
+          {shown.map((line) => (
+            <li key={line.name} className="border-l-4 border-accent pl-3 text-sm">
+              <p className="font-bold">
+                {line.name}
+                {line.number && (
+                  <>
+                    {": "}
+                    <a href={`tel:${line.number}`} className="link font-mono text-base tabular-nums">
+                      {line.number}
+                    </a>
+                  </>
+                )}
+                <span className="font-normal text-muted"> · </span>
+                <a href={line.site.url} className="link font-normal" target="_blank" rel="noopener noreferrer">
+                  {line.site.label}
+                </a>
+              </p>
+              <p className="mt-0.5 leading-snug text-muted">{line.what}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
     </section>
   );
 }

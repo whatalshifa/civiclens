@@ -48,7 +48,7 @@ export function LetterPreview({
   }
 
   return (
-    <div className="lg:sticky lg:top-20 lg:self-start">
+    <div className="lg:sticky lg:top-4 lg:self-start">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-3 print:hidden">
         <h2 className="text-lg font-semibold">{title}</h2>
         {language && onLanguage && (
@@ -78,7 +78,7 @@ export function LetterPreview({
         aria-label="Letter preview"
         tabIndex={0}
         lang={language === "hi" ? "hi" : "en"}
-        className="card max-h-[70vh] overflow-auto p-5 text-[0.95rem] leading-relaxed whitespace-pre-wrap sm:p-8 lg:max-h-[calc(100vh-14rem)] print:max-h-none print:overflow-visible print:border-0 print:p-0 print:shadow-none"
+        className="card max-h-[55dvh] overflow-auto p-5 text-[0.95rem] leading-relaxed whitespace-pre-wrap sm:p-8 lg:max-h-[calc(100dvh-24rem)] print:max-h-none print:overflow-visible print:border-0 print:p-0 print:shadow-none"
       >
         {letter}
       </article>

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { IconDown, IconDownload, IconLetter, IconPerson, IconScales, IconTable } from "@/components/icons";
 import { PinForm } from "@/components/PinForm";
 import { StateMap } from "@/components/StateMap";
+import { Tabs } from "@/components/Tabs";
 import { api } from "@/lib/api";
 import { formatDate, slugify } from "@/lib/format";
 import type { ActBrief, Coverage, Dataset, Source, StateSeats } from "@/lib/types";
@@ -88,7 +89,9 @@ const QUESTIONS = [
 ];
 
 export default async function Services({ searchParams }: PageProps<"/services">) {
-  const { pin } = await searchParams;
+  const { pin, tab: tabParam } = await searchParams;
+  // Below the lookup, the page has two views: the directory of services, and the seats by state.
+  const tab = tabParam === "states" ? "states" : "services";
   const [coverage, acts, states, sources, datasets] = await Promise.all([
     api<Coverage>("/api/coverage").catch(() => null),
     api<ActBrief[]>("/api/laws").catch(() => []),
@@ -135,7 +138,7 @@ export default async function Services({ searchParams }: PageProps<"/services">)
             behind every fact.
           </p>
 
-          <div className="mt-7 border-2 border-rule bg-surface p-5 shadow-[6px_6px_0_var(--shadow)] sm:p-6">
+          <div className="mt-6 border-2 border-rule bg-surface p-5 shadow-[6px_6px_0_var(--shadow)] sm:p-6">
             <PinForm
               serverError={
                 pin === "invalid" ? "Type a six-digit PIN code, like 110001, or a name, like Baramati." : undefined
@@ -159,7 +162,7 @@ export default async function Services({ searchParams }: PageProps<"/services">)
             </div>
           )}
 
-          <div className="note mt-7 max-w-[38rem] text-[0.9375rem]">
+          <div className="note mt-6 max-w-[38rem] text-[0.9375rem]">
             Every Lok Sabha seat can be found by name. PIN codes cover a checked sample of{" "}
             <span className="tabular-nums">{coverage?.pincodes ?? 25}</span> areas so far.{" "}
             <Link href="/seats" className="link">
@@ -174,68 +177,79 @@ export default async function Services({ searchParams }: PageProps<"/services">)
         </div>
       </div>
 
+      <Tabs
+        label="Services home"
+        className="mt-10 sm:mt-12"
+        current={tab}
+        tabs={[
+          { id: "services", href: "/services", label: "Services and information" },
+          { id: "states", href: "/services?tab=states", label: "Seats by state", count: seats || undefined },
+        ]}
+      />
+
       {/* The directory, after a GOV.UK topic page: headings and plain link lists, no cards. */}
-      <section aria-labelledby="services-heading" className="mt-14 border-t-[6px] border-rule pt-5 sm:mt-16">
-        <h2 id="services-heading" className="section-title">
-          Services and information
-        </h2>
-
-        <div className="mt-6 hidden gap-x-8 gap-y-10 md:grid md:grid-cols-2 lg:grid-cols-4">
-          {index.map((section) => (
-            <div key={section.id} className="border-t-4 border-rule pt-4">
-              <section.icon className="h-10 w-10 text-accent" />
-              <h3 className="mt-3 text-xl font-extrabold">
-                <Link href={section.href} className="link">
-                  {section.title}
-                </Link>
-              </h3>
-              <p className="mt-1.5 text-sm text-muted">{section.summary}</p>
-              <IndexList links={section.links} />
+      {tab === "services" && (
+        <>
+          <section aria-labelledby="services-heading" className="pt-6">
+            <h2 id="services-heading" className="sr-only">
+              Services and information
+            </h2>
+            <div className="hidden gap-x-8 gap-y-10 md:grid md:grid-cols-2 lg:grid-cols-4">
+              {index.map((section) => (
+                <div key={section.id} className="border-t-4 border-rule pt-4">
+                  <section.icon className="h-10 w-10 text-accent" />
+                  <h3 className="mt-3 text-xl font-extrabold">
+                    <Link href={section.href} className="link">
+                      {section.title}
+                    </Link>
+                  </h3>
+                  <p className="mt-1.5 text-sm text-muted">{section.summary}</p>
+                  <IndexList links={section.links} />
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
 
-        {/* On a phone the same index folds into sections, so the search stays the first thing. */}
-        <div className="mt-4 border-b-2 border-rule md:hidden">
-          {index.map((section) => (
-            <details key={section.id} className="group border-t-2 border-rule">
-              <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 py-3 [&::-webkit-details-marker]:hidden">
-                <section.icon className="h-7 w-7 shrink-0 self-start text-accent" />
-                <span className="flex-1">
-                  <span className="block text-lg leading-snug font-extrabold text-accent">{section.title}</span>
-                  <span className="mt-0.5 block text-sm text-muted">{section.summary}</span>
-                </span>
-                <IconDown className="h-4 w-4 shrink-0 text-accent transition-transform group-open:rotate-180" />
-              </summary>
-              <div className="pb-4">
-                <IndexList links={section.links} />
-              </div>
-            </details>
-          ))}
-        </div>
+            {/* On a phone the same index folds into sections, so the search stays the first thing. */}
+            <div className="border-b-2 border-rule md:hidden">
+              {index.map((section) => (
+                <details key={section.id} className="group border-t-2 border-rule">
+                  <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 py-3 [&::-webkit-details-marker]:hidden">
+                    <section.icon className="h-7 w-7 shrink-0 self-start text-accent" />
+                    <span className="flex-1">
+                      <span className="block text-lg leading-snug font-extrabold text-accent">{section.title}</span>
+                      <span className="mt-0.5 block text-sm text-muted">{section.summary}</span>
+                    </span>
+                    <IconDown className="h-4 w-4 shrink-0 text-accent transition-transform group-open:rotate-180" />
+                  </summary>
+                  <div className="pb-4">
+                    <IndexList links={section.links} />
+                  </div>
+                </details>
+              ))}
+            </div>
 
-        <div className="mt-10 grid gap-x-8 gap-y-3 md:grid-cols-[minmax(0,1fr)_minmax(0,3fr)] md:items-baseline">
-          <h3 className="caps text-base">Common questions about your rights</h3>
-          <ul className="flex flex-col gap-y-2 text-[0.9375rem] md:flex-row md:flex-wrap md:gap-x-6">
-            {QUESTIONS.map((q) => (
-              <li key={q}>
-                <Link href={`/laws/search?q=${encodeURIComponent(q)}`} className="link">
-                  {q}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+            <div className="mt-8 grid gap-x-8 gap-y-3 md:grid-cols-[minmax(0,1fr)_minmax(0,3fr)] md:items-baseline">
+              <h3 className="caps text-base">Common questions about your rights</h3>
+              <ul className="flex flex-col gap-y-2 text-[0.9375rem] md:flex-row md:flex-wrap md:gap-x-6">
+                {QUESTIONS.map((q) => (
+                  <li key={q}>
+                    <Link href={`/laws/search?q=${encodeURIComponent(q)}`} className="link">
+                      {q}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
 
-      <div className="mt-12 lg:hidden">
-        {panel("panel-narrow")}
-      </div>
+          <div className="mt-10 lg:hidden">{panel("panel-narrow")}</div>
+        </>
+      )}
 
-      {states.length > 0 && (
-        <section aria-labelledby="states-heading" className="mt-14 border-t-[6px] border-rule pt-5 sm:mt-16">
+      {tab === "states" && states.length > 0 && (
+        <section aria-labelledby="states-heading" className="pt-6">
           <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
-            <h2 id="states-heading" className="section-title">
+            <h2 id="states-heading" className="text-xl font-extrabold [font-stretch:75%]">
               Lok Sabha seats by state
             </h2>
             <a href="/data/representatives.csv" download className="link inline-flex items-center gap-1.5 text-sm">
@@ -258,20 +272,11 @@ export default async function Services({ searchParams }: PageProps<"/services">)
             )}
           </p>
 
-          <div className="mt-6 grid gap-8 lg:grid-cols-[20rem_minmax(0,1fr)] lg:gap-12">
+          <div className="mt-5 grid gap-8 lg:grid-cols-[20rem_minmax(0,1fr)] lg:gap-12">
             <div className="hidden lg:block">
               <StateMap states={states} />
             </div>
-            <details className="group border-y-2 border-rule md:hidden">
-              <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between font-bold text-accent [&::-webkit-details-marker]:hidden">
-                Show all {states.length} states
-                <IconDown className="h-4 w-4 transition-transform group-open:rotate-180" />
-              </summary>
-              <StateTable states={byName} />
-            </details>
-            <div className="hidden md:block">
-              <StateTable states={byName} />
-            </div>
+            <StateTable states={byName} />
           </div>
         </section>
       )}

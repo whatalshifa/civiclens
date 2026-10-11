@@ -64,7 +64,7 @@ export default async function PinPage({ params }: PageProps<"/pin/[pin]">) {
         <Ref n={seatsRef} source={place.seats_source} />.
       </p>
 
-      <div className="mt-10 grid items-start gap-6 lg:grid-cols-2">
+      <div className="mt-6 grid items-start gap-6 lg:grid-cols-2">
         {place.seats.map((seat) => (
           <RepresentativeCard key={seat.id} seat={seat} notes={notes} />
         ))}
@@ -73,7 +73,7 @@ export default async function PinPage({ params }: PageProps<"/pin/[pin]">) {
         ))}
       </div>
 
-      <aside className="mt-8 max-w-3xl text-sm">
+      <aside className="mt-6 max-w-3xl text-sm">
         <p className="font-semibold">How we show representatives</p>
         <p className="mt-1 text-muted">
           Every representative gets the same fields, in the same order, with no ratings, photos or party colours. Each
@@ -90,9 +90,9 @@ export default async function PinPage({ params }: PageProps<"/pin/[pin]">) {
         </p>
       </aside>
 
-      <SourceList sources={notes.all} />
+      <SourceList sources={notes.all} folded className="mt-8 pt-5" />
 
-      <div className="mt-16 max-w-md">
+      <div className="mt-8 max-w-md">
         <h2 className="mb-2 text-base font-semibold">Look up another PIN code</h2>
         <PinForm size="sm" />
       </div>

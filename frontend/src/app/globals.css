@@ -3,6 +3,9 @@
 /* Dark mode follows a class on <html>, set before the first paint by the script in layout.tsx.
    Until someone picks LIGHT or DARK in the header, it copies the device setting. */
 @custom-variant dark (&:where(.dark, .dark *));
+/* "js" is set on <html> by the same early script, so parts that need JavaScript (form steps) can
+   hide themselves before the first paint, and everything stays on show when scripts don't run. */
+@custom-variant js (&:where(.js, .js *));
 
 /*
  * CivicLens is set like public signage and a data desk: a solid dark-teal bar, condensed capitals,
@@ -324,6 +327,40 @@ body {
   }
   to {
     transform: translateX(300%);
+  }
+}
+
+/*
+ * One pane at a time (the seats by state, an act's sections): every pane is in the page, and the
+ * address's #fragment picks the one on show, so links like /laws/bnss-2023#s-173 still land on it.
+ * Without JavaScript this is CSS :target; with it, PaneSwitcher marks the pane (data-shown), which
+ * also covers links that change the address without a real jump. data-all shows every pane.
+ */
+@layer components {
+  [data-panes] [data-pane] {
+    display: none;
+  }
+  [data-panes]:not([data-live]) [data-pane]:target,
+  [data-panes]:not([data-live]):not(:has([data-pane]:target)) [data-pane][data-default],
+  [data-panes][data-live] [data-pane][data-shown],
+  [data-panes][data-all] [data-pane] {
+    display: block;
+  }
+  /* On narrow screens a picked pane replaces the list it was picked from. */
+  @media (width < 64rem) {
+    [data-panes]:not([data-live]):has([data-pane]:not([data-default]):target) [data-pane-list],
+    [data-panes][data-live][data-picked] [data-pane-list] {
+      display: none;
+    }
+    [data-panes]:not([data-live]):not(:has([data-pane]:not([data-default]):target)) [data-pane-back],
+    [data-panes][data-live]:not([data-picked]) [data-pane-back] {
+      display: none;
+    }
+  }
+  @media (width >= 64rem) {
+    [data-pane-back] {
+      display: none;
+    }
   }
 }
 

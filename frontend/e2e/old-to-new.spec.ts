@@ -16,11 +16,17 @@ test("an old IPC number leads to the new BNS section", async ({ page }) => {
 test("the tables list every code with its source", async ({ page }) => {
   await page.goto("/laws/old-to-new?q=IPC%20377");
   await expect(page.getByText("IPC 377 has no new section")).toBeVisible();
-  for (const name of ["IPC to BNS", "CrPC to BNSS", "Evidence Act to BSA"]) {
-    await expect(page.getByRole("heading", { name })).toBeVisible();
-  }
+  // One table at a time, as tabs; the lookup opens the table its answer is in.
+  const tabs = page.getByRole("navigation", { name: "Correspondence tables" });
+  await expect(tabs.getByRole("link", { name: /IPC to BNS/ })).toHaveAttribute("aria-current", "page");
   const ipc = page.getByRole("region", { name: "IPC to BNS table" });
   await expect(ipc.getByRole("row", { name: /498A 85 Cruelty/ })).toBeVisible();
+  for (const name of ["IPC to BNS", "CrPC to BNSS", "Evidence Act to BSA"]) {
+    await tabs.getByRole("link", { name: new RegExp(`^${name}`) }).click();
+    await expect(page.getByRole("heading", { name })).toBeVisible();
+    await expect(page.getByRole("region", { name: `${name} table` }).getByRole("row")).not.toHaveCount(0);
+  }
+  await expect(page).toHaveURL(/q=IPC\+377&tab=iea$/);
   await expect(page.getByRole("heading", { name: "Where these tables come from" })).toBeVisible();
   await expect(page.locator("#source-1")).toContainText("Central Academy for Police Training");
 });

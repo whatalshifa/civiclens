@@ -29,13 +29,13 @@ export default async function LawsPage() {
           Find its new BNS or BNSS section
         </Link>
       </p>
-      <ul className="mt-12 grid gap-5 md:grid-cols-2">
+      <ul className="mt-8 grid gap-4 md:grid-cols-2">
         {acts.map((act) => (
           <li key={act.id}>
-            <Link href={`/laws/${act.id}`} className="card-link group flex h-full flex-col p-6">
+            <Link href={`/laws/${act.id}`} className="card-link group flex h-full flex-col p-4 sm:p-5">
               <p className="text-[0.8125rem] text-muted">{act.citation}</p>
               <h2 className="mt-1 text-lg font-semibold">{act.title}</h2>
-              <p className="mt-2 mb-4 text-[0.9375rem] text-muted">{act.summary}</p>
+              <p className="mt-1.5 mb-3 text-[0.9375rem] leading-snug text-muted">{act.summary}</p>
               <p className="mt-auto inline-flex items-center gap-1 text-sm font-semibold text-accent">
                 <span className="tabular-nums">{act.section_count}</span>{" "}
                 {act.unit === "Article" ? "articles" : "sections"}

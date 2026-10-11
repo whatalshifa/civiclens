@@ -1,4 +1,7 @@
-import { expect, test } from "@playwright/test";
+import { expect, type Page, test } from "@playwright/test";
+
+// The form shows one step at a time; each step is a button named after its fieldset.
+const step = (page: Page, name: string) => page.getByRole("button", { name, exact: true }).click();
 
 test("the letter is written as the form is filled in", async ({ page }) => {
   await page.goto("/rti");
@@ -6,9 +9,11 @@ test("the letter is written as the form is filled in", async ({ page }) => {
   await expect(page.getByText(/Still to fill in: the office you are writing to/)).toBeVisible();
 
   await page.getByLabel(/Public authority/).fill("Pune Municipal Corporation");
+  await step(page, "2. What you want to know");
   await page
     .getByLabel("Information you are asking for")
     .fill("- Copies of the road repair contract\n2. The amount paid so far");
+  await step(page, "4. Your details");
   await page.getByLabel("Your name").fill("Asha Kulkarni");
   await page.getByLabel("Your address").fill("12 Shivaji Nagar, Pune 411005");
   await expect(page.getByText(/Still to fill in/)).toHaveCount(0);
@@ -18,10 +23,12 @@ test("the letter is written as the form is filled in", async ({ page }) => {
   await expect(letter).toContainText("Rs. 10 by Indian Postal Order");
   await expect(letter).toContainText("Asha Kulkarni");
 
+  await step(page, "3. Fee");
   await page.getByLabel("Exempt: I hold a BPL card").check();
   await expect(letter).toContainText("proviso to Section 7(5)");
   await expect(letter).toContainText("Enclosure: Copy of BPL card");
 
+  await step(page, "2. What you want to know");
   await page.getByLabel(/life or liberty/).check();
   await expect(letter).toContainText("within 48 hours");
 
@@ -45,6 +52,7 @@ test("nothing typed in the form is sent anywhere", async ({ page }) => {
     if (request.method() !== "GET" || request.url().includes("Kulkarni")) sent.push(request.url());
   });
   await page.goto("/rti");
+  await step(page, "4. Your details");
   await page.getByLabel("Your name").fill("Asha Kulkarni");
   await page.getByLabel("Your address").fill("12 Shivaji Nagar");
   await page.waitForTimeout(300);

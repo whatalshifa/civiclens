@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { IconDown } from "@/components/icons";
 import { FreeHelp } from "@/components/FreeHelp";
 import { RtiDrafter } from "@/components/rti/RtiDrafter";
 import { todayInIndia } from "@/lib/letters";
@@ -73,81 +74,92 @@ export default async function RtiPage({ searchParams }: PageProps<"/rti">) {
         </noscript>
       </div>
 
-      <div className="mt-12">
+      <div className="mt-8">
         <RtiDrafter authority={authority} information={information} today={todayInIndia()} />
       </div>
 
-      <section className="mt-20 grid gap-10 border-t border-line pt-12 lg:grid-cols-2 lg:gap-16 print:hidden" aria-label="Sending it and what happens next">
-        <div>
-          <h2 className="text-xl font-semibold">Sending it</h2>
-          <ul className="mt-4 list-disc space-y-3 pl-5 text-[0.9375rem] text-muted marker:text-muted">
-            <li>
-              <span className="text-foreground">Central government offices</span> (ministries, railways, banks owned by
-              the government, central universities): you can file online at{" "}
-              <a href="https://rtionline.gov.in" className="link" rel="noopener">
-                rtionline.gov.in
-              </a>{" "}
-              and pay the ₹10 fee there.
-            </li>
-            <li>
-              <span className="text-foreground">State and local offices</span>: post it to the office&apos;s Public
-              Information Officer by registered post, or hand it in and ask for a dated receipt. Many states also have
-              their own RTI portal. Each state sets its own fee: pick the state in the form to see it.
-            </li>
-            <li>
-              You don&apos;t have to give any reason for asking{" "}
-              <Link href={`${RTI}#s-6`} className="link">
-                (Section 6)
+      {/* How to send it and what comes next: folded, one tap away, under the form that matters first. */}
+      <section className="mt-8 grid items-start gap-3 lg:grid-cols-2 lg:gap-6 print:hidden" aria-label="Sending it and what happens next">
+        <details className="group border-2 border-rule bg-surface">
+          <summary className="flex min-h-12 cursor-pointer list-none items-center gap-2.5 px-4 py-2.5 hover:bg-sunken [&::-webkit-details-marker]:hidden">
+            <IconDown className="h-3.5 w-3.5 shrink-0 text-accent transition-transform group-open:rotate-180" />
+            <h2 className="text-lg font-semibold">Sending it</h2>
+          </summary>
+          <div className="px-4 pb-5">
+            <ul className="mt-1 list-disc space-y-3 pl-5 text-[0.9375rem] text-muted marker:text-muted">
+              <li>
+                <span className="text-foreground">Central government offices</span> (ministries, railways, banks owned by
+                the government, central universities): you can file online at{" "}
+                <a href="https://rtionline.gov.in" className="link" rel="noopener">
+                  rtionline.gov.in
+                </a>{" "}
+                and pay the ₹10 fee there.
+              </li>
+              <li>
+                <span className="text-foreground">State and local offices</span>: post it to the office&apos;s Public
+                Information Officer by registered post, or hand it in and ask for a dated receipt. Many states also have
+                their own RTI portal. Each state sets its own fee: pick the state in the form to see it.
+              </li>
+              <li>
+                You don&apos;t have to give any reason for asking{" "}
+                <Link href={`${RTI}#s-6`} className="link">
+                  (Section 6)
+                </Link>
+                . People below the poverty line pay no fee{" "}
+                <Link href={`${RTI}#s-7`} className="link">
+                  (Section 7)
+                </Link>
+                .
+              </li>
+              <li>Keep a copy of the application and the proof that you sent it. You will need both for an appeal.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details className="group border-2 border-rule bg-surface">
+          <summary className="flex min-h-12 cursor-pointer list-none items-center gap-2.5 px-4 py-2.5 hover:bg-sunken [&::-webkit-details-marker]:hidden">
+            <IconDown className="h-3.5 w-3.5 shrink-0 text-accent transition-transform group-open:rotate-180" />
+            <h2 className="text-lg font-semibold">What happens next</h2>
+          </summary>
+          <div className="px-4 pb-5">
+            <ol className="mt-1 space-y-4">
+              {NEXT_STEPS.map((step) => (
+                <li key={step.when} className="grid grid-cols-[8.5rem_1fr] gap-3 text-sm">
+                  <span className="font-semibold">{step.when}</span>
+                  <span className="text-muted">
+                    {step.what}{" "}
+                    <Link href={`${RTI}#${step.ref}`} className="link whitespace-nowrap">
+                      {step.label}
+                    </Link>
+                    {step.draft && (
+                      <>
+                        {". "}
+                        <Link href={step.draft.href} className="link whitespace-nowrap">
+                          {step.draft.label}
+                        </Link>
+                      </>
+                    )}
+                  </span>
+                </li>
+              ))}
+            </ol>
+            <p className="mt-5 text-sm text-muted">
+              Some information can be withheld, such as matters of national security or someone else&apos;s private
+              details{" "}
+              <Link href={`${RTI}#s-8`} className="link">
+                (Section 8)
               </Link>
-              . People below the poverty line pay no fee{" "}
-              <Link href={`${RTI}#s-7`} className="link">
-                (Section 7)
+              . An official who refuses without good reason can be fined{" "}
+              <Link href={`${RTI}#s-20`} className="link">
+                (Section 20)
               </Link>
               .
-            </li>
-            <li>Keep a copy of the application and the proof that you sent it. You will need both for an appeal.</li>
-          </ul>
-        </div>
-
-        <div>
-          <h2 className="text-xl font-semibold">What happens next</h2>
-          <ol className="mt-4 space-y-4">
-            {NEXT_STEPS.map((step) => (
-              <li key={step.when} className="grid grid-cols-[8.5rem_1fr] gap-3 text-sm">
-                <span className="font-semibold">{step.when}</span>
-                <span className="text-muted">
-                  {step.what}{" "}
-                  <Link href={`${RTI}#${step.ref}`} className="link whitespace-nowrap">
-                    {step.label}
-                  </Link>
-                  {step.draft && (
-                    <>
-                      {". "}
-                      <Link href={step.draft.href} className="link whitespace-nowrap">
-                        {step.draft.label}
-                      </Link>
-                    </>
-                  )}
-                </span>
-              </li>
-            ))}
-          </ol>
-          <p className="mt-5 text-sm text-muted">
-            Some information can be withheld, such as matters of national security or someone else&apos;s private
-            details{" "}
-            <Link href={`${RTI}#s-8`} className="link">
-              (Section 8)
-            </Link>
-            . An official who refuses without good reason can be fined{" "}
-            <Link href={`${RTI}#s-20`} className="link">
-              (Section 20)
-            </Link>
-            .
-          </p>
-        </div>
+            </p>
+          </div>
+        </details>
       </section>
 
-      <FreeHelp className="mt-12" />
+      <FreeHelp className="mt-8" />
     </div>
   );
 }

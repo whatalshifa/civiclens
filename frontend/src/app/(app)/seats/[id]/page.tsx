@@ -75,7 +75,7 @@ export default async function SeatPageView({ params }: PageProps<"/seats/[id]">)
         .
       </p>
 
-      <div className="mt-10 grid items-start gap-6 lg:grid-cols-2">
+      <div className="mt-6 grid items-start gap-6 lg:grid-cols-2">
         <RepresentativeCard seat={seat} notes={notes} yours={false} />
 
         <section className="card p-5 sm:p-7" aria-labelledby="pins-heading">
@@ -114,7 +114,7 @@ export default async function SeatPageView({ params }: PageProps<"/seats/[id]">)
         </section>
       </div>
 
-      <aside className="mt-8 max-w-3xl text-sm">
+      <aside className="mt-6 max-w-3xl text-sm">
         <p className="font-semibold">Spotted a mistake?</p>
         <p className="mt-1 text-muted">
           Seats and members are checked against the Lok Sabha&apos;s own list every week.{" "}
@@ -130,9 +130,9 @@ export default async function SeatPageView({ params }: PageProps<"/seats/[id]">)
         </p>
       </aside>
 
-      <SourceList sources={notes.all} />
+      <SourceList sources={notes.all} folded className="mt-8 pt-5" />
 
-      <div className="mt-16 max-w-md">
+      <div className="mt-8 max-w-md">
         <h2 className="mb-2 text-base font-semibold">Look up a PIN code</h2>
         <PinForm size="sm" />
       </div>

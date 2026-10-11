@@ -3,6 +3,8 @@ import { readFile } from "node:fs/promises";
 import { expect, type Page, test } from "@playwright/test";
 
 const letter = (page: Page) => page.getByRole("article", { name: "Letter preview" });
+// The forms show one step at a time; each step is a button named after its fieldset.
+const step = (page: Page, name: string) => page.getByRole("button", { name, exact: true }).click();
 
 function daysAgo(days: number): string {
   const d = new Date(Date.now() - days * 86_400_000);
@@ -32,10 +34,14 @@ test("the RTI fee and portal follow the state", async ({ page }) => {
 test("a sent application gives a reminder and fills in the first appeal", async ({ page }) => {
   await page.goto("/rti");
   await page.getByLabel(/Public authority/).fill("Pune Municipal Corporation");
+  await step(page, "2. What you want to know");
   await page.getByLabel("Information you are asking for").fill("Copies of the road repair contract");
+  await step(page, "4. Your details");
   await page.getByLabel("Your name").fill("Asha Kulkarni");
   await page.getByLabel("Your address").fill("12 Shivaji Nagar, Pune 411005");
 
+  // The tracker is folded under the letter until it's wanted.
+  await page.getByText("Sent it? Track the reply").click();
   await page.getByLabel("I sent it on").fill(daysAgo(40));
   await page.getByRole("button", { name: "Save in this browser" }).click();
   await expect(page.getByText("The reply is due by")).toBeVisible();
@@ -61,6 +67,7 @@ test("a sent application gives a reminder and fills in the first appeal", async 
   await expect(letter(page)).toContainText("1. Copies of the road repair contract");
   await expect(page.getByText(/Still to fill in/)).toHaveCount(0);
 
+  await step(page, "2. Your application");
   await page.getByLabel("Date of the reply, if one came").fill(daysAgo(5));
   await expect(letter(page)).toContainText("3. Copy of the reply from the Public Information Officer");
   await page.getByRole("radio", { name: "हिंदी" }).click();
@@ -79,12 +86,15 @@ test("the consumer complaint cites the right section", async ({ page }) => {
   await expect(page.getByText(/Still to fill in: the business/)).toBeVisible();
 
   await page.getByLabel("Seller or service provider").fill("QuickFix Appliances");
+  await step(page, "2. What happened");
   await page.getByLabel("What it was").fill("a washing machine repair");
   await page.getByLabel(/A service/).check();
   await page.getByLabel("Amount paid (₹)").fill("2,500");
   await page.getByLabel("What went wrong").fill("The machine stopped again the next day\nThree calls, no visit");
+  await step(page, "3. What you want");
   await page.getByLabel("Compensation for the loss").check();
   await page.getByLabel("Compensation asked (₹)").fill("1000");
+  await step(page, "4. Your details");
   await page.getByLabel("Your name").fill("Asha Kulkarni");
   await page.getByLabel("Your address").fill("12 Shivaji Nagar, Pune 411005");
   await expect(page.getByText(/Still to fill in/)).toHaveCount(0);
@@ -105,7 +115,9 @@ test("the police complaint goes to the SP under section 173(4)", async ({ page }
   await page.goto("/letters/police");
   await page.getByLabel("District").fill("Pune Rural");
   await page.getByLabel("Police station that refused").fill("Baramati");
+  await step(page, "2. What happened");
   await page.getByLabel("What happened").fill("My motorcycle was stolen from outside my house.");
+  await step(page, "3. Your details");
   await page.getByLabel("Your name").fill("Asha Kulkarni");
   await page.getByLabel("Your address").fill("12 Shivaji Nagar, Pune 411005");
 
@@ -132,8 +144,13 @@ test("nothing typed in the letters is sent anywhere", async ({ page }) => {
   page.on("request", (request) => {
     if (request.method() !== "GET" || request.url().includes("Kulkarni")) sent.push(request.url());
   });
-  for (const path of ["/rti/appeal", "/letters/consumer", "/letters/police"]) {
+  for (const [path, details] of [
+    ["/rti/appeal", "4. Your details"],
+    ["/letters/consumer", "4. Your details"],
+    ["/letters/police", "3. Your details"],
+  ]) {
     await page.goto(path);
+    await step(page, details);
     await page.getByLabel("Your name").fill("Asha Kulkarni");
     await page.getByLabel("Your address").fill("12 Shivaji Nagar");
   }

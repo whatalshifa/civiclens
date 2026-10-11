@@ -11,9 +11,12 @@ test("typing a PIN code shows the MP and MLA, each with numbered sources", async
   await expect(page.getByRole("heading", { name: /Sunetra Ajit Pawar/ })).toBeVisible();
   await expect(page.getByText("result declared 4 June 2024")).toBeVisible();
 
-  // Every reference number points at an entry in the source list.
+  // Every reference number points at an entry in the source list, which is folded until wanted:
+  // following a number opens it.
   const refs = page.locator("a.ref");
   expect(await refs.count()).toBeGreaterThanOrEqual(4);
+  await refs.first().click();
+  await expect(page.locator("#source-1")).toBeVisible();
   for (const href of await refs.evaluateAll((links) => links.map((a) => a.getAttribute("href")))) {
     await expect(page.locator(href!)).toBeVisible();
   }

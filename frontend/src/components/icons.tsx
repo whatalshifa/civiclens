@@ -99,6 +99,7 @@ export const IconCheck = (p: Props) => <Glyph {...p} d="M1.5 12.5L4.6 9.4L9.4 14
 export const IconDown = (p: Props) => <Glyph {...p} d="M4 7.5h16l-8 10Z" />;
 export const IconUp = (p: Props) => <Glyph {...p} d="M4 16.5h16l-8-10Z" />;
 export const IconRight = (p: Props) => <Glyph {...p} d="M7.5 4v16l10-8Z" />;
+export const IconLeft = (p: Props) => <Glyph {...p} d="M16.5 4v16l-10-8Z" />;
 
 /** A square padlock: the address bar of a secure page. */
 export const IconLock = (p: Props) => (

@@ -8,7 +8,7 @@ const KEY = "cl-theme";
 /** Runs in <head> before the page paints, so a dark-mode visitor never sees a white flash. */
 // Until someone picks a side, the device setting decides. It also switches to light while printing,
 // so a printed explanation is never white text on white paper.
-export const THEME_SCRIPT = `(()=>{var h=document.documentElement,w;try{var t=localStorage.getItem("${KEY}");h.classList.toggle("dark",t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches))}catch(e){}addEventListener("beforeprint",function(){w=h.classList.contains("dark");h.classList.remove("dark")});addEventListener("afterprint",function(){if(w)h.classList.add("dark")})})()`;
+export const THEME_SCRIPT = `(()=>{var h=document.documentElement,w;h.classList.add("js");try{var t=localStorage.getItem("${KEY}");h.classList.toggle("dark",t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches))}catch(e){}addEventListener("beforeprint",function(){w=h.classList.contains("dark");h.classList.remove("dark")});addEventListener("afterprint",function(){if(w)h.classList.add("dark")})})()`;
 
 const current = (): Theme => (document.documentElement.classList.contains("dark") ? "dark" : "light");
 

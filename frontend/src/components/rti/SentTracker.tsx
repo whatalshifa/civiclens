@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useId, useState } from "react";
 
+import { IconDown } from "@/components/icons";
 import { formatDate } from "@/lib/letters";
 import { appealBy, forgetSent, loadSent, reminderIcs, replyDue, saveSent, type SentRti } from "@/lib/rti-tracker";
 
@@ -14,6 +15,8 @@ export function SentTracker({ application, today }: { application: Omit<SentRti,
   const [saved, setSaved] = useState<SentRti | null>(null);
   const [sentOn, setSentOn] = useState(today);
   const [failed, setFailed] = useState(false);
+  // Folded until wanted; it opens again after "Forget it", where the person left off.
+  const [open, setOpen] = useState(false);
   const id = useId();
 
   useEffect(() => {
@@ -68,6 +71,7 @@ export function SentTracker({ application, today }: { application: Omit<SentRti,
             onClick={() => {
               forgetSent();
               setSaved(null);
+              setOpen(true);
             }}
           >
             Forget it
@@ -79,38 +83,47 @@ export function SentTracker({ application, today }: { application: Omit<SentRti,
   }
 
   return (
-    <section aria-labelledby={`${id}-h`} className="card mt-6 p-5 text-sm">
-      <h3 id={`${id}-h`} className="font-semibold">
-        Sent it? Track the reply
-      </h3>
-      <p className="mt-1 text-muted">
-        Note the day you sent it and get a calendar reminder for when the reply is due. If it doesn&apos;t come, the
-        first appeal is filled in from this application.
-      </p>
-      <div className="mt-3 flex flex-wrap items-end gap-2">
-        <div>
-          <label htmlFor={`${id}-date`} className="field-label">
-            I sent it on
-          </label>
-          <input
-            id={`${id}-date`}
-            type="date"
-            className="input"
-            value={sentOn}
-            max={today}
-            onChange={(e) => setSentOn(e.target.value)}
-          />
-        </div>
-        <button type="button" className="btn btn-secondary" onClick={save} disabled={!sentOn}>
-          Save in this browser
-        </button>
-      </div>
-      {failed && (
-        <p className="mt-2 text-sm" role="alert">
-          This browser won&apos;t let the page save anything. Note the date yourself: the reply is due 30 days after the
-          office receives it.
+    <details
+      open={open}
+      onToggle={(e) => setOpen(e.currentTarget.open)}
+      className="group card mt-5 text-sm"
+    >
+      <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 px-4 py-2.5 [&::-webkit-details-marker]:hidden">
+        <IconDown className="h-3.5 w-3.5 shrink-0 text-accent transition-transform group-open:rotate-180" />
+        <h3 id={`${id}-h`} className="font-semibold">
+          Sent it? Track the reply
+        </h3>
+      </summary>
+      <section aria-labelledby={`${id}-h`} className="px-4 pb-4">
+        <p className="text-muted">
+          Note the day you sent it and get a calendar reminder for when the reply is due. If it doesn&apos;t come, the
+          first appeal is filled in from this application.
         </p>
-      )}
-    </section>
+        <div className="mt-3 flex flex-wrap items-end gap-2">
+          <div>
+            <label htmlFor={`${id}-date`} className="field-label">
+              I sent it on
+            </label>
+            <input
+              id={`${id}-date`}
+              type="date"
+              className="input"
+              value={sentOn}
+              max={today}
+              onChange={(e) => setSentOn(e.target.value)}
+            />
+          </div>
+          <button type="button" className="btn btn-secondary" onClick={save} disabled={!sentOn}>
+            Save in this browser
+          </button>
+        </div>
+        {failed && (
+          <p className="mt-2 text-sm" role="alert">
+            This browser won&apos;t let the page save anything. Note the date yourself: the reply is due 30 days after the
+            office receives it.
+          </p>
+        )}
+      </section>
+    </details>
   );
 }

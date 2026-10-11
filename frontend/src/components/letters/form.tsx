@@ -1,6 +1,8 @@
 "use client";
 
-import { useId } from "react";
+import { Children, isValidElement, useId, useRef, useState } from "react";
+
+import { IconLeft, IconRight } from "@/components/icons";
 
 /** Form pieces shared by the letter drafters (RTI application, first appeal, complaints). */
 
@@ -10,6 +12,68 @@ export function Fieldset({ legend, children }: { legend: string; children: React
       <legend className="mb-4 text-lg font-semibold">{legend}</legend>
       {children}
     </fieldset>
+  );
+}
+
+/**
+ * A long form as steps, one fieldset on show at a time, with the steps named across the top, the
+ * way a checkout or a tax form does it. Each step's name comes from its fieldset's legend. Without
+ * JavaScript (no "js" class on <html>) every step is on show, one after another, as before.
+ */
+export function Steps({ label, children }: { label: string; children: React.ReactNode }) {
+  const steps = Children.toArray(children).filter(isValidElement<{ legend: string }>);
+  const [current, setCurrent] = useState(0);
+  const top = useRef<HTMLDivElement>(null);
+  const id = useId();
+  const name = (i: number) => steps[i].props.legend;
+
+  function go(i: number) {
+    setCurrent(i);
+    const box = top.current?.getBoundingClientRect();
+    if (box && box.top < 0) top.current?.scrollIntoView({ block: "start" });
+  }
+
+  return (
+    <div ref={top} className="space-y-6">
+      <nav aria-label={label} className="hidden js:block">
+        <ol className="grid grid-cols-2 gap-1.5 sm:flex sm:flex-wrap">
+          {steps.map((step, i) => (
+            <li key={i} className="flex">
+              <button
+                type="button"
+                onClick={() => go(i)}
+                aria-controls={`${id}-${i}`}
+                aria-current={i === current ? "step" : undefined}
+                className="flex min-h-11 w-full items-center gap-2 border-2 border-rule bg-surface px-2.5 py-1.5 text-left text-sm leading-tight font-semibold hover:bg-sunken aria-[current]:bg-rule aria-[current]:text-background"
+              >
+                {name(i)}
+              </button>
+            </li>
+          ))}
+        </ol>
+      </nav>
+      {steps.map((step, i) => (
+        <div key={i} id={`${id}-${i}`} className={i === current ? "" : "js:hidden"}>
+          {step}
+          <div className="mt-6 hidden justify-between gap-3 js:flex">
+            {i > 0 ? (
+              <button type="button" className="btn btn-secondary btn-sm" onClick={() => go(i - 1)}>
+                <IconLeft className="h-3 w-3" />
+                Back
+              </button>
+            ) : (
+              <span />
+            )}
+            {i < steps.length - 1 && (
+              <button type="button" className="btn btn-primary btn-sm" onClick={() => go(i + 1)}>
+                Next: {name(i + 1).replace(/^\d+\.\s*/, "")}
+                <IconRight className="h-3 w-3" />
+              </button>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
   );
 }
 

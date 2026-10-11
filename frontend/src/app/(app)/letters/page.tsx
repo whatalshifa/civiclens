@@ -47,10 +47,10 @@ export default function LettersPage() {
           Everything you type stays in your browser.
         </p>
       </div>
-      <ul className="mt-12 grid gap-5 sm:grid-cols-2">
+      <ul className="mt-8 grid gap-4 sm:grid-cols-2">
         {LETTERS.map((l) => (
           <li key={l.href}>
-            <Link href={l.href} className="card-link group flex h-full flex-col p-6">
+            <Link href={l.href} className="card-link group flex h-full flex-col p-4 sm:p-5">
               <h2 className="inline-flex items-center gap-1.5 text-lg font-semibold group-hover:text-accent">
                 {l.title}
                 <IconArrow className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
@@ -61,7 +61,7 @@ export default function LettersPage() {
           </li>
         ))}
       </ul>
-      <FreeHelp className="mt-16" />
+      <FreeHelp className="mt-10" />
     </div>
   );
 }
